@@ -36,5 +36,8 @@ module Server
     # Middleware like session, flash, cookies can be added back manually.
     # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
+
+    config.action_cable.allowed_request_origins = ['3DCloud-Client']
+    config.action_cable.mount_path = '/ws'
   end
 end
