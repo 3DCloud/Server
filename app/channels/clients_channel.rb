@@ -6,8 +6,11 @@ class ClientsChannel < ApplicationCable::Channel
     logger.info params
   end
 
-  def sample_action(args)
-    logger.info args["message"]
-    broadcast_to "all", { sample_property: "value of sample_property" }
+  def printer_state(args)
+    logger.info args["timestamp"]
+
+    args["printer_states"].each do |id, printer|
+      logger.info "#{id} => #{printer}"
+    end
   end
 end
