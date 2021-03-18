@@ -10,9 +10,51 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 0) do
+ActiveRecord::Schema.define(version: 2021_04_02_134520) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
+  create_table "clients", force: :cascade do |t|
+    t.string "uuid", null: false
+    t.string "name"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "devices", force: :cascade do |t|
+    t.string "device_name", null: false
+    t.string "device_id", null: false
+    t.boolean "is_portable_device_id", null: false
+    t.datetime "last_seen", null: false
+    t.bigint "client_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["client_id"], name: "index_devices_on_client_id"
+  end
+
+  create_table "printer_definitions", force: :cascade do |t|
+    t.string "name", null: false
+    t.text "start_gcode"
+    t.text "end_gcode"
+    t.text "pause_gcode"
+    t.text "resume_gcode"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.string "driver", null: false
+  end
+
+  create_table "printers", force: :cascade do |t|
+    t.string "device_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.bigint "client_id", null: false
+    t.bigint "printer_definition_id", null: false
+    t.index ["client_id"], name: "index_printers_on_client_id"
+    t.index ["printer_definition_id"], name: "index_printers_on_printer_definition_id"
+  end
+
+  add_foreign_key "devices", "clients"
+  add_foreign_key "printers", "clients"
+  add_foreign_key "printers", "printer_definitions"
 end

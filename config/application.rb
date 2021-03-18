@@ -38,6 +38,5 @@ module Server
     config.api_only = true
 
     config.action_cable.allowed_request_origins = ['3DCloud-Client']
-    config.action_cable.mount_path = '/ws'
   end
 end
