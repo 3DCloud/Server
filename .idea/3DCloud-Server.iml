@@ -48,7 +48,11 @@
     <orderEntry type="library" scope="PROVIDED" name="dotenv (v2.7.6, Remote: ruby-3.0.0-p0) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="dotenv-rails (v2.7.6, Remote: ruby-3.0.0-p0) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="erubi (v1.10.0, Remote: ruby-3.0.0-p0) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="factory_bot (v6.1.0, Remote: ruby-3.0.0-p0) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="factory_bot_rails (v6.1.0, Remote: ruby-3.0.0-p0) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="globalid (v0.4.2, Remote: ruby-3.0.0-p0) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="graphiql-rails (v1.7.0, Remote: ruby-3.0.0-p0) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="graphql (v1.12.6, Remote: ruby-3.0.0-p0) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="i18n (v1.8.9, Remote: ruby-3.0.0-p0) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="loofah (v2.9.0, Remote: ruby-3.0.0-p0) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="mail (v2.7.1, Remote: ruby-3.0.0-p0) [gem]" level="application" />
@@ -93,7 +97,17 @@
         <option value="benchmark" />
         <option value="channel" />
         <option value="controller" />
+        <option value="factory_bot:model" />
         <option value="generator" />
+        <option value="graphql:enum" />
+        <option value="graphql:install" />
+        <option value="graphql:interface" />
+        <option value="graphql:loader" />
+        <option value="graphql:mutation" />
+        <option value="graphql:object" />
+        <option value="graphql:relay" />
+        <option value="graphql:scalar" />
+        <option value="graphql:union" />
         <option value="integration_test" />
         <option value="job" />
         <option value="mailbox" />
@@ -129,7 +143,17 @@
         <option value="benchmark" />
         <option value="channel" />
         <option value="controller" />
+        <option value="factory_bot:model" />
         <option value="generator" />
+        <option value="graphql:enum" />
+        <option value="graphql:install" />
+        <option value="graphql:interface" />
+        <option value="graphql:loader" />
+        <option value="graphql:mutation" />
+        <option value="graphql:object" />
+        <option value="graphql:relay" />
+        <option value="graphql:scalar" />
+        <option value="graphql:union" />
         <option value="integration_test" />
         <option value="job" />
         <option value="mailbox" />
@@ -398,6 +422,18 @@
           </RakeTaskImpl>
           <RakeTaskImpl description="" fullCommand="default" id="default" />
           <RakeTaskImpl description="" fullCommand="environment" id="environment" />
+          <RakeTaskImpl id="graphql">
+            <subtasks>
+              <RakeTaskImpl description="" fullCommand="graphql:upgrade" id="upgrade" />
+              <RakeTaskImpl id="upgrade">
+                <subtasks>
+                  <RakeTaskImpl description="" fullCommand="graphql:upgrade:create_base_objects" id="create_base_objects" />
+                  <RakeTaskImpl description="" fullCommand="graphql:upgrade:member" id="member" />
+                  <RakeTaskImpl description="" fullCommand="graphql:upgrade:schema" id="schema" />
+                </subtasks>
+              </RakeTaskImpl>
+            </subtasks>
+          </RakeTaskImpl>
           <RakeTaskImpl id="railties">
             <subtasks>
               <RakeTaskImpl id="install">

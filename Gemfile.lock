@@ -78,6 +78,10 @@ GEM
       railties (>= 5.0.0)
     globalid (0.4.2)
       activesupport (>= 4.2.0)
+    graphiql-rails (1.7.0)
+      railties
+      sprockets-rails
+    graphql (1.12.6)
     i18n (1.8.9)
       concurrent-ruby (~> 1.0)
     loofah (2.9.0)
@@ -154,6 +158,8 @@ DEPENDENCIES
   byebug
   dotenv-rails
   factory_bot_rails
+  graphiql-rails
+  graphql
   pg (~> 1.1)
   puma (~> 5.0)
   rails (~> 6.1.3)
