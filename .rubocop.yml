@@ -13,6 +13,7 @@ AllCops:
   SuggestExtensions: false
   Exclude:
     - 'bin/**/*'
+    - 'db/schema.rb'
     - '**/tmp/**/*'
     - '**/templates/**/*'
     - '**/vendor/**/*'

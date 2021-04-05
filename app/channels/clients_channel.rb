@@ -5,7 +5,6 @@ class ClientsChannel < ApplicationCable::Channel
     reject unless params.key?("guid")
 
     @client = Client.find_by_id(params["guid"])
-    @key = params.fetch("key", nil)
 
     if @client.nil?
       @client = Client.new(id: params["guid"])
@@ -34,12 +33,6 @@ class ClientsChannel < ApplicationCable::Channel
 
     if printer.present?
       transmit({ action: "printer_configuration", printer: printer.as_json(include: [:device, :printer_definition]) })
-    end
-  end
-
-  def printer_states(args)
-    args["printer_states"].each do |key, value|
-      logger.info "#{key} -- #{value}"
     end
   end
 end
