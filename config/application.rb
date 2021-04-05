@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative "boot"
 
 require "rails"
@@ -37,6 +39,6 @@ module Server
     # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
 
-    config.action_cable.allowed_request_origins = ['3DCloud-Client']
+    config.action_cable.allowed_request_origins = ["3DCloud-Client"]
   end
 end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ApplicationCable
   class Connection < ActionCable::Connection::Base
     rescue_from StandardError, with: :report_error
@@ -7,9 +9,8 @@ module ApplicationCable
     end
 
     private
-
-    def report_error(e)
-      logger.error e
-    end
+      def report_error(e)
+        logger.error e
+      end
   end
 end

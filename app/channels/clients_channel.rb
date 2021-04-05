@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ClientsChannel < ApplicationCable::Channel
   def subscribed
     reject unless params.key?("guid")
