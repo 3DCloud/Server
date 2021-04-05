@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_04_05_153959) do
+ActiveRecord::Schema.define(version: 2021_04_05_191212) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -24,13 +24,13 @@ ActiveRecord::Schema.define(version: 2021_04_05_153959) do
 
   create_table "devices", force: :cascade do |t|
     t.string "device_name", null: false
-    t.string "device_id", null: false
+    t.string "hardware_identifier", null: false
     t.boolean "is_portable_device_id", null: false
     t.datetime "last_seen", null: false
     t.bigint "client_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["client_id"], name: "index_devices_on_client_id"
+    t.index ["hardware_identifier"], name: "index_devices_on_hardware_identifier", unique: true
   end
 
   create_table "printer_definitions", force: :cascade do |t|
@@ -45,17 +45,16 @@ ActiveRecord::Schema.define(version: 2021_04_05_153959) do
   end
 
   create_table "printers", force: :cascade do |t|
-    t.string "device_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.bigint "client_id", null: false
     t.bigint "printer_definition_id", null: false
     t.string "name", null: false
-    t.index ["client_id"], name: "index_printers_on_client_id"
+    t.bigint "device_id", null: false
+    t.index ["device_id"], name: "index_printers_on_device_id"
     t.index ["printer_definition_id"], name: "index_printers_on_printer_definition_id"
   end
 
   add_foreign_key "devices", "clients"
-  add_foreign_key "printers", "clients"
+  add_foreign_key "printers", "devices"
   add_foreign_key "printers", "printer_definitions"
 end
