@@ -10,16 +10,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_04_05_191212) do
+ActiveRecord::Schema.define(version: 2021_04_05_225625) do
 
   # These are extensions that must be enabled in order to support this database
+  enable_extension "pgcrypto"
   enable_extension "plpgsql"
 
-  create_table "clients", force: :cascade do |t|
-    t.string "uuid", null: false
+  create_table "clients", id: :uuid, default: nil, force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "access_key"
   end
 
   create_table "devices", force: :cascade do |t|
@@ -27,7 +28,7 @@ ActiveRecord::Schema.define(version: 2021_04_05_191212) do
     t.string "hardware_identifier", null: false
     t.boolean "is_portable_device_id", null: false
     t.datetime "last_seen", null: false
-    t.bigint "client_id", null: false
+    t.uuid "client_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["hardware_identifier"], name: "index_devices_on_hardware_identifier", unique: true

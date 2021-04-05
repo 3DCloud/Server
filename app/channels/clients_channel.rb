@@ -4,25 +4,20 @@ class ClientsChannel < ApplicationCable::Channel
   def subscribed
     reject unless params.key?("guid")
 
-    @client = Client.find_by_uuid(params["guid"])
+    @client = Client.find_by_id(params["guid"])
     @key = params.fetch("key", nil)
 
-    stream_for "all"
-    stream_for @client
-
     if @client.nil?
-      @client = Client.new(uuid: params["guid"])
+      @client = Client.new(id: params["guid"])
       @client.save!
     end
 
-    # TODO this should be done when admin accepts through UI
-    if @key.blank?
-      @key = SecureRandom.base58 32
-      transmit({ action: "auth_key", key: @key })
-    end
+    stream_for "all"
+    stream_for @client
   end
 
   def device(args)
+    return unless @key.present?
     return unless args.key?("device_name") && args.key?("device_id") && args.key?("is_portable_device_id")
 
     device = Device.find_by_hardware_identifier(args["device_id"])
