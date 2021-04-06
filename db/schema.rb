@@ -10,7 +10,8 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_04_05_225625) do
+ActiveRecord::Schema.define(version: 2021_04_06_200930) do
+
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -19,13 +20,14 @@ ActiveRecord::Schema.define(version: 2021_04_05_225625) do
     t.string "name"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.string "access_key"
+    t.string "secret_digest", null: false
+    t.boolean "authorized", default: false, null: false
   end
 
   create_table "devices", force: :cascade do |t|
     t.string "device_name", null: false
     t.string "hardware_identifier", null: false
-    t.boolean "is_portable_device_id", null: false
+    t.boolean "is_portable_hardware_identifier", null: false
     t.datetime "last_seen", null: false
     t.uuid "client_id", null: false
     t.datetime "created_at", precision: 6, null: false
@@ -50,7 +52,7 @@ ActiveRecord::Schema.define(version: 2021_04_05_225625) do
     t.bigint "printer_definition_id", null: false
     t.string "name", null: false
     t.bigint "device_id", null: false
-    t.index ["device_id"], name: "index_printers_on_device_id"
+    t.index ["device_id"], name: "index_printers_on_device_id", unique: true
     t.index ["printer_definition_id"], name: "index_printers_on_printer_definition_id"
   end
 
