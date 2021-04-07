@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class ClientsChannel < ApplicationCable::Channel
+class ClientChannel < ApplicationCable::Channel
   class << self
     def transmit_printer_configuration(printer)
       broadcast_to printer.device.client, self.printer_configuration_message(printer)
@@ -36,8 +36,5 @@ class ClientsChannel < ApplicationCable::Channel
     if printer.present?
       transmit self.class.printer_configuration_message(printer)
     end
-  end
-
-  def printer_states
   end
 end

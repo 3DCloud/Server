@@ -12,7 +12,7 @@ module Mutations
       printer = Printer.new(name: name, device_id: device_id, printer_definition_id: printer_definition_id)
       printer.save!
 
-      ClientsChannel.transmit_printer_configuration printer
+      ClientChannel.transmit_printer_configuration printer
 
       printer
     end

@@ -7,12 +7,22 @@ module ApplicationCable
     attr_reader :client
 
     def connect
-      reject unless request.headers.key?("X-Client-Id") && request.headers.key?("X-Client-Secret")
+      if request.headers.key?("X-Client-Id") && request.headers.key?("X-Client-Secret")
+        return connect_client
+      end
+    rescue StandardError => err
+      logger.error err
+      reject_unauthorized_connection
+    end
 
+    def connect_client
       client_id = request.headers["X-Client-Id"]
       client_secret = request.headers["X-Client-Secret"]
 
-      reject_unauthorized_connection if client_id.blank? || client_id.length != 36 || client_secret.blank? || client_secret.length != 48
+      if client_id.blank? || client_id.length != 36 || client_secret.blank? || client_secret.length != 48
+        reject_unauthorized_connection
+        return
+      end
 
       @client = Client.find_by_id(client_id)
 
