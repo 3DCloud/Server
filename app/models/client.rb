@@ -4,6 +4,7 @@ class Client < ApplicationRecord
   include BCrypt
 
   has_many :devices
+  has_many :printers, through: :devices
 
   def secret
     @secret ||= Password.new(secret_digest)

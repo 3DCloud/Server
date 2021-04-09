@@ -2,7 +2,10 @@
 
 module Types
   class MutationType < Types::BaseObject
-    field :accept_client, mutation: Mutations::AcceptClientMutation
+    field :set_client_name, mutation: Mutations::SetClientName
+    field :grant_client_authorization, mutation: Mutations::GrantClientAuthorizationMutation
+    field :revoke_client_authorization, mutation: Mutations::RevokeClientAuthorizationMutation
     field :create_printer, mutation: Mutations::CreatePrinterMutation
+    field :delete_printer, mutation: Mutations::DeletePrinterMutation
   end
 end

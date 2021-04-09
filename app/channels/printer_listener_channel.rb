@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class PrinterListenerChannel < ApplicationCable::Channel
   def subscribed
     unless params["id"].present?

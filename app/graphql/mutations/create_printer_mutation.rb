@@ -3,8 +3,8 @@
 module Mutations
   class CreatePrinterMutation < BaseMutation
     argument :name, String, required: true
-    argument :device_id, Integer, required: true
-    argument :printer_definition_id, Integer, required: true
+    argument :device_id, ID, required: true
+    argument :printer_definition_id, ID, required: true
 
     type Types::PrinterType
 

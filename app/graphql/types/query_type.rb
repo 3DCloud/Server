@@ -2,29 +2,25 @@
 
 module Types
   class QueryType < Types::BaseObject
-    # Add `node(id: ID!) and `nodes(ids: [ID!]!)`
-    include GraphQL::Types::Relay::HasNodeField
-    include GraphQL::Types::Relay::HasNodesField
-
     field :clients, [Types::ClientType], null: false
     field :devices, [Types::DeviceType], null: false
     field :printers, [Types::PrinterType], null: false
     field :printer_definitions, [Types::PrinterDefinitionType], null: false
 
     field :client, Types::ClientType, null: true do
-      argument :id, Integer, required: true
+      argument :id, ID, required: true
     end
 
     field :device, Types::DeviceType, null: true do
-      argument :id, Integer, required: true
+      argument :id, ID, required: true
     end
 
     field :printer, Types::PrinterType, null: true do
-      argument :id, Integer, required: true
+      argument :id, ID, required: true
     end
 
     field :printer_definition, Types::PrinterDefinitionType, null: true do
-      argument :id, Integer, required: true
+      argument :id, ID, required: true
     end
 
     def clients

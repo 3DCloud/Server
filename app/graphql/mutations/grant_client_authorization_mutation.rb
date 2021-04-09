@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 module Mutations
-  class AcceptClientMutation < BaseMutation
-    argument :id, String, required: true
+  class GrantClientAuthorizationMutation < BaseMutation
+    argument :id, ID, required: true
 
     type Types::ClientType
 
