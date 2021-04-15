@@ -4,7 +4,7 @@
 ### Prerequisites
 This project currently uses Ruby 2.7.3. We recommend installing it using [rbenv](https://github.com/rbenv/rbenv) and [ruby-build](https://github.com/rbenv/ruby-build). If you are on Windows, we recommend using Windows Subsystem for Linux 2 (WSL2) instead of trying to run Ruby natively since it's a bit messy. You can check which version of Ruby is currently configured by running `ruby -v`.
 
-You should also install [PostgreSQL]().
+You should also install [PostgreSQL](https://www.postgresql.org/download/).
 
 ### Getting Started
 Once you have Ruby install, run the following commands inside the checked out repo:
