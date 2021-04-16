@@ -3,7 +3,7 @@
 class Client < ApplicationRecord
   include BCrypt
 
-  has_many :devices
+  has_many :devices, dependent: :destroy
   has_many :printers, through: :devices
 
   def secret
