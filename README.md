@@ -9,6 +9,7 @@ You should also install [PostgreSQL](https://www.postgresql.org/download/).
 ### Getting Started
 Once you have Ruby install, run the following commands inside the checked out repo:
 ```bash
+sudo apt install libpq-dev # required for PostgreSQL gem's native extensions
 gem install bundler # if not installed already
 bundle install # install gems required by project
 ```
@@ -18,7 +19,12 @@ Then, configure your database's credentials. Create a file called `.env` at the 
 DB_USERNAME=your-db-user
 DB_PASSWORD=your-db-password
 ```
-Note that this user needs the `CREATEDB` permission to set up the database. It will also require superuser access if you want to use Rails' `db:reset` command.
+
+Note that this user needs the `CREATEDB` permission to set up the database. It will also require superuser access if you want to use Rails' `db:reset` command (since it drops the database).
+For example:
+```postgresql
+CREATE ROLE "your-db-user" SUPERUSER CREATEDB LOGIN PASSWORD 'your-db-password'
+```
 
 You should then be able to run the server by executing
 ```
