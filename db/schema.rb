@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_04_06_200930) do
+ActiveRecord::Schema.define(version: 2021_08_14_170225) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -32,7 +32,7 @@ ActiveRecord::Schema.define(version: 2021_04_06_200930) do
     t.uuid "client_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["hardware_identifier"], name: "index_devices_on_hardware_identifier", unique: true
+    t.index ["client_id", "hardware_identifier"], name: "index_devices_on_client_id_and_hardware_identifier", unique: true
   end
 
   create_table "printer_definitions", force: :cascade do |t|
