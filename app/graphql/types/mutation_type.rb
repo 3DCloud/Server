@@ -8,5 +8,6 @@ module Types
     field :delete_client, mutation: Mutations::DeleteClientMutation
     field :create_printer, mutation: Mutations::CreatePrinterMutation
     field :delete_printer, mutation: Mutations::DeletePrinterMutation
+    field :reconnect_printer, mutation: Mutations::ReconnectPrinterMutation
   end
 end

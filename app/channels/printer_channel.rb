@@ -1,6 +1,18 @@
 # frozen_string_literal: true
 
 class PrinterChannel < ApplicationCable::Channel
+  class << self
+    def transmit_reconnect(printer)
+      broadcast_to printer, self.reconnect_message
+    end
+
+    def reconnect_message
+      {
+        action: "reconnect"
+      }
+    end
+  end
+
   def subscribed
     unless params["hardware_identifier"].present?
       reject
