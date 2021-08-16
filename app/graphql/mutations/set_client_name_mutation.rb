@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Mutations
-  class SetClientName < BaseMutation
+  class SetClientNameMutation < BaseMutation
     argument :id, ID, required: true
     argument :name, String, required: false
 
