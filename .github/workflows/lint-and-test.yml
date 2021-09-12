@@ -3,13 +3,13 @@ name: lint-and-test
 on:
   push:
 jobs:
-  run-lint:
+  lint:
     runs-on: ubuntu-latest
     steps:
       - name: Check out code
         uses: actions/checkout@v2
 
-      - name: Setup Ruby and install gems
+      - name: Set up Ruby and install gems
         uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
@@ -18,6 +18,36 @@ jobs:
         run: |
           bundle exec rubocop --parallel
 
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:13
+        env:
+          POSTGRES_USER: 3dcloud
+          POSTGRES_PASSWORD: 3dcloud
+        ports:
+          - 5432/tcp
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Set up Ruby and install gems
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+
       - name: Run tests
+        env:
+          RAILS_ENV: test
+          DB_HOST: localhost
+          DB_PORT: ${{ job.services.postgres.ports['5432'] }}
         run: |
+          bundle exec rails db:setup
           bundle exec rspec
