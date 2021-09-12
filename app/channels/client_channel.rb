@@ -19,8 +19,6 @@ class ClientChannel < ApplicationCable::Channel
   end
 
   def device(args)
-    return unless args.key?("device_name") && args.key?("hardware_identifier") && args.key?("is_portable_hardware_identifier")
-
     device = Device.find_by_hardware_identifier(args["hardware_identifier"])
 
     if device.nil?
@@ -36,5 +34,8 @@ class ClientChannel < ApplicationCable::Channel
     if printer.present?
       transmit self.class.printer_configuration_message(printer)
     end
+  end
+
+  def printer_states
   end
 end
