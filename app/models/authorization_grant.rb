@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AuthorizationGrant < ApplicationRecord
   belongs_to :user
 

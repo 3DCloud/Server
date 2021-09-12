@@ -130,4 +130,4 @@ class SessionsController < ApplicationController
     def sha256(message)
       Digest::SHA2.new(256).hexdigest(message)
     end
- end
+end
