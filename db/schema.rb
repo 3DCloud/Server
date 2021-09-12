@@ -10,11 +10,21 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_09_12_045915) do
+ActiveRecord::Schema.define(version: 2021_09_12_210634) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
+
+  create_table "authorization_grants", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "code_challenge", null: false
+    t.string "authorization_code", null: false
+    t.datetime "expires_at", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["user_id"], name: "index_authorization_grants_on_user_id"
+  end
 
   create_table "clients", id: :uuid, default: nil, force: :cascade do |t|
     t.string "name"
@@ -56,18 +66,28 @@ ActiveRecord::Schema.define(version: 2021_09_12_045915) do
     t.index ["printer_definition_id"], name: "index_printers_on_printer_definition_id"
   end
 
+  create_table "sessions", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "jti"
+    t.datetime "expires_at"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["user_id"], name: "index_sessions_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "username", null: false
     t.string "name", null: false
     t.string "email_address", null: false
-    t.string "sso_provider", null: false
     t.string "sso_uid", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["sso_provider", "sso_uid"], name: "index_users_on_sso_provider_and_sso_uid", unique: true
+    t.index ["sso_uid"], name: "index_users_on_sso_uid", unique: true
   end
 
+  add_foreign_key "authorization_grants", "users"
   add_foreign_key "devices", "clients"
   add_foreign_key "printers", "devices"
   add_foreign_key "printers", "printer_definitions"
+  add_foreign_key "sessions", "users"
 end

@@ -4,19 +4,18 @@ class User < ApplicationRecord
   validates :username, presence: true
   validates :name, presence: true
   validates :email_address, presence: true
-  validates :sso_provider, presence: true
-  validates :sso_uid, presence: true
+  validates :sso_uid, presence: true, uniqueness: true
 
   class << self
-    def get_or_create_from_omniauth_hash(obj)
-      user = User.find_by(sso_provider: obj.provider, sso_uid: obj.uid) || User.new(
-        sso_provider: obj.provider,
-        sso_uid: obj.uid
-      )
+    # @param response [OneLogin::RubySaml::Response]
+    def get_or_create_from_saml_response(response)
+      uid = response.name_id
 
-      user.username = obj.info.nickname
-      user.name = obj.info.name
-      user.email_address = obj.info.email
+      user = User.find_by(sso_uid: uid) || User.new(sso_uid: uid)
+
+      user.username = response.attributes[:username]
+      user.name = response.attributes[:name]
+      user.email_address = response.attributes[:email_address]
       user.save!
 
       user

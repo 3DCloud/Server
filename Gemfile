@@ -31,8 +31,8 @@ gem 'rack-cors'
 gem 'graphql'
 
 # Authentication
-gem 'omniauth'
-gem 'omniauth-saml'
+gem 'ruby-saml'
+gem 'jwt'
 
 gem 'ejson'
 gem 'ejson-rails'
@@ -40,12 +40,13 @@ gem 'ejson-rails'
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: %i[mri mingw x64_mingw]
-  gem 'dotenv-rails'
   gem 'factory_bot_rails'
   gem 'rspec-rails'
   gem 'rubocop-rails'
   gem 'rubocop-performance'
   gem 'rubocop-rspec'
+  gem 'simplecov'
+  gem 'faker'
 end
 
 group :development do

@@ -39,8 +39,14 @@ module Server
     # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
 
-    # Enable middleware required by OmniAuth
-    config.middleware.use ActionDispatch::Cookies
-    config.middleware.use ActionDispatch::Session::CookieStore, config.session_options || {}
+    # SAML SP configuration
+    config.x.saml.sp_entity_id = 'print.makerepo.com'
+    config.x.saml.idp_entity_id = 'https://makerepo.com/saml/auth'
+    config.x.saml.idp_metadata_url = 'https://makerepo.com/saml/metadata.xml'
+    config.x.saml.idp_sso_service_url = 'https://makerepo.com/saml/auth'
+
+    # JWT
+    config.x.jwt.issuer = "3dcloud-#{Rails.env}"
+    config.x.jwt.algorithm = 'HS256'
   end
 end

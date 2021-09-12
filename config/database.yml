@@ -1,8 +1,8 @@
 default: &default
   adapter: postgresql
   encoding: unicode
-  username: <%= ENV.fetch("DB_USERNAME") %>
-  password: <%= ENV.fetch("DB_PASSWORD") %>
+  username: <%= Rails.application.secrets.dig(:database, :username) %>
+  password: <%= Rails.application.secrets.dig(:database, :password) %>
 
   # For details on connection pooling, see Rails configuration guide
   # https://guides.rubyonrails.org/configuring.html#database-pooling
@@ -19,5 +19,3 @@ test:
 production:
   <<: *default
   database: 3dcloud_prod
-  username: <%= Rails.application.secrets.dig(:database, :username) %>
-  password: <%= Rails.application.secrets.dig(:database, :password) %>
