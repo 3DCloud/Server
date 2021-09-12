@@ -19,5 +19,5 @@ test:
 production:
   <<: *default
   database: 3dcloud_prod
-  username: <%= Rails.application.credentials.db[:username] %>
-  password: <%= Rails.application.credentials.db[:password] %>
+  username: <%= Rails.application.secrets.dig(:database, :username) %>
+  password: <%= Rails.application.secrets.dig(:database, :password) %>
