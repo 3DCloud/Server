@@ -7,7 +7,7 @@ module ApplicationCable
     attr_reader :client
 
     def connect
-      if request.headers.key?("X-Client-Id") && request.headers.key?("X-Client-Secret")
+      if request.headers.key?('X-Client-Id') && request.headers.key?('X-Client-Secret')
         connect_client
       else
         connect_frontend
@@ -19,8 +19,8 @@ module ApplicationCable
 
     private
       def connect_client
-        client_id = request.headers["X-Client-Id"]
-        client_secret = request.headers["X-Client-Secret"]
+        client_id = request.headers['X-Client-Id']
+        client_secret = request.headers['X-Client-Secret']
 
         if client_id.blank? || client_id.length != 36 || client_secret.blank? || client_secret.length != 48
           reject_unauthorized_connection

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_08_14_170225) do
+ActiveRecord::Schema.define(version: 2021_09_12_045915) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -54,6 +54,17 @@ ActiveRecord::Schema.define(version: 2021_08_14_170225) do
     t.bigint "device_id", null: false
     t.index ["device_id"], name: "index_printers_on_device_id", unique: true
     t.index ["printer_definition_id"], name: "index_printers_on_printer_definition_id"
+  end
+
+  create_table "users", force: :cascade do |t|
+    t.string "username", null: false
+    t.string "name", null: false
+    t.string "email_address", null: false
+    t.string "sso_provider", null: false
+    t.string "sso_uid", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["sso_provider", "sso_uid"], name: "index_users_on_sso_provider_and_sso_uid", unique: true
   end
 
   add_foreign_key "devices", "clients"

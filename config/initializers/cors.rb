@@ -10,9 +10,9 @@
 Rails.application.config.middleware.insert_before 0, Rack::Cors do
   if Rails.env.development?
     allow do
-      origins "localhost:4200" # Angular dev server
+      origins 'localhost:4200' # Angular dev server
 
-      resource "/graphql", headers: :any, methods: [:post]
+      resource '/graphql', headers: :any, methods: [:post]
     end
   end
 end

@@ -2,12 +2,12 @@
 
 class PrinterListenerChannel < ApplicationCable::Channel
   def subscribed
-    unless params["id"].present?
+    unless params['id'].present?
       reject
       return
     end
 
-    @printer = Printer.find_by_id(params["id"])
+    @printer = Printer.find_by_id(params['id'])
 
     if @printer.nil?
       reject
@@ -18,8 +18,8 @@ class PrinterListenerChannel < ApplicationCable::Channel
   end
 
   def send_command(args)
-    return unless args.key?("command")
+    return unless args.key?('command')
 
-    PrinterChannel.broadcast_to @printer, { action: "send_command", command: args["command"] }
+    PrinterChannel.broadcast_to @printer, { action: 'send_command', command: args['command'] }
   end
 end
