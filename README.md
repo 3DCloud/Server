@@ -1,4 +1,7 @@
 # 3DCloud Server
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/3DCloud/Server/lint-and-test?style=flat-square)
+![Codecov](https://img.shields.io/codecov/c/github/3DCloud/Server?style=flat-square)
+![License](https://img.shields.io/github/license/3DCloud/Server?style=flat-square)
 
 ## Contributing
 ### Prerequisites
