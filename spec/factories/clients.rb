@@ -4,6 +4,7 @@ FactoryBot.define do
   factory :client do
     id { SecureRandom.uuid }
     name { Faker::Games::DnD.monster }
-    secret { SecureRandom.base64(36) }
+    secret { SecureRandom.urlsafe_base64(36) }
+    authorized { true }
   end
 end

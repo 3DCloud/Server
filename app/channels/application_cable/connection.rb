@@ -24,7 +24,6 @@ module ApplicationCable
 
         if client_id.blank? || client_id.length != 36 || client_secret.blank? || client_secret.length != 48
           reject_unauthorized_connection
-          return
         end
 
         @client = Client.find_by_id(client_id)
@@ -38,7 +37,8 @@ module ApplicationCable
       end
 
       def connect_frontend
-        # TODO implement
+        # TODO: implement
+        reject_unauthorized_connection
       end
   end
 end
