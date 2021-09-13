@@ -10,7 +10,10 @@ SimpleCov.start do
 end
 
 require 'simplecov-cobertura'
-SimpleCov.formatter = SimpleCov::Formatter::CoberturaFormatter
+
+if ENV['CI']
+  SimpleCov.formatter = SimpleCov::Formatter::CoberturaFormatter
+end
 
 ENV['RAILS_ENV'] ||= 'test'
 require File.expand_path('../config/environment', __dir__)
