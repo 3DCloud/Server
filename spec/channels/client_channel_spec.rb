@@ -59,6 +59,7 @@ RSpec.describe ClientChannel, type: :channel do
         device = Device.last
         expect(device.id).to eq(existing_device.id)
         expect(device.client).to eq(client)
+        expect(device.device_name).to eq(new_name)
         expect(device.hardware_identifier).to eq(existing_device.hardware_identifier)
         expect(device.is_portable_hardware_identifier).to eq(existing_device.is_portable_hardware_identifier)
         expect(device.last_seen).to eq(DateTime.now.utc)

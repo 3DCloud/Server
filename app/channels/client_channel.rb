@@ -15,10 +15,11 @@ class ClientChannel < ApplicationCable::Channel
     device = Device.find_by_hardware_identifier(args['hardware_identifier'])
 
     if device.nil?
-      device = Device.new(device_name: args['device_name'], hardware_identifier: args['hardware_identifier'], is_portable_hardware_identifier: args['is_portable_hardware_identifier'])
+      device = Device.new(hardware_identifier: args['hardware_identifier'], is_portable_hardware_identifier: args['is_portable_hardware_identifier'])
     end
 
     device.client = connection.client
+    device.device_name = args['device_name']
     device.last_seen = DateTime.now.utc
     device.save!
 
