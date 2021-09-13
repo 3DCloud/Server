@@ -112,6 +112,8 @@ class SessionsController < ApplicationController
     token_contents = jwt_decode(params[:token])
 
     Session.destroy_by(jti: token_contents[:jti])
+  rescue JWT::DecodeError
+    raise ActionController::BadRequest
   end
 
   private
