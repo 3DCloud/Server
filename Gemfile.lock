@@ -70,6 +70,7 @@ GEM
     crass (1.0.6)
     diff-lcs (1.4.4)
     docile (1.4.0)
+    dotenv (2.7.6)
     ejson (1.3.0)
     ejson-rails (0.1.1)
       ejson
@@ -221,6 +222,7 @@ DEPENDENCIES
   bcrypt (~> 3.1.7)
   bootsnap (>= 1.4.4)
   byebug
+  dotenv
   ejson
   ejson-rails
   factory_bot_rails

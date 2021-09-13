@@ -48,6 +48,7 @@ group :development, :test do
   gem 'simplecov'
   gem 'simplecov-cobertura'
   gem 'faker'
+  gem 'dotenv'
 end
 
 group :development do
