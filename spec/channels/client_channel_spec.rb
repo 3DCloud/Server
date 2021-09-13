@@ -80,8 +80,8 @@ RSpec.describe ClientChannel, type: :channel do
 
         transmission = transmissions.last
         expect(transmission).to eq({
-          "action" => 'printer_configuration',
-          "printer" => printer.as_json(include: [:device, :printer_definition])
+          'action' => 'printer_configuration',
+          'printer' => printer.as_json(include: [:device, :printer_definition])
         })
       end
     end
