@@ -5,12 +5,6 @@ class PrinterChannel < ApplicationCable::Channel
     def transmit_reconnect(printer)
       broadcast_to printer, self.reconnect_message
     end
-
-    def reconnect_message
-      {
-        action: 'reconnect'
-      }
-    end
   end
 
   def subscribed
@@ -21,14 +15,14 @@ class PrinterChannel < ApplicationCable::Channel
 
     device = Device.find_by_hardware_identifier(params['hardware_identifier'])
 
-    if device.nil?
+    unless device
       reject
       return
     end
 
     @printer = device.printer
 
-    if @printer.nil?
+    unless @printer
       reject
       return
     end
@@ -36,15 +30,16 @@ class PrinterChannel < ApplicationCable::Channel
     stream_for @printer
   end
 
-  def state(args)
-    return unless args.key?('printer_state')
-
-    PrinterListenerChannel.broadcast_to @printer, { action: 'state', printer_state: args['printer_state'] }
-  end
-
   def log_message(args)
     return unless args.key?('message')
 
     PrinterListenerChannel.broadcast_to @printer, { action: 'log_message', message: args['message'] }
   end
+
+  private
+    def self.reconnect_message
+      {
+        action: 'reconnect'
+      }
+    end
 end

@@ -5,13 +5,6 @@ class ClientChannel < ApplicationCable::Channel
     def transmit_printer_configuration(printer)
       broadcast_to printer.device.client, self.printer_configuration_message(printer)
     end
-
-    def printer_configuration_message(printer)
-      {
-        action: 'printer_configuration',
-        printer: printer.as_json(include: [:device, :printer_definition])
-      }
-    end
   end
 
   def subscribed
@@ -36,6 +29,11 @@ class ClientChannel < ApplicationCable::Channel
     end
   end
 
-  def printer_states
-  end
+  private
+    def self.printer_configuration_message(printer)
+      {
+        action: 'printer_configuration',
+        printer: printer.as_json(include: [:device, :printer_definition])
+      }
+    end
 end
