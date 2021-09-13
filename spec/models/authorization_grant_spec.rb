@@ -7,7 +7,7 @@ RSpec.describe AuthorizationGrant, type: :model do
     @user = create(:user)
   end
 
-  it 'is valid with all required attributes' do
+  it 'is valid with all required values' do
     expect(AuthorizationGrant.new(
       user: @user,
       authorization_code: 'abcd1234',

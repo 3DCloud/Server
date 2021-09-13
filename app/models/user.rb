@@ -7,15 +7,14 @@ class User < ApplicationRecord
   validates :sso_uid, presence: true, uniqueness: true
 
   class << self
-    # @param response [OneLogin::RubySaml::Response]
-    def get_or_create_from_saml_response(response)
-      uid = response.name_id
-
+    # @param uid [String]
+    # @param attributes [OneLogin::RubySaml::Attributes]
+    def get_or_create_from_saml_response(uid, attributes)
       user = User.find_by(sso_uid: uid) || User.new(sso_uid: uid)
 
-      user.username = response.attributes[:username]
-      user.name = response.attributes[:name]
-      user.email_address = response.attributes[:email_address]
+      user.username = attributes[:username]
+      user.name = attributes[:name]
+      user.email_address = attributes[:email_address]
       user.save!
 
       user

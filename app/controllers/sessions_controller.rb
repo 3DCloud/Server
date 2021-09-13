@@ -30,7 +30,7 @@ class SessionsController < ApplicationController
       authorization_code = SecureRandom.hex(32)
 
       AuthorizationGrant.new(
-        user: User.get_or_create_from_saml_response(response),
+        user: User.get_or_create_from_saml_response(response.name_id, response.attributes),
         code_challenge: code_challenge,
         authorization_code: authorization_code,
         expires_at: DateTime.now.utc + 1.minute
