@@ -44,20 +44,13 @@ class SessionsController < ApplicationController
   end
 
   def token
-    # TODO: move to active job
-    AuthorizationGrant.delete_by(expires_at: ...DateTime.now.utc)
-    Session.delete_by(expires_at: ...DateTime.now.utc)
-
     raise ActionController::BadRequest unless params.has_key?(:grant_type)
 
     case params[:grant_type]
     when 'authorization_code'
       raise ActionController::BadRequest unless params.has_key?(:code_verifier) && params.has_key?(:code)
 
-      grant = AuthorizationGrant.find_by(code_challenge: sha256(params[:code_verifier]), authorization_code: params[:code], expires_at: DateTime.now.utc..)
-
-      raise ActionController::BadRequest unless grant
-
+      grant = AuthorizationGrant.find_by!(code_challenge: sha256(params[:code_verifier]), authorization_code: params[:code], expires_at: DateTime.now.utc..)
       user = grant.user
       grant.destroy!
     when 'refresh_token'
@@ -65,10 +58,7 @@ class SessionsController < ApplicationController
 
       token_contents = jwt_decode(params[:refresh_token])
 
-      session = Session.find_by(user_id: token_contents[:sub], jti: token_contents[:jti], expires_at: DateTime.now.utc..)
-
-      raise ActionController::BadRequest unless session
-
+      session = Session.find_by!(user_id: token_contents[:sub], jti: token_contents[:jti], expires_at: DateTime.now.utc..)
       user = session.user
       session.destroy!
     else
@@ -104,6 +94,8 @@ class SessionsController < ApplicationController
       token_type: 'bearer',
       expires_in: 15.minutes.to_i
     }
+  rescue JWT::DecodeError, ActiveRecord::RecordNotFound
+    raise ActionController::BadRequest
   end
 
   def destroy

@@ -131,6 +131,142 @@ RSpec.describe 'Sessions', type: :request do
     end
   end
 
+  describe 'POST /sessions/token' do
+    it 'processes valid authorization_code requests' do
+      code_verifier = 'abcd1234'
+      code_challenge = sha256(code_verifier)
+
+      grant = create(:authorization_grant, code_challenge: code_challenge)
+
+      freeze_time do
+        expect {
+          post sessions_token_path, params: { grant_type: 'authorization_code', code_verifier: code_verifier, code: grant.authorization_code }
+        }.to change { AuthorizationGrant.count }.by(-1).and change { Session.count }.by(1)
+
+        body = JSON.parse(response.body).symbolize_keys
+        access_token = jwt_decode(body[:access_token])
+        refresh_token = jwt_decode(body[:refresh_token])
+
+        expect(body[:token_type]).to eq('bearer')
+        expect(body[:expires_in]).to eq(15.minutes)
+
+        expect(access_token[:iss]).to eq(jwt_issuer)
+        expect(access_token[:jti].length).to eq(64)
+        expect(access_token[:exp]).to eq((DateTime.now.utc + 15.minutes).to_i)
+        expect(access_token[:sub]).to eq(grant.user.id)
+
+        expect(refresh_token[:iss]).to eq(jwt_issuer)
+        expect(refresh_token[:jti].length).to eq(64)
+        expect(refresh_token[:exp]).to eq((DateTime.now.utc + 14.days).to_i)
+        expect(refresh_token[:sub]).to eq(grant.user.id)
+
+        session = Session.last
+        expect(session.user).to eq(grant.user)
+        expect(session.jti).to eq(refresh_token[:jti])
+        expect(session.expires_at).to eq(DateTime.now.utc + 14.days)
+      end
+    end
+
+    it 'processes valid refresh_token requests' do
+      jti = SecureRandom.hex(32)
+      old_session = create(:session, jti: jti)
+      refresh_token = jwt_encode(
+        iss: jwt_issuer,
+        jti: jti,
+        exp: (DateTime.now.utc + 5.minutes).to_i,
+        sub: old_session.user.id,
+      )
+
+      freeze_time do
+        post sessions_token_path, params: { grant_type: 'refresh_token', refresh_token: refresh_token }
+
+        body = JSON.parse(response.body).symbolize_keys
+        access_token = jwt_decode(body[:access_token])
+        refresh_token = jwt_decode(body[:refresh_token])
+
+        expect(body[:token_type]).to eq('bearer')
+        expect(body[:expires_in]).to eq(15.minutes)
+
+        expect(access_token[:iss]).to eq(jwt_issuer)
+        expect(access_token[:jti].length).to eq(64)
+        expect(access_token[:exp]).to eq((DateTime.now.utc + 15.minutes).to_i)
+        expect(access_token[:sub]).to eq(old_session.user.id)
+
+        expect(refresh_token[:iss]).to eq(jwt_issuer)
+        expect(refresh_token[:jti].length).to eq(64)
+        expect(refresh_token[:exp]).to eq((DateTime.now.utc + 14.days).to_i)
+        expect(refresh_token[:sub]).to eq(old_session.user.id)
+
+        session = Session.last
+        expect(session.id).to_not eq(old_session.id)
+        expect(session.jti).to_not eq(old_session.jti)
+        expect(session.user).to eq(old_session.user)
+        expect(session.jti).to eq(refresh_token[:jti])
+        expect(session.expires_at).to eq(DateTime.now.utc + 14.days)
+      end
+    end
+
+    it 'does not process requests with no grant_type' do
+      expect {
+        post sessions_token_path, params: { code_verifier: 'abcd1234', code: 'efgh5678' }
+      }.to raise_error(ActionController::BadRequest)
+    end
+
+    it 'does not process requests with an invalid grant_type' do
+      expect {
+        post sessions_token_path, params: { grant_type: 'authorisation_code', code_verifier: 'abcd1234', code: 'efgh5678' }
+      }.to raise_error(ActionController::BadRequest)
+    end
+
+    it 'does not process authorization_code requests if code_verifier is missing from the parameters' do
+      expect {
+        post sessions_token_path, params: { grant_type: 'authorization_code', code: 'efgh5678' }
+      }.to raise_error(ActionController::BadRequest)
+    end
+
+    it 'does not process authorization_code requests if code is missing from the parameters' do
+      expect {
+        post sessions_token_path, params: { grant_type: 'authorization_code', code_verifier: 'abcd1234' }
+      }.to raise_error(ActionController::BadRequest)
+    end
+
+    it 'does not process expired authorization grants' do
+      code_verifier = 'abcd1234'
+      code_challenge = sha256(code_verifier)
+
+      grant = create(:authorization_grant, code_challenge: code_challenge, expires_at: DateTime.now - 1.second)
+
+      expect {
+        post sessions_token_path, params: { grant_type: 'authorization_code', code_verifier: code_verifier, code: grant.authorization_code }
+      }.to raise_error(ActionController::BadRequest)
+       .and change { AuthorizationGrant.count }.by(0)
+       .and change { Session.count }.by(0)
+    end
+
+    it 'does not process refresh_token requests if refresh_token is missing from the parameters' do
+      expect {
+        post sessions_token_path, params: { grant_type: 'refresh_token' }
+      }.to raise_error(ActionController::BadRequest)
+    end
+
+    it 'does not process expired refresh tokens' do
+      jti = SecureRandom.hex(32)
+      expires_at = DateTime.now.utc - 1.second
+      session = create(:session, jti: jti, expires_at: expires_at)
+      refresh_token = jwt_encode(
+        iss: jwt_issuer,
+        jti: jti,
+        exp: expires_at.to_i,
+        sub: session.user.id,
+      )
+
+      expect {
+        post sessions_token_path, params: { grant_type: 'refresh_token', refresh_token: refresh_token }
+      }.to raise_error(ActionController::BadRequest)
+       .and change { Session.count }.by(0)
+    end
+  end
+
   describe 'POST /logout' do
     it 'deletes the session associated with the passed token' do
       jti = SecureRandom.hex(32)
@@ -168,5 +304,9 @@ RSpec.describe 'Sessions', type: :request do
         post logout_path, params: { token: 'nonsense' }
       }.to raise_error(ActionController::BadRequest)
     end
+  end
+
+  def sha256(message)
+    Digest::SHA2.new(256).hexdigest(message)
   end
 end
