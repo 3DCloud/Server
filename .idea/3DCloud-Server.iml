@@ -119,124 +119,76 @@
   <component name="RailsGeneratorsCache">
     <option name="generators">
       <list>
-        <option value="active_record:application_record" />
         <option value="active_record:migration" />
         <option value="active_record:model" />
-        <option value="application_record" />
-        <option value="benchmark" />
-        <option value="channel" />
+        <option value="active_record:observer" />
+        <option value="active_record:session_migration" />
         <option value="controller" />
-        <option value="factory_bot:model" />
+        <option value="erb:controller" />
+        <option value="erb:mailer" />
+        <option value="erb:scaffold" />
         <option value="generator" />
-        <option value="graphql:enum" />
-        <option value="graphql:install" />
-        <option value="graphql:interface" />
-        <option value="graphql:loader" />
-        <option value="graphql:mutation" />
-        <option value="graphql:object" />
-        <option value="graphql:relay" />
-        <option value="graphql:scalar" />
-        <option value="graphql:union" />
+        <option value="helper" />
         <option value="integration_test" />
-        <option value="job" />
-        <option value="mailbox" />
         <option value="mailer" />
+        <option value="metal" />
         <option value="migration" />
         <option value="model" />
+        <option value="model_subclass" />
+        <option value="observer" />
+        <option value="performance_test" />
+        <option value="plugin" />
         <option value="resource" />
-        <option value="rspec:channel" />
-        <option value="rspec:controller" />
-        <option value="rspec:feature" />
-        <option value="rspec:generator" />
-        <option value="rspec:helper" />
-        <option value="rspec:install" />
-        <option value="rspec:integration" />
-        <option value="rspec:job" />
-        <option value="rspec:mailbox" />
-        <option value="rspec:mailer" />
-        <option value="rspec:model" />
-        <option value="rspec:request" />
-        <option value="rspec:scaffold" />
-        <option value="rspec:system" />
-        <option value="rspec:view" />
         <option value="scaffold" />
         <option value="scaffold_controller" />
-        <option value="system_test" />
-        <option value="task" />
-        <option value="test_unit:channel" />
+        <option value="session_migration" />
+        <option value="stylesheets" />
         <option value="test_unit:controller" />
-        <option value="test_unit:generator" />
         <option value="test_unit:helper" />
-        <option value="test_unit:install" />
         <option value="test_unit:integration" />
-        <option value="test_unit:job" />
-        <option value="test_unit:mailbox" />
         <option value="test_unit:mailer" />
         <option value="test_unit:model" />
+        <option value="test_unit:observer" />
+        <option value="test_unit:performance" />
         <option value="test_unit:plugin" />
         <option value="test_unit:scaffold" />
-        <option value="test_unit:system" />
       </list>
     </option>
     <option name="myGenerators">
       <list>
-        <option value="active_record:application_record" />
         <option value="active_record:migration" />
         <option value="active_record:model" />
-        <option value="application_record" />
-        <option value="benchmark" />
-        <option value="channel" />
+        <option value="active_record:observer" />
+        <option value="active_record:session_migration" />
         <option value="controller" />
-        <option value="factory_bot:model" />
+        <option value="erb:controller" />
+        <option value="erb:mailer" />
+        <option value="erb:scaffold" />
         <option value="generator" />
-        <option value="graphql:enum" />
-        <option value="graphql:install" />
-        <option value="graphql:interface" />
-        <option value="graphql:loader" />
-        <option value="graphql:mutation" />
-        <option value="graphql:object" />
-        <option value="graphql:relay" />
-        <option value="graphql:scalar" />
-        <option value="graphql:union" />
+        <option value="helper" />
         <option value="integration_test" />
-        <option value="job" />
-        <option value="mailbox" />
         <option value="mailer" />
+        <option value="metal" />
         <option value="migration" />
         <option value="model" />
+        <option value="model_subclass" />
+        <option value="observer" />
+        <option value="performance_test" />
+        <option value="plugin" />
         <option value="resource" />
-        <option value="rspec:channel" />
-        <option value="rspec:controller" />
-        <option value="rspec:feature" />
-        <option value="rspec:generator" />
-        <option value="rspec:helper" />
-        <option value="rspec:install" />
-        <option value="rspec:integration" />
-        <option value="rspec:job" />
-        <option value="rspec:mailbox" />
-        <option value="rspec:mailer" />
-        <option value="rspec:model" />
-        <option value="rspec:request" />
-        <option value="rspec:scaffold" />
-        <option value="rspec:system" />
-        <option value="rspec:view" />
         <option value="scaffold" />
         <option value="scaffold_controller" />
-        <option value="system_test" />
-        <option value="task" />
-        <option value="test_unit:channel" />
+        <option value="session_migration" />
+        <option value="stylesheets" />
         <option value="test_unit:controller" />
-        <option value="test_unit:generator" />
         <option value="test_unit:helper" />
-        <option value="test_unit:install" />
         <option value="test_unit:integration" />
-        <option value="test_unit:job" />
-        <option value="test_unit:mailbox" />
         <option value="test_unit:mailer" />
         <option value="test_unit:model" />
+        <option value="test_unit:observer" />
+        <option value="test_unit:performance" />
         <option value="test_unit:plugin" />
         <option value="test_unit:scaffold" />
-        <option value="test_unit:system" />
       </list>
     </option>
   </component>
@@ -428,27 +380,6 @@
             </subtasks>
           </RakeTaskImpl>
           <RakeTaskImpl description="Report code statistics (KLOCs, etc) from the application or engine" fullCommand="stats" id="stats" />
-          <RakeTaskImpl description="Runs all tests in test folder except system ones" fullCommand="test" id="test" />
-          <RakeTaskImpl id="test">
-            <subtasks>
-              <RakeTaskImpl description="Runs all tests, including system tests" fullCommand="test:all" id="all" />
-              <RakeTaskImpl description="Run tests quickly, but also reset db" fullCommand="test:db" id="db" />
-              <RakeTaskImpl description="Run system tests only" fullCommand="test:system" id="system" />
-              <RakeTaskImpl description="" fullCommand="test:channels" id="channels" />
-              <RakeTaskImpl description="" fullCommand="test:controllers" id="controllers" />
-              <RakeTaskImpl description="" fullCommand="test:functionals" id="functionals" />
-              <RakeTaskImpl description="" fullCommand="test:generators" id="generators" />
-              <RakeTaskImpl description="" fullCommand="test:helpers" id="helpers" />
-              <RakeTaskImpl description="" fullCommand="test:integration" id="integration" />
-              <RakeTaskImpl description="" fullCommand="test:jobs" id="jobs" />
-              <RakeTaskImpl description="" fullCommand="test:mailboxes" id="mailboxes" />
-              <RakeTaskImpl description="" fullCommand="test:mailers" id="mailers" />
-              <RakeTaskImpl description="" fullCommand="test:models" id="models" />
-              <RakeTaskImpl description="" fullCommand="test:prepare" id="prepare" />
-              <RakeTaskImpl description="" fullCommand="test:run" id="run" />
-              <RakeTaskImpl description="" fullCommand="test:units" id="units" />
-            </subtasks>
-          </RakeTaskImpl>
           <RakeTaskImpl id="time">
             <subtasks>
               <RakeTaskImpl description="List all time zones, list by two-letter country code (`bin/rails time:zones[US]`), or list by UTC offset (`bin/rails time:zones[-8]`)" fullCommand="time:zones[country_or_offset]" id="zones[country_or_offset]" />

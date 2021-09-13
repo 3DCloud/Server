@@ -36,7 +36,7 @@ class SessionsController < ApplicationController
         expires_at: DateTime.now.utc + 1.minute
       ).save!
 
-      return_url = relay_state[:return_url]
+      return_url = relay_state[:return]
       redirect_to "#{return_url}#code=#{authorization_code}"
     else
       render json: { message: 'Authentication failed' }, status: 403
