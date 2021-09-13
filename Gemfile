@@ -46,6 +46,7 @@ group :development, :test do
   gem 'rubocop-performance'
   gem 'rubocop-rspec'
   gem 'simplecov'
+  gem 'simplecov-cobertura'
   gem 'faker'
 end
 
