@@ -19,7 +19,7 @@ class ClientChannel < ApplicationCable::Channel
     end
 
     device.client = connection.client
-    device.last_seen = Time.now
+    device.last_seen = DateTime.now.utc
     device.save!
 
     printer = Printer.includes(:device, :printer_definition).where(device: { hardware_identifier: args['hardware_identifier'] }).first
