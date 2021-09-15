@@ -38,7 +38,7 @@ class ApplicationController < ActionController::API
 
     # @param err [ActionController::BadRequest]
     def handle_bad_request(err)
-      render_error(err.class.name, err.message, 401)
+      render_error(err.class.name, err.message, 400)
     end
 
     # @param err [Unauthorized]
@@ -48,7 +48,7 @@ class ApplicationController < ActionController::API
 
     # @param err [Forbidden]
     def handle_forbidden(err)
-      render_error(err.class.name, err.message, 401)
+      render_error(err.class.name, err.message, 403)
     end
 
     # @param err [JWT::DecodeError]

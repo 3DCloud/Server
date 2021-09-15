@@ -3,6 +3,8 @@
 require 'rails_helper'
 
 RSpec.describe Mutations::CreatePrinterMutation, type: :request do
+  include JwtHelper
+
   let(:query) {
     <<~GRAPHQL
       mutation($name: String!, $deviceId: ID!, $printerDefinitionId: ID!) {
@@ -19,8 +21,10 @@ RSpec.describe Mutations::CreatePrinterMutation, type: :request do
     printer_definition = create(:printer_definition)
 
     expect {
-      post graphql_path, params: { query: query, variables: { name: printer_name, deviceId: device.id, printerDefinitionId: printer_definition.id } }
+      execute_graphql query: query, variables: { name: printer_name, deviceId: device.id, printerDefinitionId: printer_definition.id }
     }.to change { Printer.count }.by(1)
+
+    expect(response).to have_http_status(200)
 
     printer = Printer.last
     expect(printer.name).to eq(printer_name)

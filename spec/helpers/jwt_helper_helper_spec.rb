@@ -18,13 +18,20 @@ RSpec.describe JwtHelper, type: :helper do
 
   describe 'jwt_decode' do
     it 'decodes a valid token and returns the payload' do
-      token = 'eyJhbGciOiJIUzI1NiJ9.eyJrZXkiOiJ2YWx1ZSJ9.f1O2DlUv6DdugrK9y0US9cQeB-Yt4CNl9G8mzV2GJxg'
-      expected_payload = { key: 'value' }
+      token = 'eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiIzZGNsb3VkLXRlc3QifQ.dN2ur771sQ6-2L8LXSbEagVCGVUAIqTwq1sb6O9tlDg'
+      expected_payload = { iss: Rails.configuration.x.jwt.issuer }
       expect(helper.jwt_decode(token)).to eq(expected_payload)
     end
 
-    it 'fails to validate an invalid token' do
-      token = 'eyJhbGciOiJIUzI1NiJ9.eyJrZXkiOiJ2YWx1ZSJ9.f1O2DlUv6DdugrK9y0US9cQeB-Yt4cNl9G8mzV2GJxg'
+    it 'fails to validate if the issuer is wrong' do
+      # issuer is set to 'nonsense'
+      token = 'eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJub25zZW5zZSJ9.z6QnRrNNsWOLbrVaRnXMS9-kwYOsXqf26oorVBKa7Vw'
+      expect { helper.jwt_decode(token) }.to raise_error(JWT::InvalidIssuerError)
+    end
+
+    it 'fails to validate a token with an invalid signature' do
+      # changed a character in the signature (after 2nd .)
+      token = 'eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiIzZGNsb3VkLXRlc3QifQ.dN2ur771sQ6-2L8LXSbEagVQGVUAIqTwq1sb6O9tlDg'
       expect { helper.jwt_decode(token) }.to raise_error(JWT::VerificationError)
     end
   end

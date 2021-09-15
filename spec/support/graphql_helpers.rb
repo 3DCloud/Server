@@ -12,3 +12,16 @@ RSpec::Matchers.define :have_graphql_response do |params|
 
   diffable
 end
+
+def execute_graphql(query:, variables:)
+  user = create(:user)
+
+  token = jwt_encode(
+    iss: jwt_issuer,
+    jti: SecureRandom.hex(32),
+    exp: (DateTime.now.utc + 10.minutes).to_i,
+    sub: user.id,
+  )
+
+  post graphql_path, params: { query: query, variables: variables }, headers: { 'Authorization' => "Bearer #{token}" }
+end
