@@ -6,7 +6,11 @@ module JwtHelper
   end
 
   def jwt_decode(token)
-    JWT.decode(token, jwt_secret, true, { algorithm: jwt_algorithm }).first.symbolize_keys
+    JWT.decode(token, jwt_secret, true, {
+      algorithm: jwt_algorithm,
+      iss: jwt_issuer,
+      verify_iss: true,
+    }).first.symbolize_keys
   end
 
   def jwt_issuer

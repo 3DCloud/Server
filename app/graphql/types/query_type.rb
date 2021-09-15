@@ -2,6 +2,7 @@
 
 module Types
   class QueryType < Types::BaseObject
+    field :current_user, Types::UserType, null: false
     field :clients, [Types::ClientType], null: false
     field :devices, [Types::DeviceType], null: false
     field :printers, [Types::PrinterType], null: false
@@ -21,6 +22,10 @@ module Types
 
     field :printer_definition, Types::PrinterDefinitionType, null: true do
       argument :id, ID, required: true
+    end
+
+    def current_user
+      context[:current_user]
     end
 
     def clients

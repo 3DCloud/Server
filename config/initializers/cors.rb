@@ -13,6 +13,8 @@ Rails.application.config.middleware.insert_before 0, Rack::Cors do
       origins 'localhost:4200' # Angular dev server
 
       resource '/graphql', headers: :any, methods: [:post]
+      resource '/sessions/token', headers: :any, methods: [:post]
+      resource '/sessions/logout', headers: :any, methods: [:post]
     end
   end
 end

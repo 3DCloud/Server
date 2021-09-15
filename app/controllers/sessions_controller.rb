@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
 class SessionsController < ApplicationController
-  include ::JwtHelper
+  include ERB::Util
+
+  skip_before_action :verify_access_token
 
   def new
     raise ActionController::BadRequest unless params.has_key?(:code_challenge) && params[:code_challenge].length == 64
@@ -24,23 +26,20 @@ class SessionsController < ApplicationController
       raise ActionController::BadRequest.new "Unexpected name ID format #{response.name_id_format}"
     end
 
-    if response.is_valid?
-      relay_state = JSON.parse(params[:RelayState]).symbolize_keys
-      code_challenge = relay_state[:code_challenge]
-      authorization_code = SecureRandom.hex(32)
+    raise Unauthorized unless response.is_valid?
 
-      AuthorizationGrant.new(
-        user: User.get_or_create_from_saml_response(response.name_id, response.attributes),
-        code_challenge: code_challenge,
-        authorization_code: authorization_code,
-        expires_at: DateTime.now.utc + 1.minute
-      ).save!
+    relay_state = JSON.parse(params[:RelayState]).symbolize_keys
+    code_challenge = relay_state[:code_challenge]
+    authorization_code = SecureRandom.hex(32)
 
-      return_url = relay_state[:return]
-      redirect_to "#{return_url}#code=#{authorization_code}"
-    else
-      render json: { message: 'Authentication failed' }, status: 403
-    end
+    AuthorizationGrant.new(
+      user: User.get_or_create_from_saml_response(response.name_id, response.attributes),
+      code_challenge: code_challenge,
+      authorization_code: authorization_code,
+      expires_at: DateTime.now.utc + 1.minute
+    ).save!
+
+    redirect_to "http://localhost:4200/auth/callback?#{{ code: authorization_code, return: relay_state[:return] }.to_query}"
   end
 
   def token
