@@ -64,13 +64,14 @@ class SessionsController < ApplicationController
       raise ActionController::BadRequest
     end
 
+    access_token_expires_in = 15.minutes
     refresh_token_id = SecureRandom.hex(32)
     refresh_token_expiry = DateTime.now.utc + 14.days
 
     access_token = jwt_encode(
       iss: jwt_issuer,
       jti: SecureRandom.hex(32),
-      exp: (DateTime.now.utc + 15.minutes).to_i,
+      exp: (DateTime.now.utc + access_token_expires_in).to_i,
       sub: user.id,
     )
 
@@ -91,7 +92,7 @@ class SessionsController < ApplicationController
       access_token: access_token,
       refresh_token: refresh_token,
       token_type: 'bearer',
-      expires_in: 15.minutes.to_i
+      expires_in: access_token_expires_in.to_i
     }
   rescue JWT::DecodeError, ActiveRecord::RecordNotFound
     raise ActionController::BadRequest
