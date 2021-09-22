@@ -37,7 +37,7 @@ class ApplicationController < ActionController::API
       @jwt = jwt_decode_and_verify(token)
     end
 
-    # @param err [ActionController::BadRequest]
+    # @param err [BadRequest]
     def handle_bad_request(err)
       render_error(err.class.name, err.message, 400)
     end

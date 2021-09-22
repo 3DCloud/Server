@@ -265,7 +265,7 @@ RSpec.describe 'Sessions', type: :request do
       }.to change { AuthorizationGrant.count }.by(0)
        .and change { Session.count }.by(0)
 
-      expect(response).to have_http_status(400)
+      expect(response).to have_http_status(401)
     end
 
     it 'does not process refresh_token requests if refresh_token is missing from the parameters' do
@@ -289,7 +289,7 @@ RSpec.describe 'Sessions', type: :request do
         post sessions_token_path, params: { grant_type: 'refresh_token', refresh_token: refresh_token }
       }.to change { Session.count }.by(0)
 
-      expect(response).to have_http_status(400)
+      expect(response).to have_http_status(401)
     end
   end
 

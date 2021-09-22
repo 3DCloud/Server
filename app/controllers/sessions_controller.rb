@@ -9,7 +9,7 @@ class SessionsController < ApplicationController
   skip_before_action :verify_access_token
 
   def new
-    raise ActionController::BadRequest unless params[:code_challenge] && params[:code_challenge].length == 64
+    raise ApplicationController::BadRequest unless params[:code_challenge] && params[:code_challenge].length == 64
 
     request = OneLogin::RubySaml::Authrequest.new
     relay_state = {
@@ -21,12 +21,12 @@ class SessionsController < ApplicationController
   end
 
   def create
-    raise ActionController::BadRequest unless params[:SAMLResponse] && params[:RelayState]
+    raise ApplicationController::BadRequest unless params[:SAMLResponse] && params[:RelayState]
 
     response = OneLogin::RubySaml::Response.new(params[:SAMLResponse].to_s, settings: saml_settings)
 
     unless response.name_id_format == 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'
-      raise ActionController::BadRequest.new "Unexpected name ID format #{response.name_id_format}"
+      raise ApplicationController::BadRequest.new "Unexpected name ID format #{response.name_id_format}"
     end
 
     raise Unauthorized unless response.is_valid?
@@ -46,17 +46,17 @@ class SessionsController < ApplicationController
   end
 
   def token
-    raise ActionController::BadRequest unless params[:grant_type]
+    raise ApplicationController::BadRequest unless params[:grant_type]
 
     case params[:grant_type]
     when 'authorization_code'
-      raise ActionController::BadRequest unless params[:code_verifier] && params[:code]
+      raise ApplicationController::BadRequest unless params[:code_verifier] && params[:code]
 
       grant = AuthorizationGrant.find_by!(code_challenge: sha256(params[:code_verifier]), authorization_code: params[:code], expires_at: DateTime.now.utc..)
       user = grant.user
       grant.destroy!
     when 'refresh_token'
-      raise ActionController::BadRequest unless params[:refresh_token]
+      raise ApplicationController::BadRequest unless params[:refresh_token]
 
       token_contents = jwt_decode_and_verify(params[:refresh_token])
 
@@ -64,7 +64,7 @@ class SessionsController < ApplicationController
       user = session.user
       session.destroy!
     else
-      raise ActionController::BadRequest
+      raise ApplicationController::BadRequest
     end
 
     access_token_expires_in = 15.minutes
@@ -96,17 +96,17 @@ class SessionsController < ApplicationController
       expires_in: access_token_expires_in.to_i
     }
   rescue ActiveRecord::RecordNotFound
-    raise ActionController::Unauthorized
+    raise ApplicationController::Unauthorized
   end
 
   def destroy
-    raise ActionController::BadRequest unless params[:token]
+    raise ApplicationController::BadRequest unless params[:token]
 
     token_contents = jwt_decode_and_verify(params[:token])
 
     Session.destroy_by(jti: token_contents[:jti])
   rescue JWT::DecodeError
-    raise ActionController::BadRequest
+    raise ApplicationController::BadRequest
   end
 
   private
