@@ -39,6 +39,12 @@ RSpec.describe 'Sessions', type: :request do
       expect(response).to have_http_status(400)
     end
 
+    it 'responds with Bad Request if code challenge is nil' do
+      get sessions_authorize_path, params: { code_challenge: nil }
+
+      expect(response).to have_http_status(400)
+    end
+
     it 'responds with Bad Request if code challenge is missing' do
       get sessions_authorize_path
 
@@ -106,6 +112,22 @@ RSpec.describe 'Sessions', type: :request do
       saml_response = 'blah'
 
       post sessions_callback_path, params: { SAMLResponse: saml_response }
+
+      expect(response).to have_http_status(400)
+    end
+
+    it 'does not process the request if the SAMLResponse param is nil' do
+      relay_state = { return: '/potatoes', code_challenge: '12345' }.to_json
+
+      post sessions_callback_path, params: { SAMLResponse: nil, RelayState: relay_state }
+
+      expect(response).to have_http_status(400)
+    end
+
+    it 'does not process the request if the RelayState param is nil' do
+      saml_response = 'blah'
+
+      post sessions_callback_path, params: { SAMLResponse: saml_response, RelayState: nil }
 
       expect(response).to have_http_status(400)
     end

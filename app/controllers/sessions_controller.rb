@@ -9,7 +9,7 @@ class SessionsController < ApplicationController
   skip_before_action :verify_access_token
 
   def new
-    raise ActionController::BadRequest unless params.has_key?(:code_challenge) && params[:code_challenge].length == 64
+    raise ActionController::BadRequest unless params[:code_challenge] && params[:code_challenge].length == 64
 
     request = OneLogin::RubySaml::Authrequest.new
     relay_state = {
@@ -21,7 +21,7 @@ class SessionsController < ApplicationController
   end
 
   def create
-    raise ActionController::BadRequest unless params.has_key?(:SAMLResponse) && params.has_key?(:RelayState)
+    raise ActionController::BadRequest unless params[:SAMLResponse] && params[:RelayState]
 
     response = OneLogin::RubySaml::Response.new(params[:SAMLResponse].to_s, settings: saml_settings)
 
@@ -46,17 +46,17 @@ class SessionsController < ApplicationController
   end
 
   def token
-    raise ActionController::BadRequest unless params.has_key?(:grant_type)
+    raise ActionController::BadRequest unless params[:grant_type]
 
     case params[:grant_type]
     when 'authorization_code'
-      raise ActionController::BadRequest unless params.has_key?(:code_verifier) && params.has_key?(:code)
+      raise ActionController::BadRequest unless params[:code_verifier] && params[:code]
 
       grant = AuthorizationGrant.find_by!(code_challenge: sha256(params[:code_verifier]), authorization_code: params[:code], expires_at: DateTime.now.utc..)
       user = grant.user
       grant.destroy!
     when 'refresh_token'
-      raise ActionController::BadRequest unless params.has_key?(:refresh_token)
+      raise ActionController::BadRequest unless params[:refresh_token]
 
       token_contents = jwt_decode_and_verify(params[:refresh_token])
 
@@ -100,7 +100,7 @@ class SessionsController < ApplicationController
   end
 
   def destroy
-    raise ActionController::BadRequest unless params.has_key?(:token)
+    raise ActionController::BadRequest unless params[:token]
 
     token_contents = jwt_decode_and_verify(params[:token])
 
