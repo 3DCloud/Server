@@ -72,14 +72,12 @@ class SessionsController < ApplicationController
     refresh_token_expiry = DateTime.now.utc + 14.days
 
     access_token = jwt_encode(
-      iss: jwt_issuer,
       jti: SecureRandom.hex(32),
       exp: (DateTime.now.utc + access_token_expires_in).to_i,
       sub: user.id,
     )
 
     refresh_token = jwt_encode(
-      iss: jwt_issuer,
       jti: refresh_token_id,
       exp: refresh_token_expiry.to_i,
       sub: user.id,

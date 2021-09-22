@@ -2,7 +2,10 @@
 
 module JwtHelper
   def jwt_encode(**payload)
-    JWT.encode(payload, jwt_encode_key, jwt_algorithm)
+    JWT.encode({
+      **payload,
+      iss: jwt_issuer,
+    }, jwt_encode_key, jwt_algorithm)
   end
 
   def jwt_decode_and_verify(token)
@@ -13,11 +16,11 @@ module JwtHelper
     }).first.symbolize_keys
   end
 
-  def jwt_issuer
-    Rails.configuration.x.jwt.issuer
-  end
-
   private
+    def jwt_issuer
+      Rails.configuration.x.jwt.issuer
+    end
+
     def jwt_algorithm
       Rails.configuration.x.jwt.algorithm
     end
