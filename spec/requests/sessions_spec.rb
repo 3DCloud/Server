@@ -146,8 +146,8 @@ RSpec.describe 'Sessions', type: :request do
         }.to change { AuthorizationGrant.count }.by(-1).and change { Session.count }.by(1)
 
         body = JSON.parse(response.body).symbolize_keys
-        access_token = jwt_decode(body[:access_token])
-        refresh_token = jwt_decode(body[:refresh_token])
+        access_token = jwt_decode_and_verify(body[:access_token])
+        refresh_token = jwt_decode_and_verify(body[:refresh_token])
 
         expect(body[:token_type]).to eq('bearer')
         expect(body[:expires_in]).to eq(15.minutes)
@@ -183,8 +183,8 @@ RSpec.describe 'Sessions', type: :request do
         post sessions_token_path, params: { grant_type: 'refresh_token', refresh_token: refresh_token }
 
         body = JSON.parse(response.body).symbolize_keys
-        access_token = jwt_decode(body[:access_token])
-        refresh_token = jwt_decode(body[:refresh_token])
+        access_token = jwt_decode_and_verify(body[:access_token])
+        refresh_token = jwt_decode_and_verify(body[:refresh_token])
 
         expect(body[:token_type]).to eq('bearer')
         expect(body[:expires_in]).to eq(15.minutes)

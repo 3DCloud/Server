@@ -58,7 +58,7 @@ class SessionsController < ApplicationController
     when 'refresh_token'
       raise ActionController::BadRequest unless params.has_key?(:refresh_token)
 
-      token_contents = jwt_decode(params[:refresh_token])
+      token_contents = jwt_decode_and_verify(params[:refresh_token])
 
       session = Session.find_by!(user_id: token_contents[:sub], jti: token_contents[:jti], expires_at: DateTime.now.utc..)
       user = session.user
@@ -104,7 +104,7 @@ class SessionsController < ApplicationController
   def destroy
     raise ActionController::BadRequest unless params.has_key?(:token)
 
-    token_contents = jwt_decode(params[:token])
+    token_contents = jwt_decode_and_verify(params[:token])
 
     Session.destroy_by(jti: token_contents[:jti])
   rescue JWT::DecodeError

@@ -33,7 +33,7 @@ class ApplicationController < ActionController::API
       raise Unauthorized unless request.headers['Authorization'] && request.headers['Authorization'].start_with?('Bearer ')
 
       token = request.headers['Authorization'][7..]
-      @jwt = jwt_decode(token)
+      @jwt = jwt_decode_and_verify(token)
     end
 
     # @param err [ActionController::BadRequest]

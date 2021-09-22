@@ -12,7 +12,7 @@ You must also install [PostgreSQL](https://www.postgresql.org/download/).
 ### Getting Started
 Once you have Ruby install, run the following commands inside the checked out repo:
 ```bash
-sudo apt install libpq-dev # required for PostgreSQL gem's native extensions
+sudo apt install libpq-dev libsodium-dev # required for PostgreSQL gem's native extensions & JWT signing
 gem install bundler # if not installed already
 bundle install # install gems required by project
 ```

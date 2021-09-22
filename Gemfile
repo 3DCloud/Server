@@ -33,6 +33,7 @@ gem 'graphql'
 # Authentication
 gem 'ruby-saml'
 gem 'jwt'
+gem 'rbnacl'
 
 gem 'ejson'
 gem 'ejson-rails'
