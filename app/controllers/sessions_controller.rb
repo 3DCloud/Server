@@ -3,6 +3,9 @@
 class SessionsController < ApplicationController
   include ERB::Util
 
+  SAML_SETTINGS_CACHE_KEY = 'saml_settings'
+  SAML_SETTINGS_CACHE_DURATION = 1.minute
+
   skip_before_action :verify_access_token
 
   def new
@@ -110,15 +113,17 @@ class SessionsController < ApplicationController
 
   private
     def saml_settings
-      idp_metadata_parser = OneLogin::RubySaml::IdpMetadataParser.new
-      idp_metadata = idp_metadata_parser.parse_remote(Rails.configuration.x.saml.idp_metadata_url)
+      Rails.cache.fetch(SAML_SETTINGS_CACHE_KEY, expires_in: SAML_SETTINGS_CACHE_DURATION, skip_nil: true) do
+        idp_metadata_parser = OneLogin::RubySaml::IdpMetadataParser.new
+        idp_metadata = idp_metadata_parser.parse_remote(Rails.configuration.x.saml.idp_metadata_url)
 
-      idp_metadata.assertion_consumer_service_url = sessions_callback_url
-      idp_metadata.sp_entity_id = Rails.configuration.x.saml.sp_entity_id
-      idp_metadata.idp_entity_id = Rails.configuration.x.saml.idp_entity_id
-      idp_metadata.idp_sso_service_url = Rails.configuration.x.saml.idp_sso_service_url
+        idp_metadata.assertion_consumer_service_url = sessions_callback_url
+        idp_metadata.sp_entity_id = Rails.configuration.x.saml.sp_entity_id
+        idp_metadata.idp_entity_id = Rails.configuration.x.saml.idp_entity_id
+        idp_metadata.idp_sso_service_url = Rails.configuration.x.saml.idp_sso_service_url
 
-      idp_metadata
+        idp_metadata
+      end
     end
 
     def sha256(message)
