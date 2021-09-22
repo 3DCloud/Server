@@ -23,6 +23,7 @@ class ApplicationController < ActionController::API
   rescue_from Unauthorized, with: :handle_unauthorized
   rescue_from Forbidden, with: :handle_forbidden
   rescue_from JWT::DecodeError, with: :handle_jwt_decode_error
+  rescue_from RbNaCl::BadSignatureError, with: :handle_rbnacl_error
 
   def current_user
     @current_user ||= User.find(@jwt[:sub])
@@ -53,6 +54,11 @@ class ApplicationController < ActionController::API
 
     # @param err [JWT::DecodeError]
     def handle_jwt_decode_error(err)
+      render_error(err.class.name, err.message, 401)
+    end
+
+    # @param err [RbNaCl::BadSignatureError]
+    def handle_rbnacl_error(err)
       render_error(err.class.name, err.message, 401)
     end
 

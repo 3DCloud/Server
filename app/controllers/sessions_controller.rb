@@ -95,8 +95,8 @@ class SessionsController < ApplicationController
       token_type: 'bearer',
       expires_in: access_token_expires_in.to_i
     }
-  rescue JWT::DecodeError, ActiveRecord::RecordNotFound
-    raise ActionController::BadRequest
+  rescue ActiveRecord::RecordNotFound
+    raise ActionController::Unauthorized
   end
 
   def destroy
