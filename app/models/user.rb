@@ -6,6 +6,8 @@ class User < ApplicationRecord
   validates :email_address, presence: true
   validates :sso_uid, presence: true, uniqueness: true
 
+  has_many :uploaded_files
+
   class << self
     # @param uid [String]
     # @param attributes [OneLogin::RubySaml::Attributes]

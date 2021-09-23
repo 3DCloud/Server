@@ -7,5 +7,6 @@ module Types
     field :email_address, String, null: false
     field :created_at, GraphQL::Types::ISO8601DateTime, null: false
     field :updated_at, GraphQL::Types::ISO8601DateTime, null: false
+    field :uploaded_files, [Types::UploadedFileType], null: false
   end
 end
