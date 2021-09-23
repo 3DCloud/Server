@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_09_22_192729) do
+ActiveRecord::Schema.define(version: 2021_09_22_203057) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -104,6 +104,13 @@ ActiveRecord::Schema.define(version: 2021_09_22_192729) do
     t.index ["user_id"], name: "index_sessions_on_user_id"
   end
 
+  create_table "uploaded_files", force: :cascade do |t|
+    t.bigint "user_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["user_id"], name: "index_uploaded_files_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "username", null: false
     t.string "name", null: false
@@ -121,4 +128,5 @@ ActiveRecord::Schema.define(version: 2021_09_22_192729) do
   add_foreign_key "printers", "devices"
   add_foreign_key "printers", "printer_definitions"
   add_foreign_key "sessions", "users"
+  add_foreign_key "uploaded_files", "users"
 end

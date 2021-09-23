@@ -2,6 +2,8 @@
 
 module Types
   class MutationType < Types::BaseObject
+    field :record_file_uploaded, mutation: Mutations::RecordFileUploaded
+    field :create_upload_file_request, mutation: Mutations::CreateUploadFileRequest
     field :set_client_name, mutation: Mutations::SetClientNameMutation
     field :grant_client_authorization, mutation: Mutations::GrantClientAuthorizationMutation
     field :revoke_client_authorization, mutation: Mutations::RevokeClientAuthorizationMutation
