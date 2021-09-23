@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Mutations
   class RecordFileUploaded < BaseMutation
     argument :signed_id, String, required: true

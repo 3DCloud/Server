@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Mutations
   class CreateUploadFileRequest < BaseMutation
     argument :filename, String, required: true
