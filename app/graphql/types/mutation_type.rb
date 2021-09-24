@@ -2,6 +2,7 @@
 
 module Types
   class MutationType < Types::BaseObject
+    field :start_print, mutation: Mutations::StartPrintMutation
     field :record_file_uploaded, mutation: Mutations::RecordFileUploaded
     field :create_upload_file_request, mutation: Mutations::CreateUploadFileRequest
     field :set_client_name, mutation: Mutations::SetClientNameMutation

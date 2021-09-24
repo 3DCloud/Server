@@ -2,6 +2,10 @@
 
 class PrinterChannel < ApplicationCable::Channel
   class << self
+    def transmit_start_print(printer:, print_id:, download_url:)
+      broadcast_to printer, self.start_print_message(print_id: print_id, download_url: download_url)
+    end
+
     def transmit_reconnect(printer)
       broadcast_to printer, self.reconnect_message
     end
@@ -37,6 +41,14 @@ class PrinterChannel < ApplicationCable::Channel
   end
 
   private
+    def self.start_print_message(print_id:, download_url:)
+      {
+        action: 'start_print',
+        print_id: print_id,
+        download_url: download_url,
+      }
+    end
+
     def self.reconnect_message
       {
         action: 'reconnect'
