@@ -30,6 +30,17 @@ class ClientChannel < ApplicationCable::Channel
     end
   end
 
+  def printer_states(args)
+    args['printers'].each do |state|
+      printer = Printer.joins(:device).find_by!(device: { hardware_identifier: state['hardware_identifier'] })
+
+      printer.state = state['printer_state']
+      printer.save!
+
+      PrinterListenerChannel.transmit_printer_state(printer, state)
+    end
+  end
+
   private
     def self.printer_configuration_message(printer)
       {

@@ -13,22 +13,19 @@ class PrinterChannel < ApplicationCable::Channel
 
   def subscribed
     unless params['hardware_identifier'].present?
-      reject
-      return
+      return reject
     end
 
     device = Device.find_by_hardware_identifier(params['hardware_identifier'])
 
     unless device
-      reject
-      return
+      return reject
     end
 
     @printer = device.printer
 
     unless @printer
-      reject
-      return
+      return reject
     end
 
     stream_for @printer

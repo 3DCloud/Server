@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_09_23_232638) do
+ActiveRecord::Schema.define(version: 2021_09_27_154541) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -90,6 +90,7 @@ ActiveRecord::Schema.define(version: 2021_09_23_232638) do
     t.bigint "printer_definition_id", null: false
     t.string "name", null: false
     t.bigint "device_id", null: false
+    t.string "state", default: "unknown", null: false
     t.index ["device_id"], name: "index_printers_on_device_id", unique: true
     t.index ["printer_definition_id"], name: "index_printers_on_printer_definition_id"
   end
@@ -131,6 +132,16 @@ ActiveRecord::Schema.define(version: 2021_09_23_232638) do
     t.index ["sso_uid"], name: "index_users_on_sso_uid", unique: true
   end
 
+  create_table "web_socket_tickets", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "ticket", null: false
+    t.datetime "expires_at"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["ticket"], name: "index_web_socket_tickets_on_ticket", unique: true
+    t.index ["user_id"], name: "index_web_socket_tickets_on_user_id"
+  end
+
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "authorization_grants", "users"
@@ -141,4 +152,5 @@ ActiveRecord::Schema.define(version: 2021_09_23_232638) do
   add_foreign_key "prints", "uploaded_files"
   add_foreign_key "sessions", "users"
   add_foreign_key "uploaded_files", "users"
+  add_foreign_key "web_socket_tickets", "users"
 end
