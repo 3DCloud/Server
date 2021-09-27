@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Print < ApplicationRecord
   has_one :printer
   has_one :uploaded_file
