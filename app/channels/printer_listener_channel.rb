@@ -21,6 +21,8 @@ class PrinterListenerChannel < ApplicationCable::Channel
     end
 
     stream_for @printer
+
+    self.class.transmit_printer_state(@printer, { printer_state: @printer.state })
   end
 
   def send_command(args)
