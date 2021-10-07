@@ -7,10 +7,6 @@ class ClientChannel < ApplicationCable::Channel
     end
   end
 
-  def subscribed
-    stream_for connection.client
-  end
-
   def device(args)
     device = Device.find_by_hardware_identifier(args['hardware_identifier'])
 
@@ -42,6 +38,18 @@ class ClientChannel < ApplicationCable::Channel
   end
 
   private
+    def subscribed
+      stream_for connection.client
+    end
+
+    def unsubscribed
+      Printer.joins(:device).where(device: { client_id: connection.client.id }).all.each do |printer|
+        printer.state = 'offline'
+        printer.save!
+        PrinterListenerChannel.transmit_printer_state(printer, { printer_state: 'offline' })
+      end
+    end
+
     def self.printer_configuration_message(printer)
       {
         action: 'printer_configuration',
