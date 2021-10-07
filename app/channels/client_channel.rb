@@ -28,12 +28,17 @@ class ClientChannel < ApplicationCable::Channel
 
   def printer_states(args)
     ApplicationRecord.transaction do
-      args['printers'].each do |state|
-        printer = Printer.joins(:device).find_by!(device: { hardware_identifier: state['hardware_identifier'] })
+      Printer.for_client(connection.client.id).includes(:device).each do |printer|
+        state = args['printers'][printer.device.hardware_identifier]
 
-        printer.state = state['printer_state']
+        if state
+          printer.state = state['printer_state']
+        else
+          printer.state = 'disconnected'
+          state = { printer_state: 'disconnected' }
+        end
+
         printer.save!
-
         PrinterListenerChannel.transmit_printer_state(printer, state)
       end
     end
@@ -46,7 +51,7 @@ class ClientChannel < ApplicationCable::Channel
 
     def unsubscribed
       ApplicationRecord.transaction do
-        Printer.joins(:device).where(device: { client_id: connection.client.id }).all.each do |printer|
+        Printer.for_client(connection.client.id).each do |printer|
           printer.state = 'offline'
           printer.save!
           PrinterListenerChannel.transmit_printer_state(printer, { printer_state: 'offline' })
