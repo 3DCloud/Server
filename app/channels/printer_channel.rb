@@ -1,9 +1,34 @@
 # frozen_string_literal: true
 
 class PrinterChannel < ApplicationCable::Channel
+  # TODO: try to find an alternative to class variables
+  @@semaphores = {}
+  @@errors = {}
+
   class << self
     def transmit_start_print(printer:, print_id:, download_url:)
+      unless @@semaphores[printer].nil?
+        raise RuntimeError.new('Already waiting for a print')
+      end
+
+      semaphore = Concurrent::Semaphore.new(0)
+      @@semaphores[printer] = semaphore
       broadcast_to printer, self.start_print_message(print_id: print_id, download_url: download_url)
+
+      result = semaphore.try_acquire(1, 10)
+
+      @@semaphores.delete(printer)
+
+      unless result
+        raise RuntimeError.new('Timed out')
+      end
+
+      error = @@errors[printer]
+
+      if error
+        @@errors.delete(printer)
+        raise RuntimeError.new(error)
+      end
     end
 
     def transmit_reconnect(printer)
@@ -12,23 +37,23 @@ class PrinterChannel < ApplicationCable::Channel
   end
 
   def subscribed
-    unless params['hardware_identifier'].present?
-      return reject
-    end
-
     device = Device.find_by_hardware_identifier(params['hardware_identifier'])
 
-    unless device
-      return reject
-    end
+    return reject unless device
 
     @printer = device.printer
 
-    unless @printer
-      return reject
-    end
+    return reject unless @printer
 
     stream_for @printer
+  end
+
+  def acknowledge_print(args)
+    unless args['success']
+      @@errors[@printer] = args['error_message']
+    end
+
+    @@semaphores[@printer].release
   end
 
   def log_message(args)
