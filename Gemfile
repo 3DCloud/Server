@@ -31,14 +31,14 @@ gem 'rack-cors'
 gem 'graphql'
 
 # Authentication
-gem 'ruby-saml'
-gem 'jwt'
-gem 'rbnacl'
+gem 'ruby-saml', '~> 1.13.0'
+gem 'jwt', '~> 2.3.0'
+gem 'rbnacl', '~> 7.1.1'
 
-gem 'ejson'
-gem 'ejson-rails'
+gem 'ejson', '~> 1.3.0'
+gem 'ejson-rails', '~> 0.1.1'
 
-gem 'aws-sdk-s3'
+gem 'aws-sdk-s3', '~> 1.103.0'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
