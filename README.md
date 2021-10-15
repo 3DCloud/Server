@@ -10,25 +10,36 @@ This project currently uses Ruby 3.0.2. We recommend installing it using [rbenv]
 You must also install [PostgreSQL](https://www.postgresql.org/download/).
 
 ### Getting Started
-Once you have Ruby install, run the following commands inside the checked out repo:
+Once you have Ruby installed, run the following commands inside the checked out repo:
 ```bash
 sudo apt install libpq-dev libsodium-dev # required for PostgreSQL gem's native extensions & JWT signing
 gem install bundler # if not installed already
 bundle install # install gems required by project
 ```
 
-By default, Rails will look for a PostgreSQL socket on the local machine and authenticate with the username and password `3dcloud`. If you want to change this, create a file called `.env` at the root of the project and fill in your details:
-```
-DB_HOST=localhost
-DB_PORT=5432
-DB_USERNAME=your-db-user
-DB_PASSWORD=your-db-password
+Once that's done, you will need to configure the database and storage. This is done by created a file called `secrets.json` in the `config` folder with the following contents:
+```json
+{
+  "aws": {
+    "access_key_id": "your access key ID",
+    "secret_access_key": "your secret access key",
+    "region": "some-region",
+    "bucket": "some-bucket"
+  },
+  "database": {
+    "username": "your-database-username",
+    "password": "your-database-password"
+  },
+  "jwt_secret": "random 32 character string"
+}
 ```
 
-Note that this user needs the `CREATEDB` permission to set up the database. It will also require superuser access if you want to use Rails' `db:reset` command (since it drops the database).
+The entire `"aws"` object can be omitted if you want to use local storage instead.
+
+Note that the database user needs the `CREATEDB` permission to set up the database. It will also require superuser access if you want to use Rails' `db:reset` command (since it drops the database).
 For example:
 ```postgresql
-CREATE ROLE "3dcloud" SUPERUSER CREATEDB LOGIN PASSWORD '3dcloud'
+CREATE ROLE "username" SUPERUSER CREATEDB LOGIN PASSWORD 'password'
 ```
 
 You should then be able to run the server by executing
