@@ -11,7 +11,7 @@ module Mutations
       client.authorized = false
       client.save!
 
-      ActionCable.server.remote_connections.where(client: client).disconnect
+      ActionCable.server.remote_connections.where(client: client, user: nil).disconnect
 
       client
     end

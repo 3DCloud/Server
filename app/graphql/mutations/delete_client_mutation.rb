@@ -10,7 +10,7 @@ module Mutations
       client = Client.find(id)
       client.destroy!
 
-      connection = ActionCable.server.remote_connections.where(client: client)
+      connection = ActionCable.server.remote_connections.where(client: client, user: nil)
       connection.disconnect unless connection.nil?
 
       { delete_count: 1 }
