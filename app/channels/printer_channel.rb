@@ -1,38 +1,19 @@
 # frozen_string_literal: true
 
 class PrinterChannel < ApplicationCable::Channel
-  # TODO: try to find an alternative to class variables
-  @@semaphores = {}
-  @@errors = {}
+  @@requests = {}
 
   class << self
-    def transmit_start_print(printer:, print_id:, download_url:)
-      unless @@semaphores[printer].nil?
-        raise RuntimeError.new('Already waiting for a print')
-      end
-
-      semaphore = Concurrent::Semaphore.new(0)
-      @@semaphores[printer] = semaphore
-      broadcast_to printer, self.start_print_message(print_id: print_id, download_url: download_url)
-
-      result = semaphore.try_acquire(1, 10)
-
-      @@semaphores.delete(printer)
-
-      unless result
-        raise RuntimeError.new('Timed out')
-      end
-
-      error = @@errors[printer]
-
-      if error
-        @@errors.delete(printer)
-        raise RuntimeError.new(error)
-      end
+    def transmit_reconnect(printer:)
+      self.broadcast_to_with_ack printer, self.reconnect_message, 30
     end
 
-    def transmit_reconnect(printer)
-      broadcast_to printer, self.reconnect_message
+    def transmit_start_print(printer:, print_id:, download_url:)
+      self.broadcast_to_with_ack printer, self.start_print_message(print_id: print_id, download_url: download_url)
+    end
+
+    def transmit_abort_print(printer:)
+      self.broadcast_to_with_ack printer, self.abort_print_message
     end
   end
 
@@ -48,12 +29,26 @@ class PrinterChannel < ApplicationCable::Channel
     stream_for @printer
   end
 
-  def acknowledge_print(args)
-    unless args['success']
-      @@errors[@printer] = args['error_message']
+  def unsubscribed
+    @@requests.values.each do |data|
+      data[:semaphore].release
+    end
+  end
+
+  def acknowledge(args)
+    id = args['message_id']
+
+    unless @@requests.key?(id)
+      return
     end
 
-    @@semaphores[@printer].release
+    data = @@requests[id]
+    data[:error_message] = args['error_message']
+    data[:semaphore].release
+  end
+
+  def print_event(args)
+    puts args
   end
 
   def log_message(args)
@@ -63,6 +58,37 @@ class PrinterChannel < ApplicationCable::Channel
   end
 
   private
+    def self.broadcast_to_with_ack(model, message, timeout = 15)
+      id = SecureRandom.hex(32)
+      semaphore = Concurrent::Semaphore.new(0)
+      data = { semaphore: semaphore }
+
+      @@requests[id] = data
+      message[:message_id] = id
+
+      unless broadcast_to model, message
+        raise RuntimeError.new('Failed to send request')
+      end
+
+      result = semaphore.try_acquire(1, timeout)
+
+      @@requests.delete(id)
+
+      unless result
+        raise RuntimeError.new('Timed out')
+      end
+
+      if data[:error_message].present?
+        raise RuntimeError.new(data[:error_message])
+      end
+    end
+
+    def self.reconnect_message
+      {
+        action: 'reconnect',
+      }
+    end
+
     def self.start_print_message(print_id:, download_url:)
       {
         action: 'start_print',
@@ -71,9 +97,9 @@ class PrinterChannel < ApplicationCable::Channel
       }
     end
 
-    def self.reconnect_message
+    def self.abort_print_message
       {
-        action: 'reconnect'
+        action: 'abort_print',
       }
     end
 end

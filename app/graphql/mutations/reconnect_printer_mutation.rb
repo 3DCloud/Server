@@ -8,7 +8,7 @@ module Mutations
 
     def resolve(id:)
       printer = Printer.find(id)
-      PrinterChannel.transmit_reconnect(printer)
+      PrinterChannel.transmit_reconnect(printer: printer)
       printer
     end
   end

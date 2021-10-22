@@ -39,7 +39,7 @@ RSpec.describe PrinterChannel, type: :channel do
       printer = create(:printer)
 
       expect {
-        PrinterChannel.transmit_reconnect(printer)
+        PrinterChannel.transmit_reconnect(printer: printer)
       }.to have_broadcasted_to(printer).from_channel(PrinterChannel).with({ action: 'reconnect' })
     end
   end

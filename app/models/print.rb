@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
 class Print < ApplicationRecord
-  has_one :printer
-  has_one :uploaded_file
+  belongs_to :printer
+  belongs_to :uploaded_file
 end
