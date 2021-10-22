@@ -72,11 +72,10 @@ Rails.application.configure do
 
   config.action_cable.allowed_request_origins = %w(http://localhost:4200 3DCloud-Client)
 
-  GraphiQL::Rails.config.headers['Authorization'] = -> () {
+  GraphiQL::Rails.config.headers['Authorization'] = -> (_) {
     jwt_helper = Class.new.extend(JwtHelper)
 
     token = jwt_helper.jwt_encode(
-      iss: jwt_helper.jwt_issuer,
       jti: SecureRandom.hex(32),
       exp: (DateTime.now.utc + 15.minutes).to_i,
       sub: User.first.id,
