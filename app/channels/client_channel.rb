@@ -71,6 +71,7 @@ class ClientChannel < ApplicationCable::Channel
 
       if print
         print.status = 'errored'
+        print.completed_at = DateTime.now.utc
         print.save!
       end
 

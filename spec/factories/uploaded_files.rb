@@ -2,5 +2,6 @@
 
 FactoryBot.define do
   factory :uploaded_file do
+    user { build(:user) }
   end
 end
