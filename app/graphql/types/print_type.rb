@@ -8,5 +8,7 @@ module Types
     field :status, String, null: false
     field :created_at, GraphQL::Types::ISO8601DateTime, null: false
     field :updated_at, GraphQL::Types::ISO8601DateTime, null: false
+    field :started_at, GraphQL::Types::ISO8601DateTime, null: true
+    field :completed_at, GraphQL::Types::ISO8601DateTime, null: true
   end
 end

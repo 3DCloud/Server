@@ -2,7 +2,7 @@
 
 module Types
   class MutationType < Types::BaseObject
-    field :abort_print, mutation: Mutations::AbortPrintMutation
+    field :cancel_current_print, mutation: Mutations::CancelCurrentPrintMutation
     field :generate_web_socket_ticket, mutation: Mutations::GenerateWebSocketTicketMutation
     field :start_print, mutation: Mutations::StartPrintMutation
     field :record_file_uploaded, mutation: Mutations::RecordFileUploaded

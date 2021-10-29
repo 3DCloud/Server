@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_09_27_154541) do
+ActiveRecord::Schema.define(version: 2021_10_29_025019) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -91,6 +91,8 @@ ActiveRecord::Schema.define(version: 2021_09_27_154541) do
     t.string "name", null: false
     t.bigint "device_id", null: false
     t.string "state", default: "unknown", null: false
+    t.bigint "current_print_id"
+    t.index ["current_print_id"], name: "index_printers_on_current_print_id"
     t.index ["device_id"], name: "index_printers_on_device_id", unique: true
     t.index ["printer_definition_id"], name: "index_printers_on_printer_definition_id"
   end
@@ -101,6 +103,8 @@ ActiveRecord::Schema.define(version: 2021_09_27_154541) do
     t.string "status", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.datetime "started_at"
+    t.datetime "completed_at"
     t.index ["printer_id"], name: "index_prints_on_printer_id"
     t.index ["uploaded_file_id"], name: "index_prints_on_uploaded_file_id"
   end
@@ -148,6 +152,7 @@ ActiveRecord::Schema.define(version: 2021_09_27_154541) do
   add_foreign_key "devices", "clients"
   add_foreign_key "printers", "devices"
   add_foreign_key "printers", "printer_definitions"
+  add_foreign_key "printers", "prints", column: "current_print_id"
   add_foreign_key "prints", "printers"
   add_foreign_key "prints", "uploaded_files"
   add_foreign_key "sessions", "users"

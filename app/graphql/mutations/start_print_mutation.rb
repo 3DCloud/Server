@@ -17,8 +17,10 @@ module Mutations
       end
 
       print = Print.new(uploaded_file_id: upload.id, printer_id: printer.id, status: 'pending')
-
       print.save!
+
+      printer.current_print = print
+      printer.save!
 
       PrinterChannel.transmit_start_print(
         printer: printer,

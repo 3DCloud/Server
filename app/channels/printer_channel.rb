@@ -48,7 +48,27 @@ class PrinterChannel < ApplicationCable::Channel
   end
 
   def print_event(args)
-    puts args
+    @printer.reload
+
+    print = @printer.current_print
+
+    return unless print
+
+    state = args['event_type']
+
+    if state == 'running'
+      print.started_at = DateTime.now.utc
+    end
+
+    if %w(success canceled errored).include?(state)
+      @printer.current_print = nil
+      @printer.save!
+
+      print.completed_at = DateTime.now.utc
+    end
+
+    print.status = state
+    print.save!
   end
 
   def log_message(args)

@@ -7,6 +7,7 @@ module Types
     field :devices, [Types::DeviceType], null: false
     field :printers, [Types::PrinterType], null: false
     field :printer_definitions, [Types::PrinterDefinitionType], null: false
+    field :prints, [Types::PrintType], null: false
 
     field :client, Types::ClientType, null: true do
       argument :id, ID, required: true
@@ -21,6 +22,10 @@ module Types
     end
 
     field :printer_definition, Types::PrinterDefinitionType, null: true do
+      argument :id, ID, required: true
+    end
+
+    field :print, Types::PrintType, null: true do
       argument :id, ID, required: true
     end
 
@@ -58,6 +63,14 @@ module Types
 
     def printer_definition(id:)
       PrinterDefinition.find_by_id(id)
+    end
+
+    def prints
+      Print.all.order(created_at: :desc)
+    end
+
+    def print(id)
+      Print.find_by_id(id)
     end
   end
 end

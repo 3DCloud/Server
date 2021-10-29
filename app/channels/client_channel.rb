@@ -28,13 +28,20 @@ class ClientChannel < ApplicationCable::Channel
 
   def printer_states(args)
     ApplicationRecord.transaction do
-      Printer.for_client(connection.client.id).includes(:device).each do |printer|
+      Printer.for_client(connection.client.id).includes(:device, :current_print).each do |printer|
         state = args['printers'][printer.device.hardware_identifier]
 
         if state
           printer.state = state['printer_state']
+
+          if printer.current_print.present? &&
+             printer.current_print.status != 'pending' &&
+             !%w(downloading busy heating printing pausing paused resuming canceling).include?(printer.state)
+            mark_print_errored printer
+          end
         else
           printer.state = 'disconnected'
+          mark_print_errored printer
           state = { printer_state: 'disconnected' }
         end
 
@@ -57,6 +64,17 @@ class ClientChannel < ApplicationCable::Channel
           PrinterListenerChannel.transmit_printer_state(printer, { printer_state: 'offline' })
         end
       end
+    end
+
+    def mark_print_errored(printer)
+      print = printer.current_print
+
+      if print
+        print.status = 'errored'
+        print.save!
+      end
+
+      printer.current_print = nil
     end
 
     def self.printer_configuration_message(printer)

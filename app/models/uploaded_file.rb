@@ -2,6 +2,7 @@
 
 class UploadedFile < ApplicationRecord
   has_one_attached :file
+  belongs_to :user
 
   delegate :filename, :content_type, :byte_size, :checksum, to: :file
 
