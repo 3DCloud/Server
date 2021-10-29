@@ -38,9 +38,16 @@ RSpec.describe PrinterChannel, type: :channel do
     it 'transmits a reconnect message to the specified printer' do
       printer = create(:printer)
 
+      subscribe hardware_identifier: printer.device.hardware_identifier
+
+      expect(SecureRandom).to receive(:hex).with(32).and_return(1234)
+
       expect {
-        PrinterChannel.transmit_reconnect(printer: printer)
-      }.to have_broadcasted_to(printer).from_channel(PrinterChannel).with({ action: 'reconnect' })
+        thr = Thread.new { PrinterChannel.transmit_reconnect(printer: printer) }
+        sleep(0.100)
+        perform :acknowledge, 'message_id' => 1234
+        thr.join
+      }.to have_broadcasted_to(printer).from_channel(PrinterChannel).with({ action: 'reconnect', message_id: 1234 })
     end
   end
 end

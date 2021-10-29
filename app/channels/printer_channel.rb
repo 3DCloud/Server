@@ -2,17 +2,21 @@
 
 class PrinterChannel < ApplicationCable::Channel
   @@requests = {}
+  @@connected = Set.new
 
   class << self
     def transmit_reconnect(printer:)
+      self.ensure_online(printer)
       self.broadcast_to_with_ack printer, self.reconnect_message, 30
     end
 
     def transmit_start_print(printer:, print_id:, download_url:)
+      self.ensure_online(printer)
       self.broadcast_to_with_ack printer, self.start_print_message(print_id: print_id, download_url: download_url)
     end
 
     def transmit_abort_print(printer:)
+      self.ensure_online(printer)
       self.broadcast_to_with_ack printer, self.abort_print_message
     end
   end
@@ -27,20 +31,18 @@ class PrinterChannel < ApplicationCable::Channel
     return reject unless @printer
 
     stream_for @printer
+
+    @@connected.add(broadcasting_for(@printer))
   end
 
   def unsubscribed
-    @@requests.values.each do |data|
-      data[:semaphore].release
-    end
+    @@connected.delete(broadcasting_for(@printer))
   end
 
   def acknowledge(args)
     id = args['message_id']
 
-    unless @@requests.key?(id)
-      return
-    end
+    return unless @@requests.key?(id)
 
     data = @@requests[id]
     data[:error_message] = args['error_message']
@@ -78,6 +80,10 @@ class PrinterChannel < ApplicationCable::Channel
   end
 
   private
+    def self.ensure_online(printer)
+      raise RuntimeError.new('Not connected') unless @@connected.include?(broadcasting_for(printer))
+    end
+
     def self.broadcast_to_with_ack(model, message, timeout = 15)
       id = SecureRandom.hex(32)
       semaphore = Concurrent::Semaphore.new(0)
@@ -86,9 +92,7 @@ class PrinterChannel < ApplicationCable::Channel
       @@requests[id] = data
       message[:message_id] = id
 
-      unless broadcast_to model, message
-        raise RuntimeError.new('Failed to send request')
-      end
+      broadcast_to model, message
 
       result = semaphore.try_acquire(1, timeout)
 

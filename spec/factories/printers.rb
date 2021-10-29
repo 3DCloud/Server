@@ -5,5 +5,6 @@ FactoryBot.define do
     device
     printer_definition
     name { Faker::Games::ElderScrolls.creature }
+    state { 'ready' }
   end
 end
