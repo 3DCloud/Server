@@ -29,6 +29,10 @@ module Types
       argument :id, ID, required: true
     end
 
+    field :get_file_download_url, String, null: false do
+      argument :id, ID, required: true
+    end
+
     def current_user
       context[:current_user]
     end
@@ -69,8 +73,12 @@ module Types
       Print.all.order(created_at: :desc)
     end
 
-    def print(id)
+    def print(id:)
       Print.find_by_id(id)
+    end
+
+    def get_file_download_url(id:)
+      UploadedFile.find_by!(id: id, user_id: context[:current_user].id).file.url
     end
   end
 end

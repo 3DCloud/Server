@@ -9,5 +9,6 @@ module Types
     field :byte_size, Int, null: false
     field :checksum, String, null: false
     field :created_at, GraphQL::Types::ISO8601DateTime, null: false
+    field :estimated_duration, Int, null: true
   end
 end
