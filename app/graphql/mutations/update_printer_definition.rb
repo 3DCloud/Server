@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Mutations
   class UpdatePrinterDefinition < BaseMutation
     type Types::PrinterDefinitionType
