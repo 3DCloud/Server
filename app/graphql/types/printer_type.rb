@@ -13,5 +13,7 @@ module Types
     field :printer_definition, PrinterDefinitionType, null: false
     field :current_print_id, ID, null: true
     field :current_print, PrintType, null: true
+    field :g_code_settings, GCodeSettingsType, null: true
+    field :ulti_g_code_settings, [UltiGCodeSettingsType], null: false
   end
 end

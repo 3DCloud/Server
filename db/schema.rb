@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_11_05_022745) do
+ActiveRecord::Schema.define(version: 2021_11_05_031424) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -73,16 +73,52 @@ ActiveRecord::Schema.define(version: 2021_11_05_022745) do
     t.index ["client_id", "hardware_identifier"], name: "index_devices_on_client_id_and_hardware_identifier", unique: true
   end
 
+  create_table "g_code_settings", force: :cascade do |t|
+    t.bigint "printer_definition_id", null: false
+    t.text "start_g_code"
+    t.text "end_g_code"
+    t.text "cancel_g_code"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["printer_definition_id"], name: "index_g_code_settings_on_printer_definition_id"
+  end
+
+  create_table "material_colors", force: :cascade do |t|
+    t.bigint "material_id", null: false
+    t.string "name", null: false
+    t.string "color", limit: 6
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["material_id"], name: "index_material_colors_on_material_id"
+  end
+
+  create_table "materials", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "brand", null: false
+    t.decimal "filament_diameter", precision: 3, scale: 2, null: false
+    t.decimal "net_filament_weight", precision: 6, null: false
+    t.decimal "empty_spool_weight", precision: 6, scale: 2, null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
   create_table "printer_definitions", force: :cascade do |t|
     t.string "name", null: false
-    t.text "start_gcode"
-    t.text "end_gcode"
-    t.text "pause_gcode"
-    t.text "resume_gcode"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.string "driver", null: false
+    t.integer "extruder_count", default: 1, null: false
     t.index ["name"], name: "index_printer_definitions_on_name", unique: true
+  end
+
+  create_table "printer_materials", force: :cascade do |t|
+    t.bigint "printer_id", null: false
+    t.bigint "material_id", null: false
+    t.integer "extruder_index", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["material_id"], name: "index_printer_materials_on_material_id"
+    t.index ["printer_id"], name: "index_printer_materials_on_printer_id"
   end
 
   create_table "printers", force: :cascade do |t|
@@ -120,6 +156,22 @@ ActiveRecord::Schema.define(version: 2021_11_05_022745) do
     t.index ["user_id"], name: "index_sessions_on_user_id"
   end
 
+  create_table "ulti_g_code_settings", force: :cascade do |t|
+    t.bigint "printer_definition_id", null: false
+    t.bigint "material_id", null: false
+    t.integer "hotend_temperature", null: false
+    t.integer "build_plate_temperature", null: false
+    t.decimal "retraction_length", precision: 4, scale: 2, null: false
+    t.decimal "end_of_print_retraction_length", precision: 4, scale: 2, null: false
+    t.decimal "retraction_speed", precision: 4, scale: 1, null: false
+    t.integer "fan_speed", null: false
+    t.integer "flow_rate", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["material_id"], name: "index_ulti_g_code_settings_on_material_id"
+    t.index ["printer_definition_id"], name: "index_ulti_g_code_settings_on_printer_definition_id"
+  end
+
   create_table "uploaded_files", force: :cascade do |t|
     t.bigint "user_id"
     t.datetime "created_at", precision: 6, null: false
@@ -151,12 +203,18 @@ ActiveRecord::Schema.define(version: 2021_11_05_022745) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "authorization_grants", "users"
   add_foreign_key "devices", "clients"
+  add_foreign_key "g_code_settings", "printer_definitions"
+  add_foreign_key "material_colors", "materials"
+  add_foreign_key "printer_materials", "materials"
+  add_foreign_key "printer_materials", "printers"
   add_foreign_key "printers", "devices"
   add_foreign_key "printers", "printer_definitions"
   add_foreign_key "printers", "prints", column: "current_print_id"
   add_foreign_key "prints", "printers"
   add_foreign_key "prints", "uploaded_files"
   add_foreign_key "sessions", "users"
+  add_foreign_key "ulti_g_code_settings", "materials"
+  add_foreign_key "ulti_g_code_settings", "printer_definitions"
   add_foreign_key "uploaded_files", "users"
   add_foreign_key "web_socket_tickets", "users"
 end
