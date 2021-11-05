@@ -38,7 +38,7 @@ module Types
     end
 
     def clients
-      Client.all
+      Client.order(:name, :id).all
     end
 
     def client(id:)
@@ -46,7 +46,7 @@ module Types
     end
 
     def devices
-      Device.all
+      Device.order(:hardware_identifier).all
     end
 
     def device(id:)
@@ -54,7 +54,7 @@ module Types
     end
 
     def printers
-      Printer.all
+      Printer.order(:name).all
     end
 
     def printer(id:)
@@ -62,7 +62,7 @@ module Types
     end
 
     def printer_definitions
-      PrinterDefinition.all
+      PrinterDefinition.order(:name).all
     end
 
     def printer_definition(id:)

@@ -2,6 +2,9 @@
 
 module Types
   class MutationType < Types::BaseObject
+    field :delete_printer_definition, mutation: Mutations::DeletePrinterDefinition
+    field :create_printer_definition, mutation: Mutations::CreatePrinterDefinition
+    field :update_printer_definition, mutation: Mutations::UpdatePrinterDefinition
     field :cancel_current_print, mutation: Mutations::CancelCurrentPrintMutation
     field :generate_web_socket_ticket, mutation: Mutations::GenerateWebSocketTicketMutation
     field :start_print, mutation: Mutations::StartPrintMutation
