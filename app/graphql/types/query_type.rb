@@ -70,7 +70,7 @@ module Types
     end
 
     def prints
-      Print.includes(:printer, uploaded_file: { file_attachment: :blob }).all.order(created_at: :desc)
+      Print.includes(:printer, uploaded_file: { file_attachment: :blob }).order(created_at: :desc)
     end
 
     def print(id:)

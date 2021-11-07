@@ -10,5 +10,9 @@ module Types
     field :checksum, String, null: false
     field :created_at, GraphQL::Types::ISO8601DateTime, null: false
     field :estimated_duration, Int, null: true
+
+    def self.scope_items(items, context)
+      items.where(deleted: false)
+    end
   end
 end
