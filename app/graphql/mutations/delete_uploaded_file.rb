@@ -9,7 +9,6 @@ module Mutations
     def resolve(id:)
       uploaded_file = UploadedFile.find(id)
       uploaded_file.file.purge_later
-      uploaded_file.deleted = true
       uploaded_file.save!
       uploaded_file
     end

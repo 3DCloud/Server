@@ -13,7 +13,7 @@ module Types
     field :estimated_duration, Int, null: true
 
     def self.scope_items(items, context)
-      items.where(deleted: false)
+      items.where.not(file_attachment: { blob: nil })
     end
   end
 end
