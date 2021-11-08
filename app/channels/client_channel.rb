@@ -8,7 +8,7 @@ class ClientChannel < ApplicationCable::Channel
   end
 
   def device(args)
-    device = Device.find_by_hardware_identifier(args['hardware_identifier'])
+    device = Device.find_by(hardware_identifier: args['hardware_identifier'])
 
     if device.nil?
       device = Device.new(hardware_identifier: args['hardware_identifier'], is_portable_hardware_identifier: args['is_portable_hardware_identifier'])

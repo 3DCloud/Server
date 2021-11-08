@@ -28,7 +28,7 @@ module ApplicationCable
           reject_unauthorized_connection
         end
 
-        @client = Client.find_by_id(client_id)
+        @client = Client.find_by(id: client_id)
 
         if @client.nil?
           @client = Client.new(id: client_id, secret: client_secret)

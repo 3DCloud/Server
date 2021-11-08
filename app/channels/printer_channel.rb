@@ -22,7 +22,7 @@ class PrinterChannel < ApplicationCable::Channel
   end
 
   def subscribed
-    device = Device.find_by_hardware_identifier(params['hardware_identifier'])
+    device = Device.find_by(hardware_identifier: params['hardware_identifier'])
 
     return reject unless device
 

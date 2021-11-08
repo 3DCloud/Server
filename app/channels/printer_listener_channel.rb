@@ -13,7 +13,7 @@ class PrinterListenerChannel < ApplicationCable::Channel
       return
     end
 
-    @printer = Printer.find_by_id(params['id'])
+    @printer = Printer.find_by(id: params['id'])
 
     if @printer.nil?
       reject

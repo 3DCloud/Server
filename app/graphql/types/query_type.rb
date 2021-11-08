@@ -50,7 +50,7 @@ module Types
     end
 
     def client(id:)
-      Client.find_by_id(id)
+      Client.find_by(id: id)
     end
 
     def devices
@@ -58,7 +58,7 @@ module Types
     end
 
     def device(id:)
-      Device.find_by_id(id)
+      Device.find_by(id: id)
     end
 
     def uploaded_files(before: DateTime.now.utc)
@@ -74,7 +74,7 @@ module Types
     end
 
     def printer(id:)
-      Printer.find_by_id(id)
+      Printer.find_by(id: id)
     end
 
     def printer_definitions
@@ -82,7 +82,7 @@ module Types
     end
 
     def printer_definition(id:)
-      PrinterDefinition.find_by_id(id)
+      PrinterDefinition.find_by(id: id)
     end
 
     def prints
@@ -90,7 +90,7 @@ module Types
     end
 
     def print(id:)
-      Print.find_by_id(id)
+      Print.find_by(id: id)
     end
   end
 end

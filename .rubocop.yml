@@ -23,6 +23,12 @@ Performance:
   Exclude:
     - '**/spec/**/*'
 
+Rails/DynamicFindBy:
+  Enabled: true
+
+Rails/FindBy:
+  Enabled: true
+
 Rails/IndexBy:
   Enabled: true
 
