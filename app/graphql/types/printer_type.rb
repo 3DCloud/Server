@@ -7,8 +7,8 @@ module Types
     field :state, String, null: false
     field :created_at, GraphQL::Types::ISO8601DateTime, null: false
     field :updated_at, GraphQL::Types::ISO8601DateTime, null: false
-    field :device_id, ID, null: false
-    field :device, DeviceType, null: false
+    field :device_id, ID, null: true
+    field :device, DeviceType, null: true
     field :printer_definition_id, ID, null: false
     field :printer_definition, PrinterDefinitionType, null: false
     field :current_print_id, ID, null: true

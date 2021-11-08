@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_11_07_175621) do
+ActiveRecord::Schema.define(version: 2021_11_07_185621) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -126,7 +126,7 @@ ActiveRecord::Schema.define(version: 2021_11_07_175621) do
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "printer_definition_id", null: false
     t.string "name", null: false
-    t.bigint "device_id", null: false
+    t.bigint "device_id"
     t.string "state", default: "unknown", null: false
     t.bigint "current_print_id"
     t.index ["current_print_id"], name: "index_printers_on_current_print_id"

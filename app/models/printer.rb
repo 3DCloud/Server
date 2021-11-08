@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Printer < ApplicationRecord
-  belongs_to :device
+  belongs_to :device, required: false
   belongs_to :printer_definition
   has_one :g_code_settings, through: :printer_definition
   has_many :printer_materials

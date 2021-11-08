@@ -3,6 +3,7 @@
 module Types
   class MutationType < Types::BaseObject
     field :delete_uploaded_file, mutation: Mutations::DeleteUploadedFile
+    field :reassign_printer, mutation: Mutations::ReassignPrinter
     field :delete_printer_definition, mutation: Mutations::DeletePrinterDefinition
     field :create_printer_definition, mutation: Mutations::CreatePrinterDefinition
     field :update_printer_definition, mutation: Mutations::UpdatePrinterDefinition

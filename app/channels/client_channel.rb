@@ -11,15 +11,14 @@ class ClientChannel < ApplicationCable::Channel
     device = Device.find_by(hardware_identifier: args['hardware_identifier'])
 
     if device.nil?
-      device = Device.new(hardware_identifier: args['hardware_identifier'], is_portable_hardware_identifier: args['is_portable_hardware_identifier'])
+      device = Device.new(client: connection.client, hardware_identifier: args['hardware_identifier'], is_portable_hardware_identifier: args['is_portable_hardware_identifier'])
     end
 
-    device.client = connection.client
     device.device_name = args['device_name']
     device.last_seen = DateTime.now.utc
     device.save!
 
-    printer = Printer.includes(:device, :printer_definition).find_by(device: { hardware_identifier: args['hardware_identifier'] })
+    printer = Printer.includes(:device, :printer_definition).find_by(device: { client_id: connection.client.id, hardware_identifier: args['hardware_identifier'] })
 
     if printer.present?
       transmit self.class.printer_configuration_message(printer)

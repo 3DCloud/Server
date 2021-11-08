@@ -8,6 +8,7 @@ module Types
     field :is_portable_hardware_identifier, Boolean, null: false
     field :last_seen, GraphQL::Types::ISO8601DateTime, null: false
     field :client_id, ID, null: false
+    field :client, ClientType, null: false
     field :created_at, GraphQL::Types::ISO8601DateTime, null: false
     field :updated_at, GraphQL::Types::ISO8601DateTime, null: false
     field :printer, PrinterType, null: true
