@@ -1,15 +1,14 @@
 # frozen_string_literal: true
 
 module Mutations
-  class SetClientNameMutation < BaseMutation
+  class GrantClientAuthorization < BaseMutation
     argument :id, ID, required: true
-    argument :name, String, required: false
 
     type Types::ClientType
 
-    def resolve(id:, name:)
+    def resolve(id:)
       client = Client.find(id)
-      client.name = name
+      client.authorized = true
       client.save!
       client
     end

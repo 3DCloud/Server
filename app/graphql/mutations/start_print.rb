@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Mutations
-  class StartPrintMutation < BaseMutation
+  class StartPrint < BaseMutation
     argument :file_id, ID, required: true
     argument :printer_id, ID, required: true
 

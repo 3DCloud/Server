@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe Mutations::CreatePrinterMutation, type: :request do
+RSpec.describe Mutations::CreatePrinter, type: :request do
   include JwtHelper
 
   let(:query) {

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Mutations
-  class RevokeClientAuthorizationMutation < BaseMutation
+  class RevokeClientAuthorization < BaseMutation
     argument :id, ID, required: true
 
     type Types::ClientType

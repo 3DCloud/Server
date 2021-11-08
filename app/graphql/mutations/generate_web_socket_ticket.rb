@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Mutations
-  class GenerateWebSocketTicketMutation < BaseMutation
+  class GenerateWebSocketTicket < BaseMutation
     type Types::WebSocketTicketType
 
     def resolve

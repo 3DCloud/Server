@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Mutations
-  class DeleteClientMutation < BaseMutation
+  class DeleteClient < BaseMutation
     argument :id, ID, required: true
 
     field :delete_count, Int, null: false

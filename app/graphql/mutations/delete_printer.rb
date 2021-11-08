@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Mutations
-  class DeletePrinterMutation < BaseMutation
+  class DeletePrinter < BaseMutation
     field :delete_count, Int, null: false
 
     argument :id, ID, required: true
