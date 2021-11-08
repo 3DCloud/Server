@@ -7,7 +7,9 @@ module Mutations
     argument :id, ID, required: true
 
     def resolve(id:)
-      PrinterDefinition.find(id).destroy!
+      pd = PrinterDefinition.find(id)
+      pd.g_code_settings.destroy!
+      pd.destroy!
     end
   end
 end

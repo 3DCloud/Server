@@ -8,6 +8,7 @@ module Types
     field :printers, [Types::PrinterType], null: false
     field :printer_definitions, [Types::PrinterDefinitionType], null: false
     field :prints, [Types::PrintType], null: false
+    field :materials, [Types::MaterialType], null: false
 
     field :uploaded_files, [Types::UploadedFileType], null: false do
       argument :before, GraphQL::Types::ISO8601DateTime, required: false
@@ -59,6 +60,10 @@ module Types
 
     def device(id:)
       Device.find_by(id: id)
+    end
+
+    def materials
+      Material.all
     end
 
     def uploaded_files(before: DateTime.now.utc)
