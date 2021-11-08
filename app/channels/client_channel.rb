@@ -3,7 +3,7 @@
 class ClientChannel < ApplicationCable::Channel
   class << self
     def transmit_printer_configuration(printer)
-      broadcast_to printer.device.client, self.printer_configuration_message(printer)
+      broadcast_to_with_ack printer.device.client, self.printer_configuration_message(printer)
     end
   end
 
@@ -80,7 +80,7 @@ class ClientChannel < ApplicationCable::Channel
     def self.printer_configuration_message(printer)
       {
         action: 'printer_configuration',
-        printer: printer.as_json(include: [:device, :printer_definition])
+        printer: printer.as_json(include: { device: {}, ulti_g_code_settings: {}, printer_definition: { include: :g_code_settings } })
       }
     end
 end

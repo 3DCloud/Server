@@ -49,6 +49,9 @@ module Mutations
         end
 
         pd.save!
+
+        TransmitPrinterConfigurationUpdateJob.perform_later(pd.id)
+
         pd
       end
     end
