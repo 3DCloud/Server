@@ -3,9 +3,15 @@
 require 'rails_helper'
 
 RSpec.describe PrinterChannel, type: :channel do
+  let(:client) { create(:client) }
+
+  before do
+    stub_connection(client: client)
+  end
+
   describe 'subscribed' do
     it 'successfully subscribes when passed a valid hardware identifier' do
-      printer = create(:printer)
+      printer = create(:printer, device: create(:device, client: client))
 
       subscribe hardware_identifier: printer.device.hardware_identifier
 
@@ -36,16 +42,21 @@ RSpec.describe PrinterChannel, type: :channel do
 
   describe 'transmit_reconnect' do
     it 'transmits a reconnect message to the specified printer' do
-      printer = create(:printer)
+      printer = create(:printer, device: create(:device, client: client))
+      message_id = 1234
 
       subscribe hardware_identifier: printer.device.hardware_identifier
 
-      expect(SecureRandom).to receive(:hex).with(32).and_return(1234)
+      expect(SecureRandom).to receive(:hex).with(32).and_return(message_id)
+      expect(ApplicationCable::Channel).to receive(:find_subscription).with({
+        'hardware_identifier' => printer.device.hardware_identifier,
+        'channel' => 'PrinterChannel',
+      }).and_return true
 
       expect {
         thr = Thread.new { PrinterChannel.transmit_reconnect(printer: printer) }
         sleep(0.100)
-        perform :acknowledge, 'message_id' => 1234
+        perform :acknowledge, 'message_id' => message_id
         thr.join
       }.to have_broadcasted_to(printer).from_channel(PrinterChannel).with({ action: 'reconnect', message_id: 1234 })
     end

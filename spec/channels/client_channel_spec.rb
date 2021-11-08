@@ -43,7 +43,7 @@ RSpec.describe ClientChannel, type: :channel do
     end
 
     it 'updates an existing device' do
-      existing_device = create(:device, last_seen: DateTime.now.utc - 5.minutes)
+      existing_device = create(:device, client: client, last_seen: DateTime.now.utc - 5.minutes)
       new_name = 'this is my new name'
 
       subscribe

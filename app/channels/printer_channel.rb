@@ -74,10 +74,10 @@ class PrinterChannel < ApplicationCable::Channel
 
   private
     def self.ensure_online(printer)
-      raise ApplicationCable::CommunicationError, 'Printer is not connected' unless find_subscription(
+      raise ApplicationCable::CommunicationError, 'Printer is not connected' unless find_subscription({
         'hardware_identifier' => printer.device.hardware_identifier,
         'channel' => 'PrinterChannel',
-      )
+      })
     end
 
     def self.broadcast_to_with_ack(model, message, timeout = 15)
