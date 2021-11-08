@@ -9,6 +9,14 @@ module Types
     field :printer_definitions, [Types::PrinterDefinitionType], null: false
     field :prints, [Types::PrintType], null: false
 
+    field :uploaded_files, [Types::UploadedFileType], null: false do
+      argument :before, GraphQL::Types::ISO8601DateTime, required: false
+    end
+
+    field :uploaded_file, Types::UploadedFileType, null: true do
+      argument :id, ID, required: true
+    end
+
     field :client, Types::ClientType, null: true do
       argument :id, ID, required: true
     end
@@ -53,6 +61,14 @@ module Types
       Device.find_by_id(id)
     end
 
+    def uploaded_files(before: DateTime.now.utc)
+      UploadedFile.where(user: context[:current_user], created_at: ..before).order(created_at: :desc).limit(100)
+    end
+
+    def uploaded_file(id:)
+      UploadedFile.find_by(id: id)
+    end
+
     def printers
       Printer.order(:name).all
     end
@@ -75,10 +91,6 @@ module Types
 
     def print(id:)
       Print.find_by_id(id)
-    end
-
-    def get_file_download_url(id:)
-      UploadedFile.find_by!(id: id, user_id: context[:current_user].id).file.url
     end
   end
 end
