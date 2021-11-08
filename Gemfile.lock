@@ -105,7 +105,7 @@ GEM
     graphiql-rails (1.8.0)
       railties
       sprockets-rails
-    graphql (1.12.17)
+    graphql (1.12.19)
     i18n (1.8.10)
       concurrent-ruby (~> 1.0)
     jmespath (1.4.0)
@@ -249,7 +249,7 @@ DEPENDENCIES
   factory_bot_rails
   faker
   graphiql-rails
-  graphql
+  graphql (~> 1.12.17)
   jwt (~> 2.3.0)
   pg (~> 1.1)
   puma (~> 5.0)

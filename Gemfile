@@ -28,7 +28,7 @@ gem 'bootsnap', '>= 1.4.4', require: false
 gem 'rack-cors'
 
 # GraphQL for Ruby/Rails https://graphql-ruby.org/
-gem 'graphql'
+gem 'graphql', '~> 1.12.17'
 
 # Authentication
 gem 'ruby-saml', '~> 1.13.0'
