@@ -12,9 +12,9 @@ module Mutations
       upload = UploadedFile.find_by!(id: file_id, user_id: user_id)
       printer = Printer.find_by!(id: printer_id)
 
-      if printer.state != 'ready'
-        raise RuntimeError.new('Printer is not ready')
-      end
+      #if printer.state != 'ready'
+      #  raise RuntimeError.new('Printer is not ready')
+      #end
 
       print = Print.new(uploaded_file_id: upload.id, printer_id: printer.id, status: 'pending')
       print.save!

@@ -7,4 +7,8 @@ class ServerSchema < GraphQL::Schema
   rescue_from ActiveRecord::ActiveRecordError do |err|
     raise GraphQL::ExecutionError, err.message
   end
+
+  rescue_from ApplicationCable::ApplicationCableError do |err|
+    raise GraphQL::ExecutionError, err.message
+  end
 end

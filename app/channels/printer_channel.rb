@@ -2,7 +2,6 @@
 
 class PrinterChannel < ApplicationCable::Channel
   @@requests = {}
-  @@connected = Set.new
 
   class << self
     def transmit_reconnect(printer:)
@@ -31,12 +30,6 @@ class PrinterChannel < ApplicationCable::Channel
     return reject unless @printer
 
     stream_for @printer
-
-    @@connected.add(broadcasting_for(@printer))
-  end
-
-  def unsubscribed
-    @@connected.delete(broadcasting_for(@printer))
   end
 
   def acknowledge(args)
@@ -81,7 +74,10 @@ class PrinterChannel < ApplicationCable::Channel
 
   private
     def self.ensure_online(printer)
-      raise RuntimeError.new('Not connected') unless @@connected.include?(broadcasting_for(printer))
+      raise ApplicationCable::CommunicationError, 'Printer is not connected' unless find_subscription(
+        'hardware_identifier' => printer.device.hardware_identifier,
+        'channel' => 'PrinterChannel',
+      )
     end
 
     def self.broadcast_to_with_ack(model, message, timeout = 15)
@@ -99,11 +95,11 @@ class PrinterChannel < ApplicationCable::Channel
       @@requests.delete(id)
 
       unless result
-        raise RuntimeError.new('Timed out')
+        raise ActionCable::CommunicationError, 'Timed out'
       end
 
       if data[:error_message].present?
-        raise RuntimeError.new(data[:error_message])
+        raise ActionCable::AcknowledgementError, data[:error_message]
       end
     end
 
