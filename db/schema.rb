@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_11_08_221605) do
+ActiveRecord::Schema.define(version: 2021_11_09_212143) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -159,15 +159,27 @@ ActiveRecord::Schema.define(version: 2021_11_08_221605) do
   create_table "ulti_g_code_settings", force: :cascade do |t|
     t.bigint "printer_definition_id", null: false
     t.bigint "material_id", null: false
-    t.integer "hotend_temperature", null: false
     t.integer "build_plate_temperature", null: false
-    t.float "retraction_length", null: false
     t.float "end_of_print_retraction_length", null: false
-    t.float "retraction_speed", null: false
     t.integer "fan_speed", null: false
     t.integer "flow_rate", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.integer "hotend_temperature_0_25", null: false
+    t.float "retraction_length_0_25", null: false
+    t.float "retraction_speed_0_25", null: false
+    t.integer "hotend_temperature_0_40", null: false
+    t.float "retraction_length_0_40", null: false
+    t.float "retraction_speed_0_40", null: false
+    t.integer "hotend_temperature_0_60", null: false
+    t.float "retraction_length_0_60", null: false
+    t.float "retraction_speed_0_60", null: false
+    t.integer "hotend_temperature_0_80", null: false
+    t.float "retraction_length_0_80", null: false
+    t.float "retraction_speed_0_80", null: false
+    t.integer "hotend_temperature_1_00", null: false
+    t.float "retraction_length_1_00", null: false
+    t.float "retraction_speed_1_00", null: false
     t.index ["material_id"], name: "index_ulti_g_code_settings_on_material_id"
     t.index ["printer_definition_id"], name: "index_ulti_g_code_settings_on_printer_definition_id"
   end
