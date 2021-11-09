@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_11_08_081310) do
+ActiveRecord::Schema.define(version: 2021_11_08_221605) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -95,7 +95,7 @@ ActiveRecord::Schema.define(version: 2021_11_08_081310) do
   create_table "materials", force: :cascade do |t|
     t.string "name", null: false
     t.string "brand", null: false
-    t.decimal "filament_diameter", precision: 3, scale: 2, null: false
+    t.float "filament_diameter", null: false
     t.decimal "net_filament_weight", precision: 6, null: false
     t.decimal "empty_spool_weight", precision: 6, scale: 2, null: false
     t.datetime "created_at", precision: 6, null: false
@@ -161,9 +161,9 @@ ActiveRecord::Schema.define(version: 2021_11_08_081310) do
     t.bigint "material_id", null: false
     t.integer "hotend_temperature", null: false
     t.integer "build_plate_temperature", null: false
-    t.decimal "retraction_length", precision: 4, scale: 2, null: false
-    t.decimal "end_of_print_retraction_length", precision: 4, scale: 2, null: false
-    t.decimal "retraction_speed", precision: 4, scale: 1, null: false
+    t.float "retraction_length", null: false
+    t.float "end_of_print_retraction_length", null: false
+    t.float "retraction_speed", null: false
     t.integer "fan_speed", null: false
     t.integer "flow_rate", null: false
     t.datetime "created_at", precision: 6, null: false

@@ -22,7 +22,7 @@ module ApplicationCable
     end
 
     protected
-      def self.broadcast_to_with_ack(model, message, timeout = 15)
+      def self.broadcast_to_with_ack(model, message, timeout = 5)
         id = SecureRandom.hex(32)
         semaphore = Concurrent::Semaphore.new(0)
         data = { semaphore: semaphore }

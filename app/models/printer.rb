@@ -15,8 +15,7 @@ class Printer < ApplicationRecord
 
   def ulti_g_code_settings
     UltiGCodeSettings
-      .joins(printer_definition: [ :printers ], material: [ :printer_materials ])
-      .where(printer_materials: { printer_id: id })
-      .merge(PrinterMaterial.order(extruder_index: :asc))
+      .joins(printer_definition: [:printers], material: [ :printer_materials ])
+      .where('"printers"."id" = ? AND "printer_materials"."printer_id" = ?', id, id)
   end
 end

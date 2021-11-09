@@ -80,7 +80,7 @@ class ClientChannel < ApplicationCable::Channel
     def self.printer_configuration_message(printer)
       {
         action: 'printer_configuration',
-        printer: printer.as_json(include: { device: {}, ulti_g_code_settings: {}, printer_definition: { include: :g_code_settings } })
+        printer: printer.as_json(include: { device: {}, ulti_g_code_settings: { methods: 'filament_diameter' }, printer_definition: { include: :g_code_settings } })
       }
     end
 end
