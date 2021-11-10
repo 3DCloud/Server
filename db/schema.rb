@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_11_10_153320) do
+ActiveRecord::Schema.define(version: 2021_11_10_175348) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -89,6 +89,7 @@ ActiveRecord::Schema.define(version: 2021_11_10_153320) do
     t.string "color", limit: 6
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["material_id", "name"], name: "index_material_colors_on_material_id_and_name", unique: true
     t.index ["material_id"], name: "index_material_colors_on_material_id"
   end
 
@@ -100,6 +101,7 @@ ActiveRecord::Schema.define(version: 2021_11_10_153320) do
     t.decimal "empty_spool_weight", precision: 6, scale: 2, null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["name", "brand", "filament_diameter"], name: "index_materials_on_name_and_brand_and_filament_diameter", unique: true
   end
 
   create_table "printer_definitions", force: :cascade do |t|
@@ -133,6 +135,7 @@ ActiveRecord::Schema.define(version: 2021_11_10_153320) do
     t.bigint "current_print_id"
     t.index ["current_print_id"], name: "index_printers_on_current_print_id"
     t.index ["device_id"], name: "index_printers_on_device_id", unique: true
+    t.index ["name"], name: "index_printers_on_name", unique: true
     t.index ["printer_definition_id"], name: "index_printers_on_printer_definition_id"
   end
 
@@ -183,6 +186,7 @@ ActiveRecord::Schema.define(version: 2021_11_10_153320) do
     t.float "retraction_length_1_00", null: false
     t.float "retraction_speed_1_00", null: false
     t.index ["material_id"], name: "index_ulti_g_code_settings_on_material_id"
+    t.index ["printer_definition_id", "material_id"], name: "index_on_printer_definition_id_and_material_id", unique: true
     t.index ["printer_definition_id"], name: "index_ulti_g_code_settings_on_printer_definition_id"
   end
 

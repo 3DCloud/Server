@@ -2,9 +2,9 @@
 
 FactoryBot.define do
   factory :material do
-    name { 'PLA' }
+    name { Faker::Hacker.abbreviation }
     brand { 'Generic' }
-    filament_diameter { 1.75 }
+    filament_diameter { 2.85 }
     net_filament_weight { 1000 }
     empty_spool_weight { 285 }
   end
