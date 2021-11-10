@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ReplaceDecimalWithFloat < ActiveRecord::Migration[6.1]
   def up
     change_column :materials, :filament_diameter, :float

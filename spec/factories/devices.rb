@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :device do
-    client
+    association :client
     device_name { Faker::Games::Pokemon.name }
     hardware_identifier { SecureRandom.uuid }
     is_portable_hardware_identifier { true }

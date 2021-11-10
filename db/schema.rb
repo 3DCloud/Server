@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_11_09_212143) do
+ActiveRecord::Schema.define(version: 2021_11_10_153320) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -111,14 +111,16 @@ ActiveRecord::Schema.define(version: 2021_11_09_212143) do
     t.index ["name"], name: "index_printer_definitions_on_name", unique: true
   end
 
-  create_table "printer_materials", force: :cascade do |t|
+  create_table "printer_extruders", force: :cascade do |t|
     t.bigint "printer_id", null: false
     t.bigint "material_id", null: false
     t.integer "extruder_index", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["material_id"], name: "index_printer_materials_on_material_id"
-    t.index ["printer_id"], name: "index_printer_materials_on_printer_id"
+    t.string "ulti_g_code_nozzle_size", null: false
+    t.float "filament_diameter", null: false
+    t.index ["material_id"], name: "index_printer_extruders_on_material_id"
+    t.index ["printer_id"], name: "index_printer_extruders_on_printer_id"
   end
 
   create_table "printers", force: :cascade do |t|
@@ -218,8 +220,8 @@ ActiveRecord::Schema.define(version: 2021_11_09_212143) do
   add_foreign_key "devices", "clients"
   add_foreign_key "g_code_settings", "printer_definitions"
   add_foreign_key "material_colors", "materials"
-  add_foreign_key "printer_materials", "materials"
-  add_foreign_key "printer_materials", "printers"
+  add_foreign_key "printer_extruders", "materials"
+  add_foreign_key "printer_extruders", "printers"
   add_foreign_key "printers", "devices"
   add_foreign_key "printers", "printer_definitions"
   add_foreign_key "printers", "prints", column: "current_print_id"

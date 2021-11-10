@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddPerNozzleColumns < ActiveRecord::Migration[6.1]
   def up
     add_column :ulti_g_code_settings, :hotend_temperature_0_25, :integer

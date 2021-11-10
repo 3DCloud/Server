@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 class Material < ApplicationRecord
-  has_many :printer_materials
-  has_many :printers, through: :printer_materials
+  has_many :printer_extruders
+  has_many :printers, through: :printer_extruders
   has_many :ulti_g_code_settings
 
   validates :name, presence: true

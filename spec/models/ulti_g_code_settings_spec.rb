@@ -7,11 +7,23 @@ RSpec.describe UltiGCodeSettings, type: :model do
     {
       printer_definition: build(:printer_definition),
       material: build(:material),
-      hotend_temperature: 210,
+      hotend_temperature_0_25: 210,
+      retraction_length_0_25: 6.5,
+      retraction_speed_0_25: 25,
+      hotend_temperature_0_40: 210,
+      retraction_length_0_40: 6.5,
+      retraction_speed_0_40: 25,
+      hotend_temperature_0_60: 210,
+      retraction_length_0_60: 6.5,
+      retraction_speed_0_60: 25,
+      hotend_temperature_0_80: 210,
+      retraction_length_0_80: 6.5,
+      retraction_speed_0_80: 25,
+      hotend_temperature_1_00: 210,
+      retraction_length_1_00: 6.5,
+      retraction_speed_1_00: 25,
       build_plate_temperature: 60,
-      retraction_length: 6.5,
       end_of_print_retraction_length: 20,
-      retraction_speed: 25,
       fan_speed: 100,
       flow_rate: 100,
     }
@@ -24,16 +36,28 @@ RSpec.describe UltiGCodeSettings, type: :model do
   %i(
     printer_definition
     material
-    hotend_temperature
+    hotend_temperature_0_25
+    retraction_length_0_25
+    retraction_speed_0_25
+    hotend_temperature_0_40
+    retraction_length_0_40
+    retraction_speed_0_40
+    hotend_temperature_0_60
+    retraction_length_0_60
+    retraction_speed_0_60
+    hotend_temperature_0_80
+    retraction_length_0_80
+    retraction_speed_0_80
+    hotend_temperature_1_00
+    retraction_length_1_00
+    retraction_speed_1_00
     build_plate_temperature
-    retraction_length
     end_of_print_retraction_length
-    retraction_speed
     fan_speed
     flow_rate
   ).each do |attribute|
     it "is invalid when #{attribute} is missing" do
-      expect(UltiGCodeSettings.new(valid_data.except(attribute))).to be_invalid
+      expect(UltiGCodeSettings.new(valid_data.except!(attribute))).to be_invalid
     end
   end
 
@@ -45,11 +69,11 @@ RSpec.describe UltiGCodeSettings, type: :model do
     expect(UltiGCodeSettings.new(valid_data.merge(flow_rate: -1))).to be_invalid
   end
 
-  it 'is invalid if fan_speed > 100' do
-    expect(UltiGCodeSettings.new(valid_data.merge(fan_speed: 101))).to be_invalid
+  it 'is invalid if fan_speed > 150' do
+    expect(UltiGCodeSettings.new(valid_data.merge(fan_speed: 151))).to be_invalid
   end
 
-  it 'is invalid if flow_rate > 100' do
-    expect(UltiGCodeSettings.new(valid_data.merge(flow_rate: 101))).to be_invalid
+  it 'is invalid if flow_rate > 150' do
+    expect(UltiGCodeSettings.new(valid_data.merge(flow_rate: 151))).to be_invalid
   end
 end

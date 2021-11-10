@@ -69,6 +69,13 @@ RSpec.describe ClientChannel, type: :channel do
     it 'transmits the printer instance associated with the device' do
       freeze_time do
         printer = create(:printer, device: create(:device, client: client))
+        create(:g_code_settings, printer_definition: printer.printer_definition)
+        material1 = create(:material)
+        material2 = create(:material)
+        create(:printer_extruder, printer: printer, material: material1, extruder_index: 0, ulti_g_code_nozzle_size: 'size_0_60')
+        create(:printer_extruder, printer: printer, material: material2, extruder_index: 1, ulti_g_code_nozzle_size: 'size_1_00')
+        create(:ulti_g_code_settings, material: material1, printer_definition: printer.printer_definition)
+        create(:ulti_g_code_settings, material: material2, printer_definition: printer.printer_definition)
 
         subscribe
 
@@ -82,7 +89,13 @@ RSpec.describe ClientChannel, type: :channel do
         transmission = transmissions.last
         expect(transmission).to eq({
           'action' => 'printer_configuration',
-          'printer' => printer.as_json(include: { device: {}, ulti_g_code_settings: {}, printer_definition: { include: :g_code_settings } })
+          'printer' => printer.as_json.merge(
+            'device' => printer.device.as_json,
+            'printer_definition' => printer.printer_definition.as_json.merge(
+              'g_code_settings' => printer.printer_definition.g_code_settings.as_json
+            ),
+            'ulti_g_code_settings' => printer.ulti_g_code_settings.as_json
+          )
         })
       end
     end
