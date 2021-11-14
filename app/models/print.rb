@@ -16,10 +16,7 @@ class Print < ApplicationRecord
   belongs_to :printer
   belongs_to :uploaded_file
 
-  validates_presence_of :printer
-  validates_presence_of :uploaded_file
-  validates_presence_of :started_at, if: ->(obj) { obj.status != PrintStatus::PENDING }
-  validates_presence_of :completed_at, if: ->(obj) { PrintStatus::COMPLETED_STATUSES.include?(obj.status) }
-
-  validates_inclusion_of :status, in: PrintStatus::ALL_STATUSES
+  validates :printer, presence: true
+  validates :uploaded_file, presence: true
+  validates :status, inclusion: PrintStatus::ALL_STATUSES
 end
