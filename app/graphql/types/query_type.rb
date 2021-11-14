@@ -38,6 +38,10 @@ module Types
       argument :id, ID, required: true
     end
 
+    field :material, Types::MaterialType, null: true do
+      argument :id, ID, required: true
+    end
+
     field :get_file_download_url, String, null: false do
       argument :id, ID, required: true
     end
@@ -96,6 +100,10 @@ module Types
 
     def print(id:)
       Print.find_by(id: id)
+    end
+
+    def material(id:)
+      Material.find_by(id: id)
     end
   end
 end

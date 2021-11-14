@@ -7,7 +7,7 @@ RSpec.describe MaterialColor, type: :model do
     {
       material: build(:material),
       name: 'Red',
-      color: 'FFCC00',
+      color: '#FFCC00',
     }
   end
 

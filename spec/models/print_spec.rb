@@ -29,48 +29,4 @@ RSpec.describe Print, type: :model do
       completed_at: DateTime.now.utc,
     )).to be_invalid
   end
-
-  describe 'started_at' do
-    it 'is optional when status is pending' do
-      expect(Print.new(
-        status: 'pending',
-        printer: printer,
-        uploaded_file: uploaded_file,
-      )).to be_valid
-    end
-
-    %w(downloading running success canceled errored).each do |status|
-      it "is required when status is #{status}" do
-        expect(Print.new(
-          status: status,
-          printer: printer,
-          uploaded_file: uploaded_file,
-        )).to be_invalid
-      end
-    end
-  end
-
-  describe 'created_at' do
-    %w(pending downloading running).each do |status|
-      it "is optional when status is #{status}" do
-        expect(Print.new(
-          status: status,
-          printer: printer,
-          uploaded_file: uploaded_file,
-          started_at: DateTime.now.utc,
-        )).to be_valid
-      end
-    end
-
-    %w(success canceled errored).each do |status|
-      it "is required when status is #{status}" do
-        expect(Print.new(
-          status: status,
-          printer: printer,
-          uploaded_file: uploaded_file,
-          started_at: DateTime.now.utc,
-        )).to be_invalid
-      end
-    end
-  end
 end

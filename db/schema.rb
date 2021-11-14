@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_11_10_175348) do
+ActiveRecord::Schema.define(version: 2021_11_14_210648) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -86,7 +86,7 @@ ActiveRecord::Schema.define(version: 2021_11_10_175348) do
   create_table "material_colors", force: :cascade do |t|
     t.bigint "material_id", null: false
     t.string "name", null: false
-    t.string "color", limit: 6
+    t.string "color", limit: 7
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["material_id", "name"], name: "index_material_colors_on_material_id_and_name", unique: true

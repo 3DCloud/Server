@@ -2,6 +2,9 @@
 
 module Types
   class MutationType < Types::BaseObject
+    field :delete_material, mutation: Mutations::DeleteMaterial
+    field :update_material, mutation: Mutations::UpdateMaterial
+    field :create_material, mutation: Mutations::CreateMaterial
     field :delete_uploaded_file, mutation: Mutations::DeleteUploadedFile
     field :reassign_printer, mutation: Mutations::ReassignPrinter
     field :delete_printer_definition, mutation: Mutations::DeletePrinterDefinition

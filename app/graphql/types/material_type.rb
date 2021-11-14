@@ -10,6 +10,6 @@ module Types
     field :empty_spool_weight, Float, null: false
     field :created_at, GraphQL::Types::ISO8601DateTime, null: false
     field :updated_at, GraphQL::Types::ISO8601DateTime, null: false
-    field :colors, [MaterialColorType], null: false
+    field :material_colors, [MaterialColorType], null: false
   end
 end
