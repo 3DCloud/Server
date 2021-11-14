@@ -37,7 +37,7 @@ module ApplicationCable
         @@requests.delete(id)
 
         unless result
-          raise ApplicationCable::CommunicationError, 'Timed out'
+          raise ApplicationCable::CommunicationError, 'Request timed out'
         end
 
         if data[:error_message].present?
