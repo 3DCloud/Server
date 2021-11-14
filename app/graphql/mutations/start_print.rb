@@ -22,11 +22,17 @@ module Mutations
       printer.current_print = print
       printer.save!
 
-      PrinterChannel.transmit_start_print(
-        printer: printer,
-        print_id: print.id,
-        download_url: upload.file.url,
-      )
+      begin
+        PrinterChannel.transmit_start_print(
+          printer: printer,
+          print_id: print.id,
+          download_url: upload.file.url,
+          )
+      rescue
+        print.status = 'errored'
+        print.save!
+        raise
+      end
 
       print
     end
