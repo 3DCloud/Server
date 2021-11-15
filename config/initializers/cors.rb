@@ -8,13 +8,18 @@
 # Read more: https://github.com/cyu/rack-cors
 
 Rails.application.config.middleware.insert_before 0, Rack::Cors do
-  if Rails.env.development?
-    allow do
-      origins 'localhost:4200' # Angular dev server
-
-      resource '/graphql', headers: :any, methods: [:post]
-      resource '/sessions/token', headers: :any, methods: [:post]
-      resource '/sessions/logout', headers: :any, methods: [:post]
+  allow do
+    case Rails.env
+    when 'development'
+      origins 'localhost:4200'
+    when 'staging'
+      origins 'print-staging.makerepo.com'
+    when 'production'
+      origins 'localhost:4200', 'print.makerepo.com'
     end
+
+    resource '/graphql', headers: :any, methods: [:post]
+    resource '/sessions/token', headers: :any, methods: [:post]
+    resource '/sessions/logout', headers: :any, methods: [:post]
   end
 end

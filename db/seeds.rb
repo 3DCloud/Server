@@ -21,7 +21,7 @@ material = Material.create!(
 MaterialColor.create!(
   material: material,
   name: 'Black',
-  color: '202020',
+  color: '#202020',
 )
 
 GCodeSettings.create!(

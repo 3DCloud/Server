@@ -58,4 +58,14 @@ end
 
 group :development do
   gem 'graphiql-rails'
+
+  # Deployment
+  gem 'capistrano'
+  gem 'capistrano-bundler'
+  gem 'capistrano-rails'
+  gem 'capistrano-rbenv'
+  gem 'capistrano-passenger'
+  gem 'capistrano-ejson'
+  gem 'ed25519'
+  gem 'bcrypt_pbkdf'
 end

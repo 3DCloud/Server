@@ -47,7 +47,7 @@ module Server
     # JWT
     config.x.jwt.issuer = "3dcloud-#{Rails.env}"
     config.x.jwt.algorithm = 'ED25519'
-    config.x.jwt.encode_key = RbNaCl::Signatures::Ed25519::SigningKey.new(Rails.application.secrets.dig(:jwt_secret))
+    config.x.jwt.encode_key = RbNaCl::Signatures::Ed25519::SigningKey.new(Rails.application.secrets.dig(:jwt_secret) || SecureRandom.hex(16))
     config.x.jwt.decode_key = config.x.jwt.encode_key.verify_key
 
     config.autoload_paths << Rails.root.join('lib')
