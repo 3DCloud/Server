@@ -42,7 +42,7 @@ class SessionsController < ApplicationController
       expires_at: DateTime.now.utc + 1.minute
     ).save!
 
-    redirect_to "http://localhost:4200/auth/callback?#{{ code: authorization_code, return: relay_state[:return] }.to_query}"
+    redirect_to "#{Rails.configuration.x.frontend_base_url}/auth/callback?#{{ code: authorization_code, return: relay_state[:return] }.to_query}"
   end
 
   def token

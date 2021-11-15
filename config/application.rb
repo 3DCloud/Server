@@ -51,5 +51,7 @@ module Server
     config.x.jwt.decode_key = config.x.jwt.encode_key.verify_key
 
     config.autoload_paths << Rails.root.join('lib')
+
+    config.x.frontend_base_url = 'http://localhost:4200'
   end
 end
