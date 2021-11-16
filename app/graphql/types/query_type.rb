@@ -2,7 +2,8 @@
 
 module Types
   class QueryType < Types::BaseObject
-    field :current_user, Types::UserType, null: false
+    field :current_user, Types::UserType, null: true
+    field :current_ability, [Types::RuleType], null: true
     field :clients, [Types::ClientType], null: false
     field :devices, [Types::DeviceType], null: false
     field :printers, [Types::PrinterType], null: false
@@ -50,8 +51,12 @@ module Types
       context[:current_user]
     end
 
+    def current_ability
+      context[:current_ability]&.to_list
+    end
+
     def clients
-      Client.order(:name, :id).all
+      Client.order(:name, :id).accessible_by(context[:current_ability]).all
     end
 
     def client(id:)
@@ -59,7 +64,7 @@ module Types
     end
 
     def devices
-      Device.order(:hardware_identifier).all
+      Device.order(:hardware_identifier).accessible_by(context[:current_ability]).all
     end
 
     def device(id:)
@@ -71,7 +76,7 @@ module Types
     end
 
     def uploaded_files(before: DateTime.now.utc)
-      UploadedFile.where(user: context[:current_user], created_at: ..before).order(created_at: :desc).limit(100)
+      UploadedFile.where(created_at: ..before).accessible_by(context[:current_ability]).order(created_at: :desc).limit(100)
     end
 
     def uploaded_file(id:)
@@ -95,7 +100,7 @@ module Types
     end
 
     def prints
-      Print.includes(:printer, uploaded_file: { file_attachment: :blob }).order(created_at: :desc)
+      Print.includes(:printer, uploaded_file: { file_attachment: :blob }).accessible_by(context[:current_ability]).order(created_at: :desc)
     end
 
     def print(id:)

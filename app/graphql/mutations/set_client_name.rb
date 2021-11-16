@@ -9,6 +9,9 @@ module Mutations
 
     def resolve(id:, name:)
       client = Client.find(id)
+
+      authorize!(:update, client)
+
       client.name = name
       client.save!
       client

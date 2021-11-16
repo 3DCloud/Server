@@ -138,7 +138,8 @@ RSpec.describe 'Sessions', type: :request do
       is_valid: true,
       name: 'Name',
       username: 'username000',
-      email_address: 'me@example.com'
+      email_address: 'me@example.com',
+      role: 'regular_user'
     )
       allow(OneLogin::RubySaml::Response).to receive(:new) {
         OpenStruct.new(
@@ -149,6 +150,7 @@ RSpec.describe 'Sessions', type: :request do
             'name' => [name],
             'username' => [username],
             'email_address' => [email_address],
+            'role' => [role],
           })
         )
       }

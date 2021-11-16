@@ -2,12 +2,14 @@
 
 module Mutations
   class DeletePrinter < BaseMutation
-    field :delete_count, Int, null: false
+    type Types::PrinterType
 
     argument :id, ID, required: true
 
     def resolve(id:)
-      { delete_count: Printer.delete(id) }
+      printer = Printer.find(id)
+      authorize!(:delete, printer)
+      printer.destroy!
     end
   end
 end

@@ -10,10 +10,14 @@ module Mutations
     def resolve(id:, printer_definition:)
       ApplicationRecord.transaction do
         printer_definition_record = PrinterDefinition.includes(:g_code_settings, :ulti_g_code_settings).find(id)
+
+        authorize!(:update, printer_definition)
+
         printer_definition_record.name = printer_definition.name
         printer_definition_record.extruder_count = printer_definition.extruder_count
 
         unless printer_definition_record.g_code_settings
+          authorize!(:create, GCodeSettings)
           printer_definition_record.g_code_settings = GCodeSettings.new(
             printer_definition: printer_definition_record
           )
@@ -27,12 +31,14 @@ module Mutations
         printer_definition_record.ulti_g_code_settings.where.not(id: printer_definition.ulti_g_code_settings.map(&:id)).destroy_all
 
         printer_definition.ulti_g_code_settings.each do |ulti_g_code_settings|
-          ulti_g_code_settings_record = if ulti_g_code_settings.id
-            printer_definition_record.ulti_g_code_settings.find_by!(
+          if ulti_g_code_settings.id
+            ulti_g_code_settings_record = printer_definition_record.ulti_g_code_settings.find_by!(
               id: ulti_g_code_settings.id,
             )
+            authorize!(:update, ulti_g_code_settings_record)
           else
-            UltiGCodeSettings.new(
+            authorize!(:create, UltiGCodeSettings)
+            ulti_g_code_settings_record = UltiGCodeSettings.new(
               printer_definition: printer_definition_record
             )
           end

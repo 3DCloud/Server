@@ -12,6 +12,8 @@ module Mutations
     field :signed_id, String, null: false
 
     def resolve(filename:, byte_size:, checksum:, content_type:)
+      authorize!(:create, UploadedFile)
+
       blob = ActiveStorage::Blob.create_before_direct_upload!(
         filename: filename,
         byte_size: byte_size,

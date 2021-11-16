@@ -6,5 +6,6 @@ FactoryBot.define do
     username { Faker::Internet.username }
     email_address { Faker::Internet.email }
     sso_uid { Faker::Number.unique.number.to_s }
+    role { 'regular_user' }
   end
 end

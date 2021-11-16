@@ -5,6 +5,7 @@ class User < ApplicationRecord
   validates :name, presence: true
   validates :email_address, presence: true
   validates :sso_uid, presence: true, uniqueness: true
+  validates :role, presence: true, inclusion: %w(admin staff volunteer regular_user)
 
   has_many :uploaded_files
 
@@ -17,9 +18,22 @@ class User < ApplicationRecord
       user.username = attributes[:username]
       user.name = attributes[:name]
       user.email_address = attributes[:email_address]
+      user.role = attributes[:role]
       user.save!
 
       user
     end
+  end
+
+  def admin?
+    role == 'admin'
+  end
+
+  def staff?
+    %w(admin staff).include?(role)
+  end
+
+  def volunteer?
+    %w(admin staff volunteer).include?(role)
   end
 end

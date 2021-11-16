@@ -7,7 +7,9 @@ module Mutations
     argument :id, ID, required: true
 
     def resolve(id:)
-      Material.destroy(id)
+      material = Material.find(id)
+      authorize!(:delete, material)
+      material.destroy!
     end
   end
 end

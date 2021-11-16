@@ -8,6 +8,7 @@ module Mutations
 
     def resolve(id:)
       printer = Printer.find(id)
+      authorize!(:update, printer)
       PrinterChannel.transmit_reconnect(printer: printer)
       printer
     end

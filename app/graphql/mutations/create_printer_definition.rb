@@ -7,6 +7,10 @@ module Mutations
     argument :printer_definition, Types::PrinterDefinitionInput, required: true
 
     def resolve(printer_definition:)
+      authorize!(:create, PrinterDefinition)
+      authorize!(:create, GCodeSettings)
+      authorize!(:create, UltiGCodeSettings)
+
       pd = PrinterDefinition.new(
         name: printer_definition.name,
         extruder_count: printer_definition.extruder_count,

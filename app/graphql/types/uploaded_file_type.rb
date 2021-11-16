@@ -8,7 +8,13 @@ module Types
     field :content_type, String, null: true
     field :byte_size, Int, null: true
     field :checksum, String, null: true
-    field :url, String, null: true
+
+    field :url, String, null: true do
+      def authorized?(object, _, context)
+        context[:current_ability].authorize!(:download, object)
+      end
+    end
+
     field :created_at, GraphQL::Types::ISO8601DateTime, null: false
     field :estimated_duration, Int, null: true
 

@@ -7,6 +7,9 @@ module Mutations
     argument :material, Types::MaterialInput, required: true
 
     def resolve(material:)
+      authorize!(:create, Material)
+      authorize!(:create, MaterialColor)
+
       material_record = Material.new(
         name: material.name,
         brand: material.brand,

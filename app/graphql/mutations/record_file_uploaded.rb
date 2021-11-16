@@ -7,6 +7,8 @@ module Mutations
     type Types::UploadedFileType
 
     def resolve(signed_id:)
+      authorize!(:create, UploadedFile)
+
       file = UploadedFile.new(user_id: context[:current_user].id, file: signed_id)
       file.filename = file.file.filename
       file.save!

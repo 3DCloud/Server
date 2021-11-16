@@ -8,6 +8,9 @@ module Mutations
 
     def resolve(id:)
       uploaded_file = UploadedFile.find(id)
+
+      authorize!(:delete, uploaded_file)
+
       uploaded_file.file.purge_later
       uploaded_file.save!
       uploaded_file

@@ -11,4 +11,8 @@ class ServerSchema < GraphQL::Schema
   rescue_from ApplicationCable::ApplicationCableError do |err|
     raise GraphQL::ExecutionError, err.message
   end
+
+  rescue_from CanCan::AccessDenied do
+    raise GraphQL::ExecutionError, 'You are not allowed to access this resource.'
+  end
 end

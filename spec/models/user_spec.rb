@@ -3,45 +3,24 @@
 require 'rails_helper'
 
 RSpec.describe User, type: :model do
+  let(:valid_data) {
+    {
+      name: 'Name',
+      username: 'username000',
+      email_address: 'me@example.com',
+      sso_uid: '1234',
+      role: 'regular_user',
+    }
+  }
+
   it 'is valid with all required values' do
-    expect(User.new(
-      name: 'Name',
-      username: 'username000',
-      email_address: 'me@example.com',
-      sso_uid: '1234'
-    )).to be_valid
+    expect(User.new(valid_data)).to be_valid
   end
 
-  it 'is not valid without a name' do
-    expect(User.new(
-      username: 'username000',
-      email_address: 'me@example.com',
-      sso_uid: '1234'
-    )).to be_invalid
-  end
-
-  it 'is not valid without a username' do
-    expect(User.new(
-      name: 'Name',
-      email_address: 'me@example.com',
-      sso_uid: '1234'
-    )).to be_invalid
-  end
-
-  it 'is not valid without an email address' do
-    expect(User.new(
-      name: 'Name',
-      username: 'username000',
-      sso_uid: '1234'
-    )).to be_invalid
-  end
-
-  it 'is not valid without a single sign-on ID' do
-    expect(User.new(
-      name: 'Name',
-      username: 'username000',
-      email_address: 'me@example.com',
-    )).to be_invalid
+  %w(name username email_address sso_uid role).each do |attribute|
+    it "is invalid when #{attribute} is missing" do
+      expect(User.new(valid_data.except!(attribute.to_sym))).to be_invalid
+    end
   end
 
   it 'is not valid when there is a duplicate single sign-on ID' do
@@ -49,14 +28,16 @@ RSpec.describe User, type: :model do
       name: 'Name',
       username: 'username000',
       email_address: 'me@example.com',
-      sso_uid: '1234'
+      sso_uid: '1234',
+      role: 'regular_user',
     ).save!
 
     expect(User.new(
       name: 'Name',
       username: 'username000',
       email_address: 'me@example.com',
-      sso_uid: '1234'
+      sso_uid: '1234',
+      role: 'admin',
     )).to be_invalid
   end
 
@@ -65,6 +46,7 @@ RSpec.describe User, type: :model do
       'name' => ['Name'],
       'username' => ['username000'],
       'email_address' => ['me@example.com'],
+      'role' => ['regular_user'],
     }))
 
     expect(user).to be_valid
@@ -72,5 +54,6 @@ RSpec.describe User, type: :model do
     expect(user.username).to eq('username000')
     expect(user.email_address).to eq('me@example.com')
     expect(user.sso_uid).to eq('1234')
+    expect(user.role).to eq('regular_user')
   end
 end

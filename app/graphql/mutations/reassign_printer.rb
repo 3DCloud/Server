@@ -11,6 +11,9 @@ module Mutations
       printer = Printer.find(printer_id)
       other_printer = Printer.find_by(device_id: device_id)
 
+      authorize!(:update, printer)
+      authorize!(:update, other_printer)
+
       unless printer.current_print_id.nil? && (other_printer.nil? || other_printer.current_print_id.nil?)
         raise RuntimeError, 'A print is currently running. Please wait until it has completed or cancel it before reassigning.'
       end

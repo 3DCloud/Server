@@ -26,7 +26,11 @@ class ApplicationController < ActionController::API
   rescue_from RbNaCl::BadSignatureError, with: :handle_rbnacl_error
 
   def current_user
-    @current_user ||= User.find(@jwt[:sub])
+    @current_user ||= User.find_by(id: @jwt[:sub])
+  end
+
+  def current_ability
+    @current_ability ||= Ability.new(current_user)
   end
 
   private
@@ -63,6 +67,6 @@ class ApplicationController < ActionController::API
     end
 
     def render_error(name, message, status = 500)
-      render plain: message, json: { error: name, message: message }, status: status
+      render plain: message, json: { errors: [{ message: message }] }, status: status
     end
 end

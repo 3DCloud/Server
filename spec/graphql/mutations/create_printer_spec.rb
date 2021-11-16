@@ -23,7 +23,7 @@ RSpec.describe Mutations::CreatePrinter, type: :request do
     expect(ClientChannel).to receive(:transmit_printer_configuration).with(anything).and_return(true)
 
     expect {
-      execute_graphql query: query, variables: { name: printer_name, deviceId: device.id, printerDefinitionId: printer_definition.id }
+      execute_graphql query: query, variables: { name: printer_name, deviceId: device.id, printerDefinitionId: printer_definition.id }, user_role: 'admin'
     }.to change { Printer.count }.by(1)
 
     expect(response).to have_http_status(200)
@@ -33,8 +33,12 @@ RSpec.describe Mutations::CreatePrinter, type: :request do
     expect(printer.device).to eq(device)
     expect(printer.printer_definition).to eq(printer_definition)
 
-    expect(response).to have_graphql_response(
-      'id' => printer.id.to_s
-    )
+    expect(response).to have_graphql_response({
+      'data' => {
+        'createPrinter' => {
+          'id' => printer.id.to_s
+        }
+      }
+    })
   end
 end

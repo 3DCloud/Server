@@ -8,9 +8,14 @@ module Mutations
     type Types::PrintType
 
     def resolve(file_id:, printer_id:)
+      authorize!(:create, Print)
+
       user_id = context[:current_user].id
       upload = UploadedFile.find_by!(id: file_id, user_id: user_id)
       printer = Printer.find_by!(id: printer_id)
+
+      authorize!(:read, upload)
+      authorize!(:read, printer)
 
       if printer.state != 'ready'
         raise RuntimeError.new('Printer is not ready')

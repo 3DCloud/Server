@@ -9,6 +9,8 @@ module Mutations
     type Types::PrinterType
 
     def resolve(name:, device_id:, printer_definition_id:)
+      authorize!(:create, Printer)
+
       printer = Printer.new(name: name, device_id: device_id, printer_definition_id: printer_definition_id, state: 'offline')
       printer.save!
 

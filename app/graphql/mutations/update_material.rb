@@ -11,6 +11,8 @@ module Mutations
       ApplicationRecord.transaction do
         material_record = Material.includes(:material_colors).find(id)
 
+        authorize!(:update, material_record)
+
         material_record.update(
           name: material.name,
           brand: material.brand,
@@ -22,7 +24,9 @@ module Mutations
         material.material_colors.each do |material_color|
           if material_color.id
             color_record = material_record.material_colors.find(material_color.id)
+            authorize!(:update, color_record)
           else
+            authorize!(:create, MaterialColor)
             color_record = MaterialColor.new(material: material_record)
           end
 

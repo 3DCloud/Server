@@ -35,6 +35,9 @@ gem 'ruby-saml', '~> 1.13.0'
 gem 'jwt', '~> 2.3.0'
 gem 'rbnacl', '~> 7.1.1'
 
+# Permissions
+gem 'cancancan', '~> 3.3.0'
+
 gem 'ejson', '~> 1.3.0'
 gem 'ejson-rails', '~> 0.1.1'
 

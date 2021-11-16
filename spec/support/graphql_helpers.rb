@@ -2,19 +2,15 @@
 
 RSpec::Matchers.define :have_graphql_response do |params|
   match do |response|
-    graphql_field = [Types::QueryType, Types::MutationType].map { |klass| klass.fields }.reduce(&:merge).find { |_, v| v.resolver == described_class }
-
-    raise StandardError.new "#{described_class} is not registered" unless graphql_field
-
-    @actual = JSON.parse(response.body).dig('data', graphql_field[0])
+    @actual = JSON.parse(response.body)
     @actual == params
   end
 
   diffable
 end
 
-def execute_graphql(query:, variables:)
-  user = create(:user)
+def execute_graphql(query:, variables:, user_role: 'regular_user')
+  user = create(:user, role: user_role)
 
   token = jwt_encode(
     iss: jwt_issuer,

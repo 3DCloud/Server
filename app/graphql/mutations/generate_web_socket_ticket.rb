@@ -5,6 +5,8 @@ module Mutations
     type Types::WebSocketTicketType
 
     def resolve
+      authorize!(:create, WebSocketTicket)
+
       ticket = WebSocketTicket.new(
         ticket: SecureRandom.hex(64),
         user_id: context[:current_user].id,
