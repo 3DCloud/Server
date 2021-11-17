@@ -4,6 +4,7 @@ module Types
   class UploadedFileType < Types::BaseObject
     field :id, ID, null: false
     field :user, Types::UserType, null: false
+    field :user_id, ID, null: false
     field :filename, String, null: false
     field :content_type, String, null: true
     field :byte_size, Int, null: true

@@ -33,7 +33,6 @@ class Ability
     can :index, User
     can :read, User
 
-    can :index, UploadedFile
     can :read, UploadedFile
 
     can :index, Print
@@ -75,7 +74,11 @@ class Ability
       {
         action: rule.actions,
         subject: rule.subjects.map { |s| s.is_a?(Symbol) ? s : s.name },
-        conditions: rule.conditions,
+        # GraphQL converts integer IDs to strings so we have to do this
+        # this indiscriminately converts all integers to strings (i.e. also non-ID integers)... too bad!
+        conditions: rule.conditions
+                        .deep_transform_keys! { |k| k.to_s.camelize(:lower) }
+                        .deep_transform_values! { |v| v.is_a?(Integer) ? v.to_s : v },
         inverted: rule.base_behavior.nil?,
       }
     end
