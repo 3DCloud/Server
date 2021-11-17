@@ -5,30 +5,41 @@ class Ability
 
   # @param user [User]
   def initialize(user)
+    clear_aliased_actions
+
     return unless user.present?
 
     can :read, User, id: user.id
     can :update, User, id: user.id
 
+    can :index, UploadedFile, user_id: user.id
     can :create, UploadedFile
     can :read, UploadedFile, user_id: user.id
     can :update, UploadedFile, user_id: user.id
     can :download, UploadedFile, user_id: user.id
 
+    can :index, Printer
     can :read, Printer
     can :read, Material
     can :read, MaterialColor
 
+    can :index, Print, uploaded_file: { user_id: user.id }
     can :read, Print, uploaded_file: { user_id: user.id }
     can :create, Print
     can :cancel, Print, uploaded_file: { user_id: user.id }
 
     return unless user.staff?
 
+    can :index, User
     can :read, User
+
+    can :index, UploadedFile
     can :read, UploadedFile
+
+    can :index, Print
     can :read, Print
     can :cancel, Print
+
     can :read, PrinterDefinition
 
     return unless user.admin?
@@ -41,10 +52,12 @@ class Ability
     can :read, Client
     can :update, Client
 
+    can :index, PrinterDefinition
     can :read, PrinterDefinition
     can :create, PrinterDefinition
     can :update, PrinterDefinition
 
+    can :index, Material
     can :create, Material
     can :update, Material
 
@@ -63,7 +76,7 @@ class Ability
         action: rule.actions,
         subject: rule.subjects.map { |s| s.is_a?(Symbol) ? s : s.name },
         conditions: rule.conditions,
-        inverted: rule.base_behavior.nil?
+        inverted: rule.base_behavior.nil?,
       }
     end
   end

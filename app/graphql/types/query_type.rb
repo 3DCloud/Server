@@ -56,6 +56,7 @@ module Types
     end
 
     def clients
+      authorize!(:index, Client)
       Client.order(:name, :id).accessible_by(context[:current_ability]).all
     end
 
@@ -64,6 +65,7 @@ module Types
     end
 
     def devices
+      authorize!(:index, Device)
       Device.order(:hardware_identifier).accessible_by(context[:current_ability]).all
     end
 
@@ -72,10 +74,16 @@ module Types
     end
 
     def materials
-      Material.all
+      authorize!(:index, Material)
+      Material.accessible_by(context[:current_ability]).order(:name, :brand).all
+    end
+
+    def material(id:)
+      Material.find_by(id: id)
     end
 
     def uploaded_files(before: DateTime.now.utc)
+      authorize!(:index, UploadedFile)
       UploadedFile.where(created_at: ..before).accessible_by(context[:current_ability]).order(created_at: :desc).limit(100)
     end
 
@@ -84,7 +92,8 @@ module Types
     end
 
     def printers
-      Printer.order(:name).all
+      authorize!(:index, Printer)
+      Printer.accessible_by(context[:current_ability]).order(:name).all
     end
 
     def printer(id:)
@@ -92,7 +101,8 @@ module Types
     end
 
     def printer_definitions
-      PrinterDefinition.order(:name).all
+      authorize!(:index, PrinterDefinition)
+      PrinterDefinition.accessible_by(context[:current_ability]).order(:name).all
     end
 
     def printer_definition(id:)
@@ -100,15 +110,12 @@ module Types
     end
 
     def prints
+      authorize!(:index, Print)
       Print.includes(:printer, uploaded_file: { file_attachment: :blob }).accessible_by(context[:current_ability]).order(created_at: :desc)
     end
 
     def print(id:)
       Print.find_by(id: id)
-    end
-
-    def material(id:)
-      Material.find_by(id: id)
     end
   end
 end
