@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :printer_definition do
-    name { Faker::Vehicle.make_and_model }
+    sequence(:name) { |n| "PrinterDefinition#{n}" }
     driver { Faker::Creature::Animal.name.downcase }
   end
 end

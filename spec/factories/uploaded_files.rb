@@ -3,6 +3,6 @@
 FactoryBot.define do
   factory :uploaded_file do
     association :user
-    filename { Faker::File.file_name(ext: 'gcode') }
+    filename { Faker::File.unique.file_name(ext: 'gcode') }
   end
 end
