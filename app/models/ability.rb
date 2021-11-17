@@ -48,6 +48,7 @@ class Ability
     can :create, Printer
     can :update, Printer
 
+    can :index, Client
     can :read, Client
     can :update, Client
 
