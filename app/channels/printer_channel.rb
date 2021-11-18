@@ -4,7 +4,7 @@ class PrinterChannel < ApplicationCable::Channel
   class << self
     def transmit_reconnect(printer:)
       self.ensure_online(printer)
-      self.broadcast_to_with_ack printer, self.reconnect_message, 30
+      self.broadcast_to_with_ack printer, self.reconnect_message, 15
     end
 
     def transmit_start_print(printer:, print_id:, download_url:)
@@ -64,10 +64,7 @@ class PrinterChannel < ApplicationCable::Channel
 
   private
     def self.ensure_online(printer)
-      raise ApplicationCable::CommunicationError, 'Printer is not connected' unless find_subscription({
-        'device_path' => printer.device.path,
-        'channel' => 'PrinterChannel',
-      })
+      raise ApplicationCable::CommunicationError, 'Printer is not connected' if printer.state == 'offline'
     end
 
     def self.reconnect_message

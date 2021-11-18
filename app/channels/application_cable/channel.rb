@@ -2,46 +2,58 @@
 
 module ApplicationCable
   class Channel < ActionCable::Channel::Base
-    @@requests = {}
-
-    class << self
-      # Subscriptions should really have a public API... oh well!
-      def find_subscription(kwargs)
-        ActionCable.server.connections.flat_map { |conn| conn.subscriptions.send(:subscriptions)[{ **kwargs }.to_json] }.find(&:itself)
-      end
-    end
-
     def acknowledge(args)
       id = args['message_id']
+      redis = self.class.redis_instance
+      key = self.class.semaphore_name(id)
 
-      return unless @@requests.key?(id)
-
-      data = @@requests[id]
-      data[:error_message] = args['error_message']
-      data[:semaphore].release
+      begin
+        redis.rpush(key, args)
+        redis.expire(key, 10)
+      ensure
+        redis.disconnect!
+      end
     end
 
     protected
       def self.broadcast_to_with_ack(model, message, timeout = 5)
+        redis = redis_instance
         id = SecureRandom.hex(32)
-        semaphore = Concurrent::Semaphore.new(0)
-        data = { semaphore: semaphore }
+        key = semaphore_name(id)
 
-        @@requests[id] = data
         message[:message_id] = id
 
         broadcast_to model, message
 
-        result = semaphore.try_acquire(1, timeout)
+        begin
+          list, data = redis.blpop(key, timeout: timeout)
+        ensure
+          redis.del(key)
+          redis.disconnect!
+        end
 
-        @@requests.delete(id)
-
-        unless result
+        if list.nil? || data.nil?
           raise ApplicationCable::CommunicationError, 'Request timed out'
         end
 
-        if data[:error_message].present?
-          raise ApplicationCable::AcknowledgementError, data[:error_message]
+        if data['error_message'].present?
+          raise ApplicationCable::AcknowledgementError, data['error_message']
+        end
+      end
+
+    private
+      def self.semaphore_name(id)
+        "cable_acknowledgement:#{id}"
+      end
+
+      def self.redis_instance
+        host = ENV['REDIS_HOST'] || Rails.application.secrets.dig(:redis_host)
+        port = ENV['REDIS_PORT'] || Rails.application.secrets.dig(:redis_port)
+
+        if host.present? && port.present?
+          Redis.new(host: host, port: port, password: Rails.application.secrets.dig(:redis_password))
+        else
+          Redis.new(path: Rails.application.secrets['redis_socket_path'])
         end
       end
   end

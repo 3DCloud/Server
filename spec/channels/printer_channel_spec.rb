@@ -48,11 +48,6 @@ RSpec.describe PrinterChannel, type: :channel do
       subscribe device_path: printer.device.path
 
       expect(SecureRandom).to receive(:hex).with(32).and_return(message_id)
-      expect(ApplicationCable::Channel).to receive(:find_subscription).with({
-        'device_path' => printer.device.path,
-        'channel' => 'PrinterChannel',
-      }).and_return true
-
       expect {
         thr = Thread.new { PrinterChannel.transmit_reconnect(printer: printer) }
         sleep(0.100)
