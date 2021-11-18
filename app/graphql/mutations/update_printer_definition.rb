@@ -11,7 +11,7 @@ module Mutations
       ApplicationRecord.transaction do
         printer_definition_record = PrinterDefinition.includes(:g_code_settings, :ulti_g_code_settings).find(id)
 
-        authorize!(:update, printer_definition)
+        authorize!(:update, printer_definition_record)
 
         printer_definition_record.name = printer_definition.name
         printer_definition_record.extruder_count = printer_definition.extruder_count

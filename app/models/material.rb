@@ -3,7 +3,7 @@
 class Material < ApplicationRecord
   has_many :printer_extruders, dependent: :restrict_with_exception
   has_many :printers, through: :printer_extruders
-  has_many :ulti_g_code_settings, dependent: :restrict_with_exception
+  has_many :ulti_g_code_settings, dependent: :destroy
   has_many :material_colors, dependent: :destroy
 
   validates :name, presence: true, uniqueness: { scope: [ :brand, :filament_diameter ] }

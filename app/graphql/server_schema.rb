@@ -12,7 +12,7 @@ class ServerSchema < GraphQL::Schema
     raise GraphQL::ExecutionError, err.message
   end
 
-  rescue_from CanCan::AccessDenied do
-    raise GraphQL::ExecutionError, 'You are not allowed to access this resource.'
+  rescue_from CanCan::AccessDenied do |err|
+    raise GraphQL::ExecutionError, "You are not allowed to #{err.action} this resource."
   end
 end

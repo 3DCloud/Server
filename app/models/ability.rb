@@ -17,6 +17,7 @@ class Ability
     can :read, UploadedFile, user_id: user.id
     can :update, UploadedFile, user_id: user.id
     can :download, UploadedFile, user_id: user.id
+    can :delete, UploadedFile, user_id: user.id
 
     can :index, Printer
     can :read, Printer
@@ -27,6 +28,9 @@ class Ability
     can :read, Print, uploaded_file: { user_id: user.id }
     can :create, Print
     can :cancel, Print, uploaded_file: { user_id: user.id }
+
+    can :create, WebSocketTicket
+    can :read, WebSocketTicket
 
     return unless user.staff?
 
@@ -56,10 +60,15 @@ class Ability
     can :read, PrinterDefinition
     can :create, PrinterDefinition
     can :update, PrinterDefinition
+    can :delete, PrinterDefinition
 
     can :index, Material
     can :create, Material
     can :update, Material
+    can :delete, Material
+
+    can :create, MaterialColor
+    can :update, MaterialColor
 
     can :create, GCodeSettings
     can :read, GCodeSettings
