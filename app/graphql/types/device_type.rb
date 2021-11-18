@@ -3,9 +3,9 @@
 module Types
   class DeviceType < Types::BaseObject
     field :id, ID, null: false
-    field :device_name, String, null: false
-    field :hardware_identifier, String, null: false
-    field :is_portable_hardware_identifier, Boolean, null: false
+    field :name, String, null: false
+    field :path, String, null: false
+    field :serial_number, String, null: true
     field :last_seen, GraphQL::Types::ISO8601DateTime, null: false
     field :client_id, ID, null: false
     field :client, ClientType, null: false

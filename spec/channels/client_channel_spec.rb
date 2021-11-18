@@ -21,28 +21,53 @@ RSpec.describe ClientChannel, type: :channel do
   describe 'device' do
     it 'creates a new device if it does not yet exist' do
       device_name = 'hello'
-      hardware_identifier = SecureRandom.uuid
-      is_portable_hardware_identifier = true
+      device_path = 'some/path'
+      serial_number = SecureRandom.uuid
 
       subscribe
 
       freeze_time do
         expect {
           perform :device,
-            device_name: device_name,
-            hardware_identifier: hardware_identifier,
-            is_portable_hardware_identifier: is_portable_hardware_identifier
+            name: device_name,
+            path: device_path,
+            serial_number: serial_number
         }.to change { Device.count }.by(1)
 
         device = Device.last
         expect(device.client).to eq(client)
-        expect(device.hardware_identifier).to eq(hardware_identifier)
-        expect(device.is_portable_hardware_identifier).to eq(is_portable_hardware_identifier)
+        expect(device.name).to eq(device_name)
+        expect(device.path).to eq(device_path)
+        expect(device.serial_number).to eq(serial_number)
         expect(device.last_seen).to eq(DateTime.now.utc)
       end
     end
 
-    it 'updates an existing device' do
+    it 'updates an existing device when a serial number is given' do
+      existing_device = create(:device, client: client, last_seen: DateTime.now.utc - 5.minutes, serial_number: SecureRandom.hex)
+      new_name = 'this is my new name'
+
+      subscribe
+
+      freeze_time do
+        expect {
+          perform :device,
+            name: new_name,
+            path: '/some/new/path',
+            serial_number: existing_device.serial_number
+        }.to change { Device.count }.by(0)
+
+        device = Device.last
+        expect(device.id).to eq(existing_device.id)
+        expect(device.client).to eq(client)
+        expect(device.name).to eq(new_name)
+        expect(device.path).to eq(existing_device.path)
+        expect(device.serial_number).to eq(existing_device.serial_number)
+        expect(device.last_seen).to eq(DateTime.now.utc)
+      end
+    end
+
+    it 'updates an existing device when no serial number is given' do
       existing_device = create(:device, client: client, last_seen: DateTime.now.utc - 5.minutes)
       new_name = 'this is my new name'
 
@@ -51,17 +76,16 @@ RSpec.describe ClientChannel, type: :channel do
       freeze_time do
         expect {
           perform :device,
-            device_name: new_name,
-            hardware_identifier: existing_device.hardware_identifier,
-            is_portable_hardware_identifier: existing_device.is_portable_hardware_identifier
+            name: new_name,
+            path: existing_device.path
         }.to change { Device.count }.by(0)
 
         device = Device.last
         expect(device.id).to eq(existing_device.id)
         expect(device.client).to eq(client)
-        expect(device.device_name).to eq(new_name)
-        expect(device.hardware_identifier).to eq(existing_device.hardware_identifier)
-        expect(device.is_portable_hardware_identifier).to eq(existing_device.is_portable_hardware_identifier)
+        expect(device.name).to eq(new_name)
+        expect(device.path).to eq(existing_device.path)
+        expect(device.serial_number).to eq(existing_device.serial_number)
         expect(device.last_seen).to eq(DateTime.now.utc)
       end
     end
@@ -81,9 +105,9 @@ RSpec.describe ClientChannel, type: :channel do
 
         expect {
           perform :device,
-            device_name: printer.device.device_name,
-            hardware_identifier: printer.device.hardware_identifier,
-            is_portable_hardware_identifier: printer.device.is_portable_hardware_identifier
+            name: printer.device.name,
+            path: printer.device.path,
+            serial_number: printer.device.serial_number
         }.to change { Device.count }.by(0)
 
         transmission = transmissions.last

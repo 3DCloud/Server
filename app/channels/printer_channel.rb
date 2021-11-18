@@ -19,7 +19,9 @@ class PrinterChannel < ApplicationCable::Channel
   end
 
   def subscribed
-    device = Device.includes(:printer).find_by(client: connection.client, hardware_identifier: params['hardware_identifier'])
+    return reject unless connection.client
+
+    device = Device.includes(:printer).find_by(client: connection.client, path: params['device_path'])
 
     return reject unless device
 
@@ -63,7 +65,7 @@ class PrinterChannel < ApplicationCable::Channel
   private
     def self.ensure_online(printer)
       raise ApplicationCable::CommunicationError, 'Printer is not connected' unless find_subscription({
-        'hardware_identifier' => printer.device.hardware_identifier,
+        'device_path' => printer.device.path,
         'channel' => 'PrinterChannel',
       })
     end

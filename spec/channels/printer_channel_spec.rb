@@ -13,7 +13,7 @@ RSpec.describe PrinterChannel, type: :channel do
     it 'successfully subscribes when passed a valid hardware identifier' do
       printer = create(:printer, device: create(:device, client: client))
 
-      subscribe hardware_identifier: printer.device.hardware_identifier
+      subscribe device_path: printer.device.path
 
       expect(subscription).to be_confirmed
       expect(subscription).to have_stream_for(printer)
@@ -22,13 +22,13 @@ RSpec.describe PrinterChannel, type: :channel do
     it 'rejects devices that are not associated to a printer' do
       device = create(:device)
 
-      subscribe hardware_identifier: device.hardware_identifier
+      subscribe device_path: device.path
 
       expect(subscription).to be_rejected
     end
 
     it 'rejects unknown hardware IDs' do
-      subscribe hardware_identifier: 'asdf1234'
+      subscribe device_path: 'asdf1234'
 
       expect(subscription).to be_rejected
     end
@@ -45,11 +45,11 @@ RSpec.describe PrinterChannel, type: :channel do
       printer = create(:printer, device: create(:device, client: client))
       message_id = 1234
 
-      subscribe hardware_identifier: printer.device.hardware_identifier
+      subscribe device_path: printer.device.path
 
       expect(SecureRandom).to receive(:hex).with(32).and_return(message_id)
       expect(ApplicationCable::Channel).to receive(:find_subscription).with({
-        'hardware_identifier' => printer.device.hardware_identifier,
+        'device_path' => printer.device.path,
         'channel' => 'PrinterChannel',
       }).and_return true
 

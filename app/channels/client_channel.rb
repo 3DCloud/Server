@@ -8,27 +8,27 @@ class ClientChannel < ApplicationCable::Channel
   end
 
   def device(args)
-    device = Device.find_by(hardware_identifier: args['hardware_identifier'])
+    device = Device.includes(printer: :printer_definition)
+                   .find_by('(client_id = ? AND path = ?) OR serial_number = ?', connection.client.id, args['path'], args['serial_number'])
 
     if device.nil?
-      device = Device.new(client: connection.client, hardware_identifier: args['hardware_identifier'], is_portable_hardware_identifier: args['is_portable_hardware_identifier'])
+      device = Device.new(client: connection.client, path: args['path'], serial_number: args['serial_number'])
     end
 
-    device.device_name = args['device_name']
-    device.last_seen = DateTime.now.utc
-    device.save!
+    device.update!(
+      name: args['name'],
+      last_seen: DateTime.now.utc
+    )
 
-    printer = Printer.includes(:device, :printer_definition).find_by(device: { client_id: connection.client.id, hardware_identifier: args['hardware_identifier'] })
-
-    if printer.present?
-      transmit self.class.printer_configuration_message(printer)
+    if device.printer.present?
+      transmit self.class.printer_configuration_message(device.printer)
     end
   end
 
   def printer_states(args)
     ApplicationRecord.transaction do
       Printer.for_client(connection.client.id).includes(:device, :current_print).each do |printer|
-        state = args['printers'][printer.device.hardware_identifier]
+        state = args['printers'][printer.device.path]
 
         if state
           printer.state = state['printer_state']
@@ -52,6 +52,7 @@ class ClientChannel < ApplicationCable::Channel
 
   private
     def subscribed
+      return reject unless connection.client
       stream_for connection.client
     end
 
