@@ -38,7 +38,6 @@ module Mutations
         ugs.save!
       end
 
-      pd.g_code_settings.save!
       pd.save!
       pd
     end

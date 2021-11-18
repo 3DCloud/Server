@@ -6,5 +6,5 @@ class PrinterDefinition < ApplicationRecord
   has_many :ulti_g_code_settings, dependent: :destroy
   has_many :materials, through: :ulti_g_code_settings
 
-  validates_uniqueness_of :name
+  validates :name, uniqueness: true
 end
