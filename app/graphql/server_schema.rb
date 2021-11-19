@@ -4,6 +4,10 @@ class ServerSchema < GraphQL::Schema
   mutation(Types::MutationType)
   query(Types::QueryType)
 
+  rescue_from ActiveRecord::RecordNotDestroyed do |err|
+    raise GraphQL::ExecutionError, "#{err.message}. #{err.record.errors.map { |re| re.message }.join('. ')}."
+  end
+
   rescue_from ActiveRecord::ActiveRecordError do |err|
     raise GraphQL::ExecutionError, err.message
   end
