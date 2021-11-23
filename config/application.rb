@@ -53,5 +53,12 @@ module Server
     config.autoload_paths << Rails.root.join('lib')
 
     config.x.frontend_base_url = 'http://localhost:4200'
+
+    config.after_initialize do
+      Printer.in_batches.each_record do |printer|
+        printer.state = 'offline'
+        printer.save!
+      end
+    end
   end
 end

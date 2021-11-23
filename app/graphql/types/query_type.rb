@@ -10,6 +10,7 @@ module Types
     field :printer_definitions, [Types::PrinterDefinitionType], null: false
     field :prints, [Types::PrintType], null: false
     field :materials, [Types::MaterialType], null: false
+    field :material_colors, [Types::MaterialColorType], null: false
 
     field :uploaded_files, [Types::UploadedFileType], null: false do
       argument :before, GraphQL::Types::ISO8601DateTime, required: false
@@ -73,9 +74,18 @@ module Types
       Device.find_by(id: id)
     end
 
-    def materials
+    def materials(only_with_colors: true)
       authorize!(:index, Material)
-      Material.accessible_by(context[:current_ability]).order(:name, :brand).all
+      query = Material.accessible_by(context[:current_ability])
+      if only_with_colors
+        query = query.joins('INNER JOIN "material_colors" ON "material_colors"."material_id" = "materials"."id"').distinct
+      end
+      query.order(:name, :brand).all
+    end
+
+    def material_colors
+      authorize!(:index, MaterialColor)
+      MaterialColor.accessible_by(context[:current_ability]).order(:name).all
     end
 
     def material(id:)

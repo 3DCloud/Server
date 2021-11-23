@@ -2,6 +2,8 @@
 
 module Types
   class MutationType < Types::BaseObject
+    field :update_printer, mutation: Mutations::UpdatePrinter
+    field :change_material, mutation: Mutations::ChangeMaterial
     field :delete_material, mutation: Mutations::DeleteMaterial
     field :update_material, mutation: Mutations::UpdateMaterial
     field :create_material, mutation: Mutations::CreateMaterial

@@ -96,8 +96,10 @@ RSpec.describe ClientChannel, type: :channel do
         create(:g_code_settings, printer_definition: printer.printer_definition)
         material1 = create(:material)
         material2 = create(:material)
-        create(:printer_extruder, printer: printer, material: material1, extruder_index: 0, ulti_g_code_nozzle_size: 'size_0_60')
-        create(:printer_extruder, printer: printer, material: material2, extruder_index: 1, ulti_g_code_nozzle_size: 'size_1_00')
+        material_color1 = create(:material_color, material: material1)
+        material_color2 = create(:material_color, material: material2)
+        create(:printer_extruder, printer: printer, material_color: material_color1, extruder_index: 0, ulti_g_code_nozzle_size: 'size_0_60')
+        create(:printer_extruder, printer: printer, material_color: material_color2, extruder_index: 1, ulti_g_code_nozzle_size: 'size_1_00')
         create(:ulti_g_code_settings, material: material1, printer_definition: printer.printer_definition)
         create(:ulti_g_code_settings, material: material2, printer_definition: printer.printer_definition)
 

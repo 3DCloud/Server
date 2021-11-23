@@ -4,7 +4,7 @@ module Mutations
   class DeleteClient < BaseMutation
     argument :id, ID, required: true
 
-    field :delete_count, Int, null: false
+    type Types::ClientType
 
     def resolve(id:)
       client = Client.find(id)

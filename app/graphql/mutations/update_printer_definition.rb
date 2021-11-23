@@ -16,17 +16,28 @@ module Mutations
         printer_definition_record.name = printer_definition.name
         printer_definition_record.extruder_count = printer_definition.extruder_count
 
-        unless printer_definition_record.g_code_settings
+        if printer_definition_record.g_code_settings
+          authorize!(:update, printer_definition_record.g_code_settings)
+        else
           authorize!(:create, GCodeSettings)
           printer_definition_record.g_code_settings = GCodeSettings.new(
             printer_definition: printer_definition_record
           )
         end
 
-        printer_definition_record.g_code_settings.start_g_code = printer_definition.g_code_settings.start_g_code
-        printer_definition_record.g_code_settings.end_g_code = printer_definition.g_code_settings.end_g_code
-        printer_definition_record.g_code_settings.cancel_g_code = printer_definition.g_code_settings.cancel_g_code
-        printer_definition_record.g_code_settings.save!
+        if printer_definition.thumbnail_signed_id
+          if printer_definition_record.thumbnail
+            printer_definition_record.thumbnail.purge_later
+          end
+
+          printer_definition_record.thumbnail = printer_definition.thumbnail_signed_id
+        end
+
+        printer_definition_record.g_code_settings.update!(
+          start_g_code: printer_definition.g_code_settings.start_g_code,
+          end_g_code: printer_definition.g_code_settings.end_g_code,
+          cancel_g_code: printer_definition.g_code_settings.cancel_g_code
+        )
 
         printer_definition_record.ulti_g_code_settings.where.not(id: printer_definition.ulti_g_code_settings.map(&:id)).destroy_all
 

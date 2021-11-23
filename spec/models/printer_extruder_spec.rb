@@ -6,7 +6,7 @@ RSpec.describe PrinterExtruder, type: :model do
   let(:valid_data) do
     {
       printer: build(:printer),
-      material: build(:material),
+      material_color: build(:material_color, material: build(:material)),
       extruder_index: 0,
       ulti_g_code_nozzle_size: 'size_0_40',
       filament_diameter: 2.85,
@@ -17,7 +17,7 @@ RSpec.describe PrinterExtruder, type: :model do
     expect(PrinterExtruder.new(valid_data)).to be_valid
   end
 
-  %i(printer material extruder_index ulti_g_code_nozzle_size filament_diameter).each do |attribute|
+  %i(printer material_color extruder_index filament_diameter).each do |attribute|
     it "is invalid when #{attribute} is missing" do
       expect(PrinterExtruder.new(valid_data.except!(attribute))).to be_invalid
     end

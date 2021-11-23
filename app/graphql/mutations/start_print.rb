@@ -32,7 +32,7 @@ module Mutations
           printer: printer,
           print_id: print.id,
           download_url: upload.file.url,
-          )
+        )
       rescue
         print.status = 'errored'
         print.save!

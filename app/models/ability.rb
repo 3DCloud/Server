@@ -9,6 +9,8 @@ class Ability
 
     return unless user.present?
 
+    can :create, ActiveStorage::Blob
+
     can :read, User, id: user.id
     can :update, User, id: user.id
 
@@ -18,6 +20,10 @@ class Ability
     can :update, UploadedFile, user_id: user.id
     can :download, UploadedFile, user_id: user.id
     can :delete, UploadedFile, user_id: user.id
+
+    can :read, PrinterExtruder
+
+    can :read, PrinterDefinition
 
     can :index, Printer
     can :read, Printer
@@ -43,7 +49,9 @@ class Ability
     can :read, Print
     can :cancel, Print
 
-    can :read, PrinterDefinition
+    # TODO: extruders should be created automatically when instance printer is saved, which is an admin only thing
+    can :create, PrinterExtruder
+    can :update, PrinterExtruder
 
     return unless user.admin?
 
@@ -51,10 +59,12 @@ class Ability
 
     can :create, Printer
     can :update, Printer
+    can :delete, Printer
 
     can :index, Client
     can :read, Client
     can :update, Client
+    can :delete, Client
 
     can :index, PrinterDefinition
     can :read, PrinterDefinition
@@ -67,6 +77,7 @@ class Ability
     can :update, Material
     can :delete, Material
 
+    can :index, MaterialColor
     can :create, MaterialColor
     can :update, MaterialColor
 

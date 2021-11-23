@@ -4,6 +4,6 @@ FactoryBot.define do
   factory :material_color do
     association :material
     name { 'Red' }
-    color { 'FFCC00' }
+    color { '#FFCC00' }
   end
 end

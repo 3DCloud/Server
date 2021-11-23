@@ -11,21 +11,26 @@ module Mutations
       authorize!(:create, GCodeSettings)
       authorize!(:create, UltiGCodeSettings)
 
-      pd = PrinterDefinition.new(
+      printer_definition_record = PrinterDefinition.new(
         name: printer_definition.name,
         extruder_count: printer_definition.extruder_count,
         driver: 'marlin'
       )
 
-      pd.g_code_settings = GCodeSettings.new(
+      if printer_definition.thumbnail_signed_id
+        printer_definition_record.thumbnail = printer_definition.thumbnail_signed_id
+      end
+
+      printer_definition_record.g_code_settings = GCodeSettings.new(
         start_g_code: printer_definition.g_code_settings.start_g_code,
         end_g_code: printer_definition.g_code_settings.end_g_code,
         cancel_g_code: printer_definition.g_code_settings.cancel_g_code,
       )
+      printer_definition_record.g_code_settings.save!
 
       printer_definition.ulti_g_code_settings.each do |input|
         ugs = UltiGCodeSettings.new(
-          printer_definition: pd,
+          printer_definition: printer_definition_record,
           material_id: input.material_id,
           hotend_temperature: input.hotend_temperature,
           build_plate_temperature: input.build_plate_temperature,
@@ -34,12 +39,11 @@ module Mutations
           retraction_speed: input.retraction_speed,
           fan_speed: input.fan_speed,
           flow_rate: input.flow_rate,
-        )
-        ugs.save!
+        ).save!
       end
 
-      pd.save!
-      pd
+      printer_definition_record.save!
+      printer_definition_record
     end
   end
 end

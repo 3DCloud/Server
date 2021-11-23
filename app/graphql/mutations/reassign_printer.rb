@@ -20,7 +20,7 @@ module Mutations
 
       ApplicationRecord.transaction do
         if other_printer.present?
-          other_printer.device_id = nil
+          other_printer.device_id = printer.device_id
           other_printer.save!
           other_printer.state = 'offline'
         end
