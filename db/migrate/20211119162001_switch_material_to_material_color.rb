@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class SwitchMaterialToMaterialColor < ActiveRecord::Migration[6.1]
   def change
     remove_reference :printer_extruders, :material

@@ -26,7 +26,7 @@ class ApplicationController < ActionController::API
   rescue_from RbNaCl::BadSignatureError, with: :handle_rbnacl_error
 
   def current_user
-    @current_user ||= User.find_by(id: @jwt[:sub])
+    @current_user ||= @jwt ? User.find_by(id: @jwt[:sub]) : nil
   end
 
   def current_ability
@@ -35,10 +35,10 @@ class ApplicationController < ActionController::API
 
   private
     def verify_access_token
-      raise Unauthorized unless request.headers['Authorization'] && request.headers['Authorization'].start_with?('Bearer ')
-
       token = request.headers['Authorization'][7..]
       @jwt = jwt_decode_and_verify(token)
+    rescue JWT::DecodeError
+      @jwt = nil
     end
 
     # @param err [BadRequest]

@@ -9,7 +9,7 @@ module Mutations
 
       ticket = WebSocketTicket.new(
         ticket: SecureRandom.hex(64),
-        user_id: context[:current_user].id,
+        user_id: context[:current_user]&.id,
         expires_at: DateTime.now.utc + 1.minute,
       )
 

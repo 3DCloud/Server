@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Mutations
   class ChangeMaterial < BaseMutation
     type Types::PrinterExtruderType

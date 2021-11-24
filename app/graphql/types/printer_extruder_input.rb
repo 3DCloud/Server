@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Types
   class PrinterExtruderInput < Types::BaseInputObject
     argument :extruder_index, Int, required: true

@@ -3,7 +3,7 @@
 module Types
   class QueryType < Types::BaseObject
     field :current_user, Types::UserType, null: true
-    field :current_ability, [Types::RuleType], null: true
+    field :current_ability, [Types::RuleType], null: false
     field :clients, [Types::ClientType], null: false
     field :devices, [Types::DeviceType], null: false
     field :printers, [Types::PrinterType], null: false

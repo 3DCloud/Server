@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Mutations
   class UpdatePrinter < BaseMutation
     type Types::PrinterType
@@ -10,6 +12,7 @@ module Mutations
     def resolve(id:, printer:)
       ApplicationRecord.transaction do
         printer_record = Printer.includes(:printer_extruders, :printer_definition).find(id)
+        authorize!(:update, printer_record)
 
         if printer_record.printer_definition.extruder_count != printer.printer_extruders.length
           raise 'Unexpected number of extruders'
@@ -17,6 +20,7 @@ module Mutations
 
         printer.printer_extruders.each do |extruder|
           extruder_record = printer_record.printer_extruders.find { |ext| ext.extruder_index == extruder.extruder_index } || PrinterExtruder.new(printer: printer_record, extruder_index: extruder.extruder_index)
+          authorize!(:update, printer_record)
           extruder_record.update!(
             ulti_g_code_nozzle_size: extruder.ulti_g_code_nozzle_size
           )

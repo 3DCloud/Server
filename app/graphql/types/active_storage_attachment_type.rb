@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Types
   class ActiveStorageAttachmentType < Types::BaseObject
     field :content_type, String, null: false
