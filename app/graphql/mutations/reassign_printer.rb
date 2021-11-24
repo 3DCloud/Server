@@ -14,20 +14,33 @@ module Mutations
       authorize!(:update, printer)
       authorize!(:update, other_printer)
 
-      unless printer.current_print_id.nil? && (other_printer.nil? || other_printer.current_print_id.nil?)
-        raise RuntimeError, 'A print is currently running. Please wait until it has completed or cancel it before reassigning.'
-      end
-
       ApplicationRecord.transaction do
-        if other_printer.present?
-          other_printer.device_id = printer.device_id
-          other_printer.save!
-          other_printer.state = 'offline'
+        printer.device_id = device_id
+
+        if other_printer
+          printer.assign_attributes(
+            current_print_id: other_printer.current_print_id,
+            state: other_printer.state
+          )
+
+          other_printer.update!(
+            device_id: nil,
+            current_print_id: nil,
+            state: 'offline'
+          )
         end
 
-        printer.device_id = device_id
         printer.save!
       end
+
+      begin
+        unless %w(offline disconnected).include?(printer.state)
+          ClientChannel.transmit_printer_configuration printer
+        end
+      rescue => err
+        Rails.logger.error err
+      end
+
       printer
     end
   end

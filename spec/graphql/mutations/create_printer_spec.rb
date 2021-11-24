@@ -20,8 +20,6 @@ RSpec.describe Mutations::CreatePrinter, type: :request do
     device = create(:device)
     printer_definition = create(:printer_definition)
 
-    expect(ClientChannel).to receive(:transmit_printer_configuration).with(anything).and_return(true)
-
     expect {
       execute_graphql query: query, variables: { name: printer_name, deviceId: device.id, printerDefinitionId: printer_definition.id }, user_role: 'admin'
     }.to change { Printer.count }.by(1)
