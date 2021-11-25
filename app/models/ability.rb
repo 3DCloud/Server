@@ -14,6 +14,7 @@ class Ability
     can :read, PrinterExtruder
     can :read, Material
     can :read, MaterialColor
+    can :read, Print
 
     can :create, WebSocketTicket
     can :read, WebSocketTicket
@@ -32,8 +33,9 @@ class Ability
     can :download, UploadedFile, user_id: user.id
     can :delete, UploadedFile, user_id: user.id
 
+    can :reconnect, Printer
+
     can :index, Print, uploaded_file: { user_id: user.id }
-    can :read, Print, uploaded_file: { user_id: user.id }
     can :create, Print
     can :cancel, Print, uploaded_file: { user_id: user.id }
 

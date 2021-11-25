@@ -157,6 +157,7 @@ type Print {
   status: String!
   updatedAt: ISO8601DateTime!
   uploadedFile: UploadedFile!
+  userId: ID!
 }
 
 type Printer {

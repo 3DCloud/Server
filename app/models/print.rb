@@ -19,4 +19,6 @@ class Print < ApplicationRecord
   validates :printer, presence: true
   validates :uploaded_file, presence: true
   validates :status, inclusion: PrintStatus::ALL_STATUSES
+
+  delegate :user_id, to: :uploaded_file
 end
