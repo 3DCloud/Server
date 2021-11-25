@@ -33,8 +33,6 @@ class Ability
     can :download, UploadedFile, user_id: user.id
     can :delete, UploadedFile, user_id: user.id
 
-    can :reconnect, Printer
-
     can :index, Print, uploaded_file: { user_id: user.id }
     can :create, Print
     can :cancel, Print, uploaded_file: { user_id: user.id }
@@ -45,6 +43,8 @@ class Ability
     can :read, User
 
     can :read, UploadedFile
+
+    can :reconnect, Printer
 
     can :index, Print
     can :read, Print
