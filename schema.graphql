@@ -67,7 +67,6 @@ type Material {
   brand: String!
   createdAt: ISO8601DateTime!
   emptySpoolWeight: Float!
-  filamentDiameter: Float!
   id: ID!
   materialColors: [MaterialColor!]!
   name: String!
@@ -91,7 +90,6 @@ input MaterialColorInput {
 input MaterialInput {
   brand: String!
   emptySpoolWeight: Int!
-  filamentDiameter: Float!
   materialColors: [MaterialColorInput!]!
   name: String!
   netFilamentWeight: Int!
@@ -103,7 +101,7 @@ type Mutation {
   createMaterial(material: MaterialInput!): Material
   createPrinter(deviceId: ID!, name: String!, printerDefinitionId: ID!): Printer
   createPrinterDefinition(printerDefinition: PrinterDefinitionInput!): PrinterDefinition
-  createUploadFileRequest(byteSize: Int!, checksum: String!, contentType: String!, filename: String!): CreateUploadFileRequestPayload
+  createUploadFileRequest(byteSize: Int!, checksum: String!, contentType: String!, filename: String!, publiclyAccessible: Boolean): CreateUploadFileRequestPayload
   deleteClient(id: ID!): Client
   deleteMaterial(id: ID!): Material
   deletePrinter(id: ID!): Printer
@@ -182,6 +180,7 @@ type PrinterDefinition {
   createdAt: ISO8601DateTime!
   driver: String!
   extruderCount: Int!
+  filamentDiameter: Float!
   gCodeSettings: GCodeSettings
   id: ID!
   materials: [Material!]!
@@ -193,6 +192,7 @@ type PrinterDefinition {
 
 input PrinterDefinitionInput {
   extruderCount: Int!
+  filamentDiameter: Float!
   gCodeSettings: GCodeSettingsInput
   name: String!
   thumbnailSignedId: String
@@ -202,7 +202,6 @@ input PrinterDefinitionInput {
 type PrinterExtruder {
   createdAt: ISO8601DateTime!
   extruderIndex: Int!
-  filamentDiameter: Float
   id: ID!
   materialColor: MaterialColor
   materialColorId: ID
@@ -224,7 +223,7 @@ input PrinterInput {
 type Query {
   client(id: ID!): Client
   clients: [Client!]!
-  currentAbility: [Rule!]
+  currentAbility: [Rule!]!
   currentUser: User
   device(id: ID!): Device
   devices: [Device!]!
@@ -236,7 +235,7 @@ type Query {
   printer(id: ID!): Printer
   printerDefinition(id: ID!): PrinterDefinition
   printerDefinitions: [PrinterDefinition!]!
-  printers: [Printer!]!
+  printers(state: [String!]): [Printer!]!
   prints: [Print!]!
   uploadedFile(id: ID!): UploadedFile
   uploadedFiles(before: ISO8601DateTime): [UploadedFile!]!
@@ -289,6 +288,7 @@ type UploadedFile {
 }
 
 type User {
+  avatar: ActiveStorageAttachment!
   createdAt: ISO8601DateTime!
   emailAddress: String!
   name: String!

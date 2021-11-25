@@ -13,7 +13,6 @@ printer_definition = PrinterDefinition.create_with(
 material = Material.create!(
   name: 'PLA',
   brand: 'Generic',
-  filament_diameter: 2.85,
   net_filament_weight: 1000,
   empty_spool_weight: 285,
 )

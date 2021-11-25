@@ -6,9 +6,8 @@ class Material < ApplicationRecord
   has_many :ulti_g_code_settings, dependent: :destroy
   has_many :material_colors, dependent: :destroy
 
-  validates :name, presence: true, uniqueness: { scope: [ :brand, :filament_diameter ] }
-  validates :brand, presence: true, uniqueness: { scope: [ :name, :filament_diameter ] }
-  validates :filament_diameter, numericality: { greater_than: 0, less_than: 10 }
+  validates :name, presence: true, uniqueness: { scope: [ :brand ] }
+  validates :brand, presence: true
   validates :net_filament_weight, numericality: { greater_than: 0, less_than: 100_000 }
   validates :empty_spool_weight, numericality: { greater_than: 0, less_than: 1_000 }
 end

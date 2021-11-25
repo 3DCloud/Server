@@ -71,7 +71,7 @@ module Mutations
 
         printer_definition_record.save!
 
-        TransmitPrinterConfigurationUpdateJob.perform_later(printer_definition_record.id)
+        TransmitPrinterConfigurationUpdateJob.perform_later(printer_definition_id: printer_definition_record.id)
 
         printer_definition_record
       end

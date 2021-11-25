@@ -10,8 +10,8 @@ RSpec.describe Printer, type: :model do
       material2 = create(:material)
       material_color1 = create(:material_color, material: material1)
       material_color2 = create(:material_color, material: material2)
-      printer_extruder1 = create(:printer_extruder, printer: printer, material_color: material_color1, extruder_index: 0, ulti_g_code_nozzle_size: 'size_0_60')
-      printer_extruder2 = create(:printer_extruder, printer: printer, material_color: material_color2, extruder_index: 1, ulti_g_code_nozzle_size: 'size_1_00')
+      create(:printer_extruder, printer: printer, material_color: material_color1, extruder_index: 0, ulti_g_code_nozzle_size: 'size_0_60')
+      create(:printer_extruder, printer: printer, material_color: material_color2, extruder_index: 1, ulti_g_code_nozzle_size: 'size_1_00')
       ulti_g_code_settings1 = create(:ulti_g_code_settings, material: material1, printer_definition: printer.printer_definition)
       ulti_g_code_settings2 = create(:ulti_g_code_settings, material: material2, printer_definition: printer.printer_definition)
 
@@ -25,7 +25,7 @@ RSpec.describe Printer, type: :model do
           retraction_speed: ulti_g_code_settings1.retraction_speed_0_60,
           fan_speed: ulti_g_code_settings1.fan_speed,
           flow_rate: ulti_g_code_settings1.flow_rate,
-          filament_diameter: printer_extruder1.filament_diameter,
+          filament_diameter: printer.printer_definition.filament_diameter,
           created_at: ulti_g_code_settings1.created_at,
           updated_at: ulti_g_code_settings1.updated_at,
         },
@@ -38,7 +38,7 @@ RSpec.describe Printer, type: :model do
           retraction_speed: ulti_g_code_settings2.retraction_speed_1_00,
           fan_speed: ulti_g_code_settings2.fan_speed,
           flow_rate: ulti_g_code_settings2.flow_rate,
-          filament_diameter: printer_extruder2.filament_diameter,
+          filament_diameter: printer.printer_definition.filament_diameter,
           created_at: ulti_g_code_settings2.created_at,
           updated_at: ulti_g_code_settings2.updated_at,
         }

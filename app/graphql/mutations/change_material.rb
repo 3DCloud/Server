@@ -23,6 +23,8 @@ module Mutations
         material_color_id: material_color_id,
       )
 
+      TransmitPrinterConfigurationUpdateJob.perform_later(printer_id: printer_extruder.printer_id)
+
       printer_extruder
     end
   end

@@ -29,7 +29,7 @@ module Mutations
       printer_definition_record.g_code_settings.save!
 
       printer_definition.ulti_g_code_settings.each do |input|
-        ugs = UltiGCodeSettings.new(
+        UltiGCodeSettings.new(
           printer_definition: printer_definition_record,
           material_id: input.material_id,
           hotend_temperature: input.hotend_temperature,

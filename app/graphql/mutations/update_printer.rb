@@ -19,12 +19,14 @@ module Mutations
         end
 
         printer.printer_extruders.each do |extruder|
-          extruder_record = printer_record.printer_extruders.find { |ext| ext.extruder_index == extruder.extruder_index } || PrinterExtruder.new(printer: printer_record, extruder_index: extruder.extruder_index)
+          extruder_record = printer_record.printer_extruders.find { |ext| ext&.extruder_index == extruder.extruder_index } || PrinterExtruder.new(printer: printer_record, extruder_index: extruder.extruder_index)
           authorize!(:update, printer_record)
           extruder_record.update!(
             ulti_g_code_nozzle_size: extruder.ulti_g_code_nozzle_size
           )
         end
+
+        TransmitPrinterConfigurationUpdateJob.perform_later(printer_id: id)
 
         printer_record
       end

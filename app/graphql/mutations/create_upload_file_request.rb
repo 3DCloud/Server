@@ -6,15 +6,20 @@ module Mutations
     argument :byte_size, Int, required: true
     argument :checksum, String, required: true
     argument :content_type, String, required: true
+    argument :publicly_accessible, Boolean, required: false
 
     field :url, String, null: false
     field :headers, GraphQL::Types::JSON, null: false
     field :signed_id, String, null: false
 
-    def resolve(filename:, byte_size:, checksum:, content_type:)
+    def resolve(filename:, byte_size:, checksum:, content_type:, publicly_accessible: false)
       authorize!(:create, ActiveStorage::Blob)
 
+      default_service = Rails.configuration.active_storage.service
+      service_name = publicly_accessible ? "#{default_service}_public".to_sym : default_service
+
       blob = ActiveStorage::Blob.create_before_direct_upload!(
+        service_name: service_name,
         filename: filename,
         byte_size: byte_size,
         checksum: checksum,

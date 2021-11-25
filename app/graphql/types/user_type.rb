@@ -7,5 +7,10 @@ module Types
     field :email_address, String, null: false
     field :created_at, GraphQL::Types::ISO8601DateTime, null: false
     field :updated_at, GraphQL::Types::ISO8601DateTime, null: false
+    field :avatar, Types::ActiveStorageAttachmentType, null: false
+
+    def avatar_url
+      object.avatar.attachment
+    end
   end
 end

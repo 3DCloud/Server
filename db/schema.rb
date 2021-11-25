@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_11_24_231908) do
+ActiveRecord::Schema.define(version: 2021_11_25_163100) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -96,12 +96,10 @@ ActiveRecord::Schema.define(version: 2021_11_24_231908) do
   create_table "materials", force: :cascade do |t|
     t.string "name", null: false
     t.string "brand", null: false
-    t.float "filament_diameter", null: false
     t.decimal "net_filament_weight", precision: 6, null: false
     t.decimal "empty_spool_weight", precision: 6, scale: 2, null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["name", "brand", "filament_diameter"], name: "index_materials_on_name_and_brand_and_filament_diameter", unique: true
   end
 
   create_table "printer_definitions", force: :cascade do |t|
@@ -110,6 +108,7 @@ ActiveRecord::Schema.define(version: 2021_11_24_231908) do
     t.datetime "updated_at", precision: 6, null: false
     t.string "driver", null: false
     t.integer "extruder_count", default: 1, null: false
+    t.float "filament_diameter", default: 2.85, null: false
     t.index ["name"], name: "index_printer_definitions_on_name", unique: true
   end
 
@@ -119,7 +118,6 @@ ActiveRecord::Schema.define(version: 2021_11_24_231908) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.string "ulti_g_code_nozzle_size"
-    t.float "filament_diameter", null: false
     t.bigint "material_color_id"
     t.index ["material_color_id"], name: "index_printer_extruders_on_material_color_id"
     t.index ["printer_id"], name: "index_printer_extruders_on_printer_id"

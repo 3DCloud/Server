@@ -6,6 +6,5 @@ FactoryBot.define do
     association :material_color
     extruder_index { 0 }
     ulti_g_code_nozzle_size { 'size_0_40' }
-    filament_diameter { 2.85 }
   end
 end

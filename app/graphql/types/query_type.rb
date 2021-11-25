@@ -6,7 +6,9 @@ module Types
     field :current_ability, [Types::RuleType], null: false
     field :clients, [Types::ClientType], null: false
     field :devices, [Types::DeviceType], null: false
-    field :printers, [Types::PrinterType], null: false
+    field :printers, [Types::PrinterType], null: false do
+      argument :state, [String], required: false
+    end
     field :printer_definitions, [Types::PrinterDefinitionType], null: false
     field :prints, [Types::PrintType], null: false
     field :materials, [Types::MaterialType], null: false
@@ -101,9 +103,15 @@ module Types
       UploadedFile.find_by(id: id)
     end
 
-    def printers
+    def printers(state: nil)
       authorize!(:index, Printer)
-      Printer.accessible_by(context[:current_ability]).order(:name).all
+      query = Printer.accessible_by(context[:current_ability])
+
+      if state.present?
+        query = query.where(state: state)
+      end
+
+      query.order(:name).all
     end
 
     def printer(id:)

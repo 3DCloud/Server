@@ -30,7 +30,7 @@ Rails.application.configure do
   end
 
   # Store uploaded files on the local file system (see config/storage.yml for options).
-  config.active_storage.service = if Rails.application.secrets.aws
+  config.active_storage.service = if Rails.application.secrets.storage
     :amazon
   else
     :local

@@ -4,9 +4,9 @@ class Printer < ApplicationRecord
   belongs_to :device, required: false
   belongs_to :printer_definition
   has_one :g_code_settings, through: :printer_definition
-  has_many :printer_extruders
+  has_many :printer_extruders, dependent: :destroy
   has_many :material_colors, through: :printer_extruders
-  has_many :prints
+  has_many :prints, dependent: :destroy
   belongs_to :current_print, class_name: 'Print', required: false
 
   validates :name, uniqueness: true
@@ -44,7 +44,7 @@ class Printer < ApplicationRecord
         hotend_temperature: ugs["hotend_temperature_#{nozzle_size}".to_sym],
         retraction_length: ugs["retraction_length_#{nozzle_size}".to_sym],
         retraction_speed: ugs["retraction_speed_#{nozzle_size}".to_sym],
-        filament_diameter: extruder.filament_diameter,
+        filament_diameter: printer_definition.filament_diameter,
         created_at: ugs.created_at,
         updated_at: ugs.updated_at,
       }

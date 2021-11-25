@@ -13,12 +13,11 @@ module Mutations
 
         authorize!(:update, material_record)
 
-        material_record.update(
+        material_record.update!(
           name: material.name,
           brand: material.brand,
           net_filament_weight: material.net_filament_weight,
           empty_spool_weight: material.empty_spool_weight,
-          filament_diameter: material.filament_diameter,
         )
 
         material.material_colors.each do |material_color|

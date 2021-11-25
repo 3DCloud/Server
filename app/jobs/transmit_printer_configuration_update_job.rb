@@ -3,12 +3,42 @@
 class TransmitPrinterConfigurationUpdateJob < ApplicationJob
   queue_as :default
 
-  def perform(*args)
-    Printer.includes(device: :client, printer_definition: :g_code_settings).where(printer_definition_id: args[0]).where.not(device: nil).each do |printer|
-      unless printer.state == 'offline'
-        ClientChannel.transmit_printer_configuration(printer)
+  def perform(printer_id: nil, printer_definition_id: nil)
+    unless printer_id || printer_definition_id
+      raise ApplicationJob::ArgumentError, 'Must specify one of printer_id, printer_definition_id'
+    end
+
+    query = Printer.includes(device: :client, printer_definition: :g_code_settings)
+
+    if printer_definition_id
+      query = query.where(printer_definition_id: printer_definition_id)
+    end
+
+    if printer_id
+      query = query.where(id: printer_id)
+    end
+
+    query.where.not(device: nil).where.not(state: %w(offline disconnected)).each do |printer|
+      return unless ActionCable.server.remote_connections.where(client: printer.device.client, user: nil).present?
+
+      tries = 0
+
+      while true
+        begin
+          logger.info "Transmitting to '#{printer.name}'"
+          ClientChannel.transmit_printer_configuration(printer)
+          break
+        rescue ApplicationCable::CommunicationError => err
+          logger.error err
+
+          tries += 1
+
+          if tries >= 5
+            raise
+          end
+        end
       end
-    rescue ApplicationCable::ApplicationCableError => err
+    rescue => err
       logger.error err
     end
   end

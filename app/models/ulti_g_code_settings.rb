@@ -4,8 +4,6 @@ class UltiGCodeSettings < ApplicationRecord
   belongs_to :printer_definition
   belongs_to :material
 
-  delegate :filament_diameter, to: :material
-
   validates :printer_definition, presence: true
   validates :material, presence: true, uniqueness: { scope: :printer_definition }
   validates :build_plate_temperature, presence: true, numericality: { only_integer: true }

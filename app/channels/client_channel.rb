@@ -3,7 +3,7 @@
 class ClientChannel < ApplicationCable::Channel
   class << self
     def transmit_printer_configuration(printer)
-      broadcast_to_with_ack printer.device.client, self.printer_configuration_message(printer)
+      broadcast_to_with_ack printer.device.client, self.printer_configuration_message(printer), 1
     end
   end
 
