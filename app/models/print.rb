@@ -15,6 +15,7 @@ class Print < ApplicationRecord
 
   belongs_to :printer
   belongs_to :uploaded_file
+  belongs_to :canceled_by, class_name: 'User', optional: true
 
   validates :printer, presence: true
   validates :uploaded_file, presence: true

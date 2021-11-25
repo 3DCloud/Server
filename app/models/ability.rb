@@ -23,7 +23,7 @@ class Ability
 
     can :create, ActiveStorage::Blob
 
-    can :read, User, id: user.id
+    can :read, User
     can :update, User, id: user.id
 
     can :index, UploadedFile, user_id: user.id
@@ -40,7 +40,6 @@ class Ability
     return unless user.staff?
 
     can :index, User
-    can :read, User
 
     can :read, UploadedFile
 

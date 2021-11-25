@@ -15,6 +15,9 @@ module Mutations
 
       authorize!(:cancel, print)
 
+      print.canceled_by = context[:current_user]
+      print.save!
+
       PrinterChannel.transmit_abort_print(printer: printer)
 
       print
