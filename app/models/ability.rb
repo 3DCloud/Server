@@ -33,9 +33,9 @@ class Ability
     can :download, UploadedFile, user_id: user.id
     can :delete, UploadedFile, user_id: user.id
 
-    can :index, Print, uploaded_file: { user_id: user.id }
+    can :index, Print, user_id: user.id
     can :create, Print
-    can :cancel, Print, uploaded_file: { user_id: user.id }
+    can :cancel, Print, user_id: user.id
 
     return unless user.staff?
 
