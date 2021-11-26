@@ -16,7 +16,7 @@ RSpec.describe PrinterChannel, type: :channel do
       subscribe device_path: printer.device.path
 
       expect(subscription).to be_confirmed
-      expect(subscription).to have_stream_for(printer)
+      expect(subscription).to have_stream_for(printer.device)
     end
 
     it 'rejects devices that are not associated to a printer' do
@@ -53,7 +53,7 @@ RSpec.describe PrinterChannel, type: :channel do
         sleep(0.100)
         perform :acknowledge, 'message_id' => message_id
         thr.join
-      }.to have_broadcasted_to(printer).from_channel(PrinterChannel).with({ action: 'reconnect', message_id: 1234 })
+      }.to have_broadcasted_to(printer.device).from_channel(PrinterChannel).with({ action: 'reconnect', message_id: 1234 })
     end
   end
 end
