@@ -4,38 +4,35 @@ class PrinterChannel < ApplicationCable::Channel
   class << self
     def transmit_reconnect(printer:)
       self.ensure_online(printer)
-      self.broadcast_to_with_ack printer, self.reconnect_message, 15
+      self.broadcast_to_with_ack printer.device, self.reconnect_message, 15
     end
 
     def transmit_start_print(printer:, print_id:, download_url:)
       self.ensure_online(printer)
-      self.broadcast_to_with_ack printer, self.start_print_message(print_id: print_id, download_url: download_url)
+      self.broadcast_to_with_ack printer.device, self.start_print_message(print_id: print_id, download_url: download_url)
     end
 
     def transmit_abort_print(printer:)
       self.ensure_online(printer)
-      self.broadcast_to_with_ack printer, self.abort_print_message
+      self.broadcast_to_with_ack printer.device, self.abort_print_message
     end
   end
 
   def subscribed
     return reject unless connection.client
 
-    device = Device.includes(:printer).find_by(client: connection.client, path: params['device_path'])
+    @device = Device.includes(:printer).find_by(client: connection.client, path: params['device_path'])
 
-    return reject unless device
+    return reject unless @device&.printer
 
-    @printer = device.printer
-
-    return reject unless @printer
-
-    stream_for @printer
+    stream_for @device
   end
 
   def print_event(args)
-    @printer.reload
+    @device.reload
 
-    print = @printer.current_print
+    printer = @device.printer
+    print = printer.current_print
 
     return unless print
 
@@ -46,8 +43,8 @@ class PrinterChannel < ApplicationCable::Channel
     end
 
     if %w(success canceled errored).include?(state)
-      @printer.current_print = nil
-      @printer.save!
+      printer.current_print = nil
+      printer.save!
 
       print.completed_at = DateTime.now.utc
     end
@@ -59,7 +56,7 @@ class PrinterChannel < ApplicationCable::Channel
   def log_message(args)
     return unless args.key?('message')
 
-    PrinterListenerChannel.broadcast_to @printer, { action: 'log_message', message: args['message'] }
+    PrinterListenerChannel.broadcast_to @device.printer, { action: 'log_message', message: args['message'] }
   end
 
   private

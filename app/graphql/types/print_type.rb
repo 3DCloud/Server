@@ -8,6 +8,9 @@ module Types
     field :status, String, null: false
     field :user_id, ID, null: false
     field :canceled_by, Types::UserType, null: true
+    field :cancellation_reason, Types::CancellationReasonType, null: true
+    field :cancellation_reason_id, Int, null: true
+    field :cancellation_reason_details, String, null: true
     field :created_at, GraphQL::Types::ISO8601DateTime, null: false
     field :updated_at, GraphQL::Types::ISO8601DateTime, null: false
     field :started_at, GraphQL::Types::ISO8601DateTime, null: true

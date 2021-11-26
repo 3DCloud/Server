@@ -5,6 +5,20 @@ type ActiveStorageAttachment {
   url: String!
 }
 
+type CancellationReason {
+  createdAt: ISO8601DateTime!
+  description: String
+  id: ID!
+  name: String!
+  updatedAt: ISO8601DateTime!
+}
+
+input CancellationReasonInput {
+  description: String
+  id: ID
+  name: String!
+}
+
 type Client {
   authorized: Boolean!
   createdAt: ISO8601DateTime!
@@ -96,12 +110,14 @@ input MaterialInput {
 }
 
 type Mutation {
-  cancelCurrentPrint(id: ID!): Print
+  cancelCurrentPrint(cancellationReasonDetails: String, cancellationReasonId: ID, id: ID!): Print
   changeMaterial(extruderIndex: Int!, materialColorId: ID!, printerId: ID!, weight: Int): PrinterExtruder
+  createCancellationReason(cancellationReason: CancellationReasonInput!): CancellationReason
   createMaterial(material: MaterialInput!): Material
   createPrinter(deviceId: ID!, name: String!, printerDefinitionId: ID!): Printer
   createPrinterDefinition(printerDefinition: PrinterDefinitionInput!): PrinterDefinition
   createUploadFileRequest(byteSize: Int!, checksum: String!, contentType: String!, filename: String!, publiclyAccessible: Boolean): CreateUploadFileRequestPayload
+  deleteCancellationReason(id: ID!): CancellationReason
   deleteClient(id: ID!): Client
   deleteMaterial(id: ID!): Material
   deletePrinter(id: ID!): Printer
@@ -115,6 +131,7 @@ type Mutation {
   revokeClientAuthorization(id: ID!): Client
   setClientName(id: ID!, name: String): Client
   startPrint(fileId: ID!, printerId: ID!): Print
+  updateCancellationReason(cancellationReason: CancellationReasonInput!, id: ID!): CancellationReason
   updateMaterial(id: ID!, material: MaterialInput!): Material
   updatePrinter(id: ID!, printer: PrinterInput!): Printer
   updatePrinterDefinition(id: ID!, printerDefinition: PrinterDefinitionInput!): PrinterDefinition
@@ -149,6 +166,10 @@ input PerNozzleSettingsInput {
 }
 
 type Print {
+  canceledBy: User
+  cancellationReason: CancellationReason
+  cancellationReasonDetails: String
+  cancellationReasonId: Int
   completedAt: ISO8601DateTime
   createdAt: ISO8601DateTime!
   id: ID!
@@ -222,6 +243,8 @@ input PrinterInput {
 }
 
 type Query {
+  cancellationReason(id: ID!): CancellationReason
+  cancellationReasons: [CancellationReason!]!
   client(id: ID!): Client
   clients: [Client!]!
   currentAbility: [Rule!]!
@@ -289,7 +312,7 @@ type UploadedFile {
 }
 
 type User {
-  avatar: ActiveStorageAttachment!
+  avatar: ActiveStorageAttachment
   createdAt: ISO8601DateTime!
   emailAddress: String!
   name: String!

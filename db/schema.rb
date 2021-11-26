@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_11_25_222549) do
+ActiveRecord::Schema.define(version: 2021_11_26_175719) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -52,6 +52,13 @@ ActiveRecord::Schema.define(version: 2021_11_25_222549) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["user_id"], name: "index_authorization_grants_on_user_id"
+  end
+
+  create_table "cancellation_reasons", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "description"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "clients", id: :uuid, default: nil, force: :cascade do |t|
@@ -146,7 +153,10 @@ ActiveRecord::Schema.define(version: 2021_11_25_222549) do
     t.datetime "started_at"
     t.datetime "completed_at"
     t.bigint "canceled_by_id"
+    t.bigint "cancellation_reason_id"
+    t.string "cancellation_reason_details"
     t.index ["canceled_by_id"], name: "index_prints_on_canceled_by_id"
+    t.index ["cancellation_reason_id"], name: "index_prints_on_cancellation_reason_id"
     t.index ["printer_id"], name: "index_prints_on_printer_id"
     t.index ["uploaded_file_id"], name: "index_prints_on_uploaded_file_id"
   end
@@ -229,6 +239,7 @@ ActiveRecord::Schema.define(version: 2021_11_25_222549) do
   add_foreign_key "printers", "devices"
   add_foreign_key "printers", "printer_definitions"
   add_foreign_key "printers", "prints", column: "current_print_id"
+  add_foreign_key "prints", "cancellation_reasons"
   add_foreign_key "prints", "printers"
   add_foreign_key "prints", "uploaded_files"
   add_foreign_key "prints", "users", column: "canceled_by_id"

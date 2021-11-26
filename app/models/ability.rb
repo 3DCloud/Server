@@ -37,6 +37,9 @@ class Ability
     can :create, Print
     can :cancel, Print, user_id: user.id
 
+    can :read, CancellationReason
+    can :index, CancellationReason
+
     return unless user.staff?
 
     can :index, User
@@ -88,6 +91,10 @@ class Ability
     can :create, UltiGCodeSettings
     can :read, UltiGCodeSettings
     can :update, UltiGCodeSettings
+
+    can :create, CancellationReason
+    can :update, CancellationReason
+    can :delete, CancellationReason
   end
 
   def to_list

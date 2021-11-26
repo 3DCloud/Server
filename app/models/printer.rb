@@ -33,8 +33,10 @@ class Printer < ApplicationRecord
       .includes(material_color: { material: :ulti_g_code_settings })
       .where(ulti_g_code_settings: { printer_definition_id: printer_definition_id })
       .limit(printer_definition.extruder_count).each do |extruder|
+      return unless extruder.ulti_g_code_nozzle_size
+
       nozzle_size = extruder.ulti_g_code_nozzle_size[5..] # trim size_ prefix
-      ugs = extruder.material_color.material.ulti_g_code_settings[0]
+      ugs = extruder.material_color.material.ulti_g_code_settings.first
       ulti_g_code_settings[extruder.extruder_index] = {
         material_name: extruder.material_color.material.name,
         build_plate_temperature: ugs.build_plate_temperature,

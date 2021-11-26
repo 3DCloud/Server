@@ -13,6 +13,10 @@ module Types
     field :prints, [Types::PrintType], null: false
     field :materials, [Types::MaterialType], null: false
     field :material_colors, [Types::MaterialColorType], null: false
+    field :cancellation_reasons, [Types::CancellationReasonType], null: false
+    field :cancellation_reason, Types::CancellationReasonType, null: true do
+      argument :id, ID, required: true
+    end
 
     field :uploaded_files, [Types::UploadedFileType], null: false do
       argument :before, GraphQL::Types::ISO8601DateTime, required: false
@@ -134,6 +138,14 @@ module Types
 
     def print(id:)
       Print.find_by(id: id)
+    end
+
+    def cancellation_reasons
+      CancellationReason.accessible_by(context[:current_ability]).order(:name).all
+    end
+
+    def cancellation_reason(id:)
+      CancellationReason.accessible_by(context[:current_ability]).find_by(id: id)
     end
   end
 end

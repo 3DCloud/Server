@@ -2,6 +2,9 @@
 
 module Types
   class MutationType < Types::BaseObject
+    field :update_cancellation_reason, mutation: Mutations::UpdateCancellationReason
+    field :create_cancellation_reason, mutation: Mutations::CreateCancellationReason
+    field :delete_cancellation_reason, mutation: Mutations::DeleteCancellationReason
     field :update_printer, mutation: Mutations::UpdatePrinter
     field :change_material, mutation: Mutations::ChangeMaterial
     field :delete_material, mutation: Mutations::DeleteMaterial

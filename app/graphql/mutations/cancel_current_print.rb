@@ -3,11 +3,13 @@
 module Mutations
   class CancelCurrentPrint < BaseMutation
     argument :id, ID, required: true
+    argument :cancellation_reason_id, ID, required: false
+    argument :cancellation_reason_details, String, required: false
 
     type Types::PrintType
 
-    def resolve(id:)
-      printer = Printer.includes(current_print: [ :uploaded_file ]).find(id)
+    def resolve(id:, cancellation_reason_id: nil, cancellation_reason_details: nil)
+      printer = Printer.includes(:current_print).find(id)
 
       return nil unless printer.current_print
 
@@ -15,7 +17,10 @@ module Mutations
 
       authorize!(:cancel, print)
 
+      print.status = Print::PrintStatus::CANCELING
       print.canceled_by = context[:current_user]
+      print.cancellation_reason_id = cancellation_reason_id
+      print.cancellation_reason_details = cancellation_reason_details
       print.save!
 
       PrinterChannel.transmit_abort_print(printer: printer)
