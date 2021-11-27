@@ -4,5 +4,6 @@ FactoryBot.define do
   factory :printer_definition do
     sequence(:name) { |n| "PrinterDefinition#{n}" }
     driver { Faker::Creature::Animal.name.downcase }
+    extruder_count { 1 }
   end
 end

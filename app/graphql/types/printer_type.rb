@@ -12,7 +12,7 @@ module Types
     field :device, DeviceType, null: true
     field :printer_definition_id, ID, null: false
     field :printer_definition, PrinterDefinitionType, null: false
-    field :printer_extruders, [PrinterExtruderType, null: true], null: false
+    field :printer_extruders, [PrinterExtruderType], null: false
     field :current_print_id, ID, null: true
     field :current_print, PrintType, null: true
     field :g_code_settings, GCodeSettingsType, null: true

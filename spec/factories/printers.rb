@@ -9,5 +9,9 @@ FactoryBot.define do
     after :build do |printer|
       printer.state = 'ready'
     end
+
+    after :create do |printer|
+      printer.state = 'ready'
+    end
   end
 end

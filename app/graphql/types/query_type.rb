@@ -73,7 +73,7 @@ module Types
 
     def devices
       authorize!(:index, Device)
-      Device.order(:hardware_identifier).accessible_by(context[:current_ability]).all
+      Device.accessible_by(context[:current_ability]).all
     end
 
     def device(id:)

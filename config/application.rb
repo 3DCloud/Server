@@ -66,11 +66,5 @@ module Server
         path: Rails.application.secrets['redis_socket_path']
       }
     end
-
-    config.after_initialize do
-      Printer.in_batches.each_record do |printer|
-        printer.state = 'offline'
-      end
-    end
   end
 end

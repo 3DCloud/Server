@@ -5,7 +5,7 @@ require 'rails_helper'
 RSpec.describe Material, type: :model do
   let(:valid_data) do
     {
-      name: 'PLA',
+      name: 'ABS',
       brand: 'Generic',
       net_filament_weight: 1000,
       empty_spool_weight: 285,

@@ -11,24 +11,31 @@ class Printer < ApplicationRecord
 
   validates :name, uniqueness: true
 
+  default_scope ->() { includes(:printer_definition) }
   scope :for_client, ->(client_id) { joins(:device).where(device: { client_id: client_id }) }
 
-  alias_method :printer_extruders_raw, :printer_extruders
+  after_save do
+    ApplicationRecord.transaction do
+      extruders = printer_extruders.all
 
-  def printer_extruders
-    extruders = [nil] * printer_definition.extruder_count
+      extruders.each do |extr|
+        if extr.extruder_index >= printer_definition.extruder_count
+          extr.destroy!
+        end
+      end
 
-    printer_extruders_raw.each do |extruder|
-      extruders[extruder.extruder_index] = extruder
+      (0...printer_definition.extruder_count).each do |i|
+        unless extruders.any? { |extr| extr.extruder_index == i }
+          PrinterExtruder.new(printer_id: id, extruder_index: i).save!
+        end
+      end
     end
-
-    extruders
   end
 
   def ulti_g_code_settings
     ulti_g_code_settings = [nil] * printer_definition.extruder_count
 
-    printer_extruders_raw
+    printer_extruders
       .includes(material_color: { material: :ulti_g_code_settings })
       .where(ulti_g_code_settings: { printer_definition_id: printer_definition_id })
       .limit(printer_definition.extruder_count).each do |extruder|
@@ -58,7 +65,7 @@ class Printer < ApplicationRecord
     if value.nil?
       self.class.redis_instance.del("3dcloud:printer:#{id}:state")
     else
-      self.class.redis_instance.set("3dcloud:printer:#{id}:state", value)
+      self.class.redis_instance.set("3dcloud:printer:#{id}:state", value, ex: 5)
     end
   end
 
@@ -70,7 +77,7 @@ class Printer < ApplicationRecord
     if value.nil?
       self.class.redis_instance.del("3dcloud:printer:#{id}:progress")
     else
-      self.class.redis_instance.set("3dcloud:printer:#{id}:progress", value)
+      self.class.redis_instance.set("3dcloud:printer:#{id}:progress", value, ex: 5)
     end
   end
 

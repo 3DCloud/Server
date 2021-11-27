@@ -16,7 +16,7 @@ RSpec.describe PrinterExtruder, type: :model do
     expect(PrinterExtruder.new(valid_data)).to be_valid
   end
 
-  %i(printer material_color extruder_index).each do |attribute|
+  %i(printer extruder_index).each do |attribute|
     it "is invalid when #{attribute} is missing" do
       expect(PrinterExtruder.new(valid_data.except!(attribute))).to be_invalid
     end
@@ -36,14 +36,8 @@ RSpec.describe PrinterExtruder, type: :model do
     expect(PrinterExtruder.new(valid_data.merge(extruder_index: -1))).to be_invalid
   end
 
-  it 'is valid if extruder_index overlaps on different printers' do
-    create(:printer_extruder, extruder_index: 0)
-    expect(build(:printer_extruder, extruder_index: 0)).to be_valid
-  end
-
   it 'is invalid if extruder_index overlaps on the same printer' do
     printer = create(:printer)
-    create(:printer_extruder, printer: printer, extruder_index: 0)
     expect(build(:printer_extruder, printer: printer, extruder_index: 0)).to be_invalid
   end
 end
