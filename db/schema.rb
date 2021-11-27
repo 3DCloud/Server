@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_11_26_175719) do
+ActiveRecord::Schema.define(version: 2021_11_27_051503) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -59,6 +59,7 @@ ActiveRecord::Schema.define(version: 2021_11_26_175719) do
     t.string "description"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["name"], name: "index_cancellation_reasons_on_name", unique: true
   end
 
   create_table "clients", id: :uuid, default: nil, force: :cascade do |t|
@@ -136,7 +137,6 @@ ActiveRecord::Schema.define(version: 2021_11_26_175719) do
     t.bigint "printer_definition_id", null: false
     t.string "name", null: false
     t.bigint "device_id"
-    t.string "state", default: "unknown", null: false
     t.bigint "current_print_id"
     t.index ["current_print_id"], name: "index_printers_on_current_print_id"
     t.index ["device_id"], name: "index_printers_on_device_id", unique: true

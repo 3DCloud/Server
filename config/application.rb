@@ -54,10 +54,22 @@ module Server
 
     config.x.frontend_base_url = 'http://localhost:4200'
 
+    if (host = ENV['REDIS_HOST'] || Rails.application.secrets.dig(:redis_host)).present? &&
+       (port = ENV['REDIS_PORT'] || Rails.application.secrets.dig(:redis_port)).present?
+      config.x.redis = {
+        host: host,
+        port: port,
+        password: Rails.application.secrets.dig(:redis_password)
+      }
+    else
+      config.x.redis = {
+        path: Rails.application.secrets['redis_socket_path']
+      }
+    end
+
     config.after_initialize do
       Printer.in_batches.each_record do |printer|
         printer.state = 'offline'
-        printer.save!
       end
     end
   end

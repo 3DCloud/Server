@@ -193,6 +193,7 @@ type Printer {
   printerDefinition: PrinterDefinition!
   printerDefinitionId: ID!
   printerExtruders: [PrinterExtruder]!
+  progress: Float
   state: String!
   ultiGCodeSettings: [UltiGCodeSettings]!
   updatedAt: ISO8601DateTime!

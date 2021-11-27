@@ -32,6 +32,7 @@ class ClientChannel < ApplicationCable::Channel
 
         if state
           printer.state = state['printer_state']
+          printer.progress = state['progress']
 
           if printer.current_print.present? &&
              printer.current_print.status != 'pending' &&
@@ -40,6 +41,7 @@ class ClientChannel < ApplicationCable::Channel
           end
         else
           printer.state = 'disconnected'
+          printer.progress = nil
           mark_print_errored printer
           state = { printer_state: 'disconnected' }
         end
@@ -60,7 +62,6 @@ class ClientChannel < ApplicationCable::Channel
       ApplicationRecord.transaction do
         Printer.for_client(connection.client.id).each do |printer|
           printer.state = 'offline'
-          printer.save!
           PrinterListenerChannel.transmit_printer_state(printer, { printer_state: 'offline' })
         end
       end

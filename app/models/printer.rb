@@ -10,7 +10,6 @@ class Printer < ApplicationRecord
   belongs_to :current_print, class_name: 'Print', required: false
 
   validates :name, uniqueness: true
-  validates :state, inclusion: %w(disconnected connecting ready downloading disconnecting busy heating printing pausing paused resuming canceling errored offline)
 
   scope :for_client, ->(client_id) { joins(:device).where(device: { client_id: client_id }) }
 
@@ -54,4 +53,33 @@ class Printer < ApplicationRecord
 
     ulti_g_code_settings
   end
+
+  def state=(value)
+    if value.nil?
+      self.class.redis_instance.del("3dcloud:printer:#{id}:state")
+    else
+      self.class.redis_instance.set("3dcloud:printer:#{id}:state", value)
+    end
+  end
+
+  def state
+    self.class.redis_instance.get("3dcloud:printer:#{id}:state") || 'offline'
+  end
+
+  def progress=(value)
+    if value.nil?
+      self.class.redis_instance.del("3dcloud:printer:#{id}:progress")
+    else
+      self.class.redis_instance.set("3dcloud:printer:#{id}:progress", value)
+    end
+  end
+
+  def progress
+    self.class.redis_instance.get("3dcloud:printer:#{id}:progress")
+  end
+
+  private
+    def self.redis_instance
+      Redis.new(**Rails.application.config.x.redis)
+    end
 end

@@ -47,14 +47,7 @@ module ApplicationCable
       end
 
       def self.redis_instance
-        host = ENV['REDIS_HOST'] || Rails.application.secrets.dig(:redis_host)
-        port = ENV['REDIS_PORT'] || Rails.application.secrets.dig(:redis_port)
-
-        if host.present? && port.present?
-          Redis.new(host: host, port: port, password: Rails.application.secrets.dig(:redis_password))
-        else
-          Redis.new(path: Rails.application.secrets['redis_socket_path'])
-        end
+        Redis.new(**Rails.application.config.x.redis)
       end
   end
 end

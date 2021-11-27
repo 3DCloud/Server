@@ -5,6 +5,9 @@ FactoryBot.define do
     association :device
     association :printer_definition
     name { Faker::Games::ElderScrolls.unique.creature }
-    state { 'ready' }
+
+    after :build do |printer|
+      printer.state = 'ready'
+    end
   end
 end

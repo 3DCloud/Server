@@ -109,13 +109,13 @@ module Types
 
     def printers(state: nil)
       authorize!(:index, Printer)
-      query = Printer.accessible_by(context[:current_ability])
+      printers = Printer.accessible_by(context[:current_ability]).order(:name).all
 
       if state.present?
-        query = query.where(state: state)
+        printers = printers.select { |printer| state.include?(printer.state) }
       end
 
-      query.order(:name).all
+      printers
     end
 
     def printer(id:)
