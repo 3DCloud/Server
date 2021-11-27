@@ -12,7 +12,10 @@ module Mutations
       other_printer = Printer.find_by(device_id: device_id)
 
       authorize!(:update, printer)
-      authorize!(:update, other_printer)
+
+      if other_printer
+        authorize!(:update, other_printer)
+      end
 
       ApplicationRecord.transaction do
         printer.device_id = device_id
@@ -33,13 +36,7 @@ module Mutations
         printer.save!
       end
 
-      begin
-        unless %w(offline disconnected).include?(printer.state)
-          ClientChannel.transmit_printer_configuration printer
-        end
-      rescue => err
-        Rails.logger.error err
-      end
+      TransmitPrinterConfigurationUpdateJob.perform_later(printer_id: printer.id)
 
       printer
     end
