@@ -46,7 +46,6 @@ class ClientChannel < ApplicationCable::Channel
           state = { printer_state: 'disconnected' }
         end
 
-        printer.save!
         PrinterListenerChannel.transmit_printer_state(printer, state)
       end
     end

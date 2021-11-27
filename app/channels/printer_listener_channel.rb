@@ -3,13 +3,15 @@
 class PrinterListenerChannel < ApplicationCable::Channel
   class << self
     def transmit_printer_state(printer, state)
-      broadcast_to printer, self.printer_state_message(state)
+      message = self.printer_state_message(state)
+      broadcast_to printer, message
+      broadcast_to :all, { **message, id: printer.id.to_s }
     end
   end
 
   def subscribed
     unless params['id'].present?
-      reject
+      stream_for :all
       return
     end
 
