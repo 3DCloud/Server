@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class PrinterDefinition < ApplicationRecord
-  has_one_attached :thumbnail, service: "#{Rails.configuration.active_storage.service}_public".to_sym
+  has_one_attached :thumbnail, service: Rails.configuration.active_storage.public_service
   has_many :printers, dependent: :restrict_with_error
   has_one :g_code_settings, dependent: :destroy
   has_many :ulti_g_code_settings, dependent: :destroy

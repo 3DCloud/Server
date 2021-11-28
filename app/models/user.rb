@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class User < ApplicationRecord
-  has_one_attached :avatar, service: "#{Rails.configuration.active_storage.service}_public".to_sym
+  has_one_attached :avatar, service: Rails.configuration.active_storage.public_service
   validates :username, presence: true
   validates :name, presence: true
   validates :email_address, presence: true
@@ -16,8 +16,9 @@ class User < ApplicationRecord
     def get_or_create_from_saml_response(uid, attributes)
       user = User.find_by(sso_uid: uid) || User.new(sso_uid: uid)
 
-      if attributes[:avatar_transient_url] && attributes[:avatar_content_type]
+      if attributes[:avatar_transient_url] && attributes[:avatar_content_type] && user.avatar.blank?
         user.avatar.attach(
+          service_name: Rails.configuration.active_storage.public_service,
           io: URI.open(attributes[:avatar_transient_url]),
           filename: "#{attributes[:username]}_avatar",
           content_type: attributes[:avatar_content_type]

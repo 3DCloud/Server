@@ -30,10 +30,12 @@ Rails.application.configure do
   end
 
   # Store uploaded files on the local file system (see config/storage.yml for options).
-  config.active_storage.service = if Rails.application.secrets.storage
-    :amazon
+  if Rails.application.secrets.storage
+    config.active_storage.service = :amazon
+    config.active_storage.public_service = :amazon_public
   else
-    :local
+    config.active_storage.service = :local
+    config.active_storage.public_service = :local
   end
 
   config.action_mailer.default_url_options = {

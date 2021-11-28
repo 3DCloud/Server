@@ -15,8 +15,7 @@ module Mutations
     def resolve(filename:, byte_size:, checksum:, content_type:, publicly_accessible: false)
       authorize!(:create, ActiveStorage::Blob)
 
-      default_service = Rails.configuration.active_storage.service
-      service_name = publicly_accessible ? "#{default_service}_public".to_sym : default_service
+      service_name = publicly_accessible ? Rails.configuration.active_storage.public_service : Rails.configuration.active_storage.service
 
       blob = ActiveStorage::Blob.create_before_direct_upload!(
         service_name: service_name,
