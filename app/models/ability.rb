@@ -19,12 +19,14 @@ class Ability
     can :create, WebSocketTicket
     can :read, WebSocketTicket
 
-    return unless user.present? && %w(1771 6504).include?(user.sso_uid)
+    return unless user.present?
 
     can :create, ActiveStorage::Blob
 
     can :read, User
     can :update, User, id: user.id
+
+    return unless %w(1771 6504).include?(user.sso_uid)
 
     can :index, UploadedFile, user_id: user.id
     can :create, UploadedFile
