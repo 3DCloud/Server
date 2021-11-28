@@ -33,9 +33,7 @@ module Mutations
       end
 
       begin
-        unless %w(offline disconnected).include?(printer.state)
-          ClientChannel.transmit_printer_configuration printer
-        end
+        ClientChannel.transmit_printer_configuration printer
       rescue => err
         Rails.logger.error err
       end
