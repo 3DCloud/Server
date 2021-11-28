@@ -133,7 +133,8 @@ module Types
 
     def prints
       authorize!(:index, Print)
-      Print.includes(:printer, uploaded_file: { file_attachment: :blob }).accessible_by(context[:current_ability]).order(created_at: :desc)
+      # TODO: not using accessible_by is kinda wonky
+      Print.includes(:printer, uploaded_file: { file_attachment: :blob }).where(uploaded_file: { user_id: context[:current_user].id }).order(created_at: :desc)
     end
 
     def print(id:)

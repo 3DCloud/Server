@@ -38,6 +38,8 @@ module Server
     # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
 
+    config.action_mailer.smtp_settings = Rails.application.secrets.smtp
+
     # SAML SP configuration
     config.x.saml.sp_entity_id = 'print.makerepo.com'
     config.x.saml.idp_entity_id = 'https://makerepo.com/saml/auth'

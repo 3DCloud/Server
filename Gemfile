@@ -45,6 +45,9 @@ gem 'aws-sdk-s3', '~> 1.103.0'
 
 gem 'rollbar', '~> 3.3.0'
 
+# emails
+gem 'letter_opener', '~> 1.7.0'
+
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: %i[mri mingw x64_mingw]

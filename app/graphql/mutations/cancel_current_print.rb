@@ -15,6 +15,12 @@ module Mutations
 
       print = printer.current_print
 
+      if Print::PrintStatus::COMPLETED_STATUSES.include?(print.status)
+        printer.current_print = nil
+        printer.save!
+        return
+      end
+
       authorize!(:cancel, print)
 
       print.status = Print::PrintStatus::CANCELING

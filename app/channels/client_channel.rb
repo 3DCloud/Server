@@ -36,7 +36,7 @@ class ClientChannel < ApplicationCable::Channel
 
           if printer.current_print.present? &&
              printer.current_print.status != 'pending' &&
-             !%w(downloading busy heating printing pausing paused resuming canceling).include?(printer.state)
+             %w(downloading busy heating printing canceling).exclude?(printer.state)
             mark_print_errored printer
           end
         else
@@ -69,13 +69,16 @@ class ClientChannel < ApplicationCable::Channel
     def mark_print_errored(printer)
       print = printer.current_print
 
-      if print
+      if print && !Print::PrintStatus::COMPLETED_STATUSES.include?(print.status)
         print.status = 'errored'
         print.completed_at = DateTime.now.utc
         print.save!
+
+        UserMailer.with(print: print).print_failed_email.deliver_later
       end
 
       printer.current_print = nil
+      printer.save!
     end
 
     def self.printer_configuration_message(printer)

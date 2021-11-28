@@ -11,6 +11,8 @@ class Print < ApplicationRecord
     SUCCESS = 'success'
 
     ALL_STATUSES = [PENDING, DOWNLOADING, RUNNING, CANCELING, ERRORED, CANCELED, SUCCESS]
+    ACTIVE_STATUSES = [PENDING, DOWNLOADING, RUNNING, CANCELING]
+    RUNNING_STATUSES = [DOWNLOADING, RUNNING]
     COMPLETED_STATUSES = [ERRORED, CANCELED, SUCCESS]
   end
 
@@ -19,9 +21,11 @@ class Print < ApplicationRecord
   belongs_to :canceled_by, class_name: 'User', optional: true
   belongs_to :cancellation_reason, optional: true
 
+
   validates :status, inclusion: PrintStatus::ALL_STATUSES
+  validates :canceled_by, presence: true, if: ->(obj) { [PrintStatus::CANCELING, PrintStatus::CANCELED].include?(obj.status) }
   validates :cancellation_reason, presence: true, if: ->(obj) { [PrintStatus::CANCELING, PrintStatus::CANCELED].include?(obj.status) && obj.cancellation_reason_details.blank? }
   validates :cancellation_reason_details, presence: true, if: ->(obj) { [PrintStatus::CANCELING, PrintStatus::CANCELED].include?(obj.status) && obj.cancellation_reason.blank? }
 
-  delegate :user_id, to: :uploaded_file
+  delegate :user, :user_id, to: :uploaded_file
 end

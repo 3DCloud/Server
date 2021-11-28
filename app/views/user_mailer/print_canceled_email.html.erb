@@ -1,0 +1,13 @@
+<h1>Your print has been canceled</h1>
+<p>Hi <%= @print.user.name %>,</p>
+<p>Your print of the file "<%= @print.uploaded_file.filename %>" on the printer <%= @print.printer.name %> has been canceled by a staff member.</p>
+<% if @print.cancellation_reason %>
+  <p>Reason: <%= @print.cancellation_reason.name %> (<%= @print.cancellation_reason.description %>).</p>
+<% end %>
+<% if @print.cancellation_reason_details.present? %>
+  <p>
+    Additional Details:<br/>
+    <span class="font-italic"><%= @print.cancellation_reason_details %></span>
+  </p>
+<% end %>
+<%= frontend_link_to 'Open in MakerRepo Print', '/prints', class: 'btn btn-primary', target: '_blank' %>

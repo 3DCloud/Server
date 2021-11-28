@@ -36,21 +36,36 @@ class PrinterChannel < ApplicationCable::Channel
 
     return unless print
 
-    state = args['event_type']
+    ApplicationRecord.transaction do
+      state = args['event_type']
 
-    if state == 'running'
-      print.started_at = DateTime.now.utc
-    end
+      if state == 'running'
+        print.started_at = DateTime.now.utc
+      end
 
-    if %w(success canceled errored).include?(state)
-      printer.current_print = nil
+      if %w(success canceled errored).include?(state)
+        printer.current_print = nil
+
+        print.completed_at = DateTime.now.utc
+
+        unless Print::PrintStatus::COMPLETED_STATUSES.include?(print.status)
+          case state
+          when 'success'
+            UserMailer.with(print: print).print_completed_email.deliver_later
+          when 'canceled'
+            unless print.user == print.canceled_by
+              UserMailer.with(print: print).print_canceled_email.deliver_later
+            end
+          when 'errored'
+            UserMailer.with(print: print).print_failed_email.deliver_later
+          end
+        end
+      end
+
+      print.status = state
+      print.save!
       printer.save!
-
-      print.completed_at = DateTime.now.utc
     end
-
-    print.status = state
-    print.save!
   end
 
   def log_message(args)

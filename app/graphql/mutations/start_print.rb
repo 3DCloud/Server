@@ -21,25 +21,27 @@ module Mutations
         raise RuntimeError.new('Printer is not ready')
       end
 
-      print = Print.new(uploaded_file_id: upload.id, printer_id: printer.id, status: 'pending')
-      print.save!
-
-      printer.current_print = print
-      printer.save!
-
-      begin
-        PrinterChannel.transmit_start_print(
-          printer: printer,
-          print_id: print.id,
-          download_url: upload.file.url,
-        )
-      rescue
-        print.status = 'errored'
+      ApplicationRecord.transaction do
+        print = Print.new(uploaded_file_id: upload.id, printer_id: printer.id, status: 'pending')
         print.save!
-        raise
-      end
 
-      print
+        printer.current_print = print
+        printer.save!
+
+        begin
+          PrinterChannel.transmit_start_print(
+            printer: printer,
+            print_id: print.id,
+            download_url: upload.file.url,
+          )
+        rescue
+          print.status = 'errored'
+          print.save!
+          raise
+        end
+
+        print
+      end
     end
   end
 end

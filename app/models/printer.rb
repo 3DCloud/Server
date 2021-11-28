@@ -11,16 +11,22 @@ class Printer < ApplicationRecord
 
   validates :name, uniqueness: true
 
-  default_scope ->() { includes(:printer_definition) }
+  default_scope ->() { includes(:printer_definition, :current_print) }
   scope :for_client, ->(client_id) { joins(:device).where(device: { client_id: client_id }) }
+
+  before_save do
+    if current_print_id_was != nil && current_print_id == nil && !Print::PrintStatus::COMPLETED_STATUSES.include?(Print.find(current_print_id_was).status)
+      throw :abort
+    end
+  end
 
   after_save do
     ApplicationRecord.transaction do
       extruders = printer_extruders.all
 
-      extruders.each do |extr|
-        if extr.extruder_index >= printer_definition.extruder_count
-          extr.destroy!
+      extruders.each do |extruder|
+        if extruder.extruder_index >= printer_definition.extruder_count
+          extruder.destroy!
         end
       end
 

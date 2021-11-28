@@ -1,0 +1,4 @@
+<h1>Your print has failed</h1>
+<p>Hi <%= @print.user.name %>,</p>
+<p>Your print of the file "<%= @print.uploaded_file.filename %>" on the printer <%= @print.printer.name %> encountered an unexpected error and has been stopped.</p>
+<%= frontend_link_to 'Open in MakerRepo Print', '/prints', class: 'btn btn-primary', target: '_blank' %>
