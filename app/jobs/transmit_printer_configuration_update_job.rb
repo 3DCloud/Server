@@ -19,7 +19,7 @@ class TransmitPrinterConfigurationUpdateJob < ApplicationJob
     end
 
     query.where.not(device: nil).each do |printer|
-      return unless %w(offline disconnected).include?(printer.state)
+      return if %w(offline disconnected).include?(printer.state)
       return unless ActionCable.server.remote_connections.where(client: printer.device.client, user: nil).present?
 
       tries = 0
