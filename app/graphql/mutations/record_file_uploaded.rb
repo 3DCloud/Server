@@ -12,6 +12,9 @@ module Mutations
       file = UploadedFile.new(user_id: context[:current_user].id, file: signed_id)
       file.filename = file.file.filename
       file.save!
+
+      ProcessGCodeFileJob.perform_now(uploaded_file_id: file.id)
+
       file
     end
   end
