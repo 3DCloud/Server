@@ -307,6 +307,7 @@ type UploadedFile {
   estimatedDuration: Int
   filename: String!
   id: ID!
+  ultiGCodeNozzleSize: String
   url: String
   user: User!
   userId: ID!

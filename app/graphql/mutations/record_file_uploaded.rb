@@ -15,6 +15,7 @@ module Mutations
 
       ProcessGCodeFileJob.perform_now(uploaded_file_id: file.id)
 
+      file.reload
       file
     end
   end

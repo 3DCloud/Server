@@ -62,11 +62,11 @@ class GcodeFile
             estimate_material_length = false
             material_calculator.set_length(value.to_i, "#{$1}".to_i)
           when 'NOZZLE_DIAMETER' # UltiGCode
-            nozzle_diameters = [value.to_f]
+            nozzle_diameters = [value.to_d]
           when /EXTRUDER_TRAIN\.(\d+)\.NOZZLE\.DIAMETER/
             index = "#{$1}".to_i
             nozzle_diameters += [0] * (index - nozzle_diameters.length + 1)
-            nozzle_diameters[index] = value.to_f
+            nozzle_diameters[index] = value.to_d
           when 'Filament used' # Marlin
             estimate_material_length = false
             count = 0

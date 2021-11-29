@@ -18,6 +18,7 @@ module Types
 
     field :created_at, GraphQL::Types::ISO8601DateTime, null: false
     field :estimated_duration, Int, null: true
+    field :ulti_g_code_nozzle_size, String, null: true
 
     def self.scope_items(items, context)
       items.where.not(file_attachment: { blob: nil })
