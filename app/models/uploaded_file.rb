@@ -6,7 +6,7 @@ class UploadedFile < ApplicationRecord
 
   delegate :content_type, :byte_size, :checksum, :url, to: :file
 
-  default_scope { includes(file_attachment: :blob).order(created_at: :desc) }
+  default_scope { includes(file_attachment: :blob) }
 
   def estimated_duration
     file.metadata[:estimated_duration]

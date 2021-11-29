@@ -192,7 +192,7 @@ type Printer {
   name: String!
   printerDefinition: PrinterDefinition!
   printerDefinitionId: ID!
-  printerExtruders: [PrinterExtruder]!
+  printerExtruders: [PrinterExtruder!]!
   progress: Float
   state: String!
   ultiGCodeSettings: [UltiGCodeSettings]!
@@ -261,9 +261,9 @@ type Query {
   printerDefinition(id: ID!): PrinterDefinition
   printerDefinitions: [PrinterDefinition!]!
   printers(state: [String!]): [Printer!]!
-  prints: [Print!]!
+  prints(ascending: Boolean, orderBy: String, search: String, statuses: [String!]): [Print!]!
   uploadedFile(id: ID!): UploadedFile
-  uploadedFiles(before: ISO8601DateTime): [UploadedFile!]!
+  uploadedFiles(ascending: Boolean, before: ISO8601DateTime, orderBy: String, search: String): [UploadedFile!]!
 }
 
 type Rule {

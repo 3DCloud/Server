@@ -10,7 +10,12 @@ module Types
       argument :state, [String], required: false
     end
     field :printer_definitions, [Types::PrinterDefinitionType], null: false
-    field :prints, [Types::PrintType], null: false
+    field :prints, [Types::PrintType], null: false do
+      argument :search, String, required: false
+      argument :order_by, String, required: false
+      argument :ascending, Boolean, required: false
+      argument :statuses, [String], required: false
+    end
     field :materials, [Types::MaterialType], null: false
     field :material_colors, [Types::MaterialColorType], null: false
     field :cancellation_reasons, [Types::CancellationReasonType], null: false
@@ -20,6 +25,9 @@ module Types
 
     field :uploaded_files, [Types::UploadedFileType], null: false do
       argument :before, GraphQL::Types::ISO8601DateTime, required: false
+      argument :search, String, required: false
+      argument :order_by, String, required: false
+      argument :ascending, Boolean, required: false
     end
 
     field :uploaded_file, Types::UploadedFileType, null: true do
@@ -98,9 +106,20 @@ module Types
       Material.find_by(id: id)
     end
 
-    def uploaded_files(before: DateTime.now.utc)
+    def uploaded_files(before: DateTime.now.utc, search: nil, order_by: nil, ascending: true)
       authorize!(:index, UploadedFile)
-      UploadedFile.where(created_at: ..before).accessible_by(context[:current_ability]).order(created_at: :desc).limit(100)
+      query = UploadedFile.accessible_by(context[:current_ability]).where(created_at: ..before)
+
+      if order_by.present?
+        query = query.order([[order_by.to_sym, ascending ? :asc : :desc]].to_h)
+      end
+
+      if search.present?
+        search = search.downcase
+        query = query.where('LOWER("uploaded_files"."filename") LIKE ?', "%#{search}%")
+      end
+
+      query.all
     end
 
     def uploaded_file(id:)
@@ -131,10 +150,28 @@ module Types
       PrinterDefinition.find_by(id: id)
     end
 
-    def prints
+    def prints(search: nil, order_by: 'started_at', ascending: false, statuses: nil)
       authorize!(:index, Print)
+
+      order_by = '"uploaded_file"."filename"' if order_by == 'filename'
+      order_by = '"printers"."name"' if order_by == 'printer'
+
       # TODO: not using accessible_by is kinda wonky
-      Print.includes(:printer, uploaded_file: { file_attachment: :blob }).where(uploaded_file: { user_id: context[:current_user].id }).order(created_at: :desc)
+      query = Print.joins(:printer, :uploaded_file)
+                   .includes(:printer, uploaded_file: { file_attachment: :blob })
+                   .where(uploaded_file: { user_id: context[:current_user].id })
+                   .order([[order_by.to_sym, ascending ? :asc : :desc]].to_h)
+
+      if search.present?
+        search = search.downcase
+        query = query.where('LOWER("uploaded_file"."filename") LIKE ?', "%#{search}%").or(Print.where('LOWER("printers"."name") LIKE ?', "%#{search}%"))
+      end
+
+      if statuses.present?
+        query = query.where(status: statuses)
+      end
+
+      query.all
     end
 
     def print(id:)
