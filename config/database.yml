@@ -3,6 +3,9 @@ default: &default
   encoding: unicode
   username: <%= ENV['DB_USERNAME'] || Rails.application.secrets.dig(:database, :username) %>
   password: <%= ENV['DB_PASSWORD'] || Rails.application.secrets.dig(:database, :password) %>
+  host: <%= ENV['DB_HOST'] || Rails.application.secrets.dig(:database, :host) %>
+  port: <%= ENV['DB_PORT'] || Rails.application.secrets.dig(:database, :port) %>
+  socket: <%= Rails.application.secrets.dig(:database, :socket) %>
 
   # For details on connection pooling, see Rails configuration guide
   # https://guides.rubyonrails.org/configuring.html#database-pooling
@@ -15,14 +18,6 @@ development:
 test:
   <<: *default
   database: 3dcloud_test
-
-  <% if ENV['DB_HOST'].present? %>
-  host: <%= ENV['DB_HOST'] %>
-  <% end %>
-
-  <% if ENV['DB_PORT'].present? %>
-  port: <%= ENV['DB_PORT'] %>
-  <% end %>
 
 production:
   <<: *default
