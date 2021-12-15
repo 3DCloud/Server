@@ -20,7 +20,7 @@ bundle install # install gems required by project
 ```
 
 Once that's done, you will need to configure the database and storage. This is done by created a file called `secrets.json` in the `config` folder. An example file is shown below; you will of course need to substitute the information with your own.
-```json
+```jsonc
 {
   "aws": {
     "public": {
