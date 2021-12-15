@@ -2,7 +2,7 @@
 
 class UserMailer < ApplicationMailer
   before_action do
-    attachments.inline['header_logo'] = File.read(Rails.root.join('app', 'assets', 'images', 'email_header_logo.png'))
+    attachments.inline['header_logo.png'] = File.read(Rails.root.join('app', 'assets', 'images', 'email_header_logo.png'))
   end
 
   def print_canceled_email
